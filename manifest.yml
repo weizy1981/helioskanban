@@ -1,0 +1,10 @@
+applications:
+- path: .
+  memory: 256M
+  instances: 1
+  domain: mybluemix.net
+  name: mykanban
+  host: mykanban
+  disk_quota: 1024M
+  services:
+  - ClearDB MySQL Database-ic
