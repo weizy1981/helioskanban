@@ -1,0 +1,42 @@
+<html>
+  <head>
+    <link href="/js/c3.css" rel="stylesheet" type="text/css">
+  </head>
+  <body>
+    <div id="chart"></div>
+    
+    <script src="/js/d3.js" charset="utf-8"></script>
+    <script src="/js/c3.js"></script>
+    <script>
+
+	var dayData = [
+     {"c01":"300","c02":"130","c03":"0"},
+     {"c01":"350","c02":"100","c03":"30"},
+     {"c01":"300","c02":"140","c03":"130"},
+	 {"c01":"250","c02":"200","c03":"320"},
+	 {"c01":"200","c02":"150","c03":"230"}
+    ];
+    var dayObjs = eval(dayData);
+  
+	var chart = c3.generate({
+    data: {
+        columns: [
+            ['data1', dayObjs[0].c01, dayObjs[1].c01, dayObjs[2].c01, dayObjs[3].c01, dayObjs[4].c01],
+            ['data2', dayObjs[0].c02, dayObjs[1].c02, dayObjs[2].c02, dayObjs[3].c02, dayObjs[4].c02],
+			['data3', dayObjs[0].c03, dayObjs[1].c03, dayObjs[2].c03, dayObjs[3].c03, dayObjs[4].c03]
+        ],
+        types: {
+            data1: 'area-spline',
+            data2: 'area-spline',
+			data3: 'area-spline'
+            // 'line', 'spline', 'step', 'area', 'area-step' are also available to stack
+        },
+        groups: [['data1', 'data2', 'data3']]
+    },
+	tooltip: {
+        grouped: false // Default true
+    }
+});
+    </script>
+  </body>
+</html>

@@ -1,0 +1,57 @@
+<html>
+  <head>
+    <link href="js/c3.css" rel="stylesheet" type="text/css">
+  </head>
+  <body>
+    <div id="chart"></div>
+    
+    <script src="js/d3.js" charset="utf-8"></script>
+    <script src="js/c3.js"></script>
+    <script>
+
+
+var chart = c3.generate({
+    data: {
+        columns: [
+            ['sample1', 3, 2, 1, 4, 1.5, 2.5]
+        ],
+        axes: {
+            sample1: 'y'
+        }
+    },
+    axis: {
+	     x: {
+            type: 'category',
+            categories: ['cat1', 'cat2', 'cat3', 'cat4', 'cat5', 'cat6']
+        },
+        y: {
+            label: {
+                text: 'Days',
+                position: 'outer-middle'
+                // inner-top : default
+                // inner-middle
+                // inner-bottom
+                // outer-top
+                // outer-middle
+                // outer-bottom
+            }
+        },
+    },
+    legend: {
+        show: false
+    },
+    grid: {
+        x: {
+            show: false
+        },
+        y: {
+            show: true
+        }
+    }
+});
+
+
+
+    </script>
+  </body>
+</html>

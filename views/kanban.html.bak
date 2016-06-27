@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+    <meta charset="UTF-8">
+	<link href="/css/jquery-ui.min.css" rel="stylesheet">
+	<link href="/css/jquery-ui.css" rel="stylesheet">
+	<link href="/css/bootstrap.min.css" rel="stylesheet" >
+    <link href="/css/bootstrap.css" rel="stylesheet" >
+    <script src="/js/jquery-2.1.4.min.js"></script>
+    <script src="/js/jquery-ui.min.js"></script>
+	<script src="/js/bootstrap.min.js"></script>
+	<script src="/js/socket.io-1.3.6.js"></script>
+	<style type="text/css">
+		.tdBorder{border-left:WhiteSmoke 2px solid;width: 200px;height:570px;}
+		.tdBorderTitle{border-left:WhiteSmoke 2px solid;border-bottom:WhiteSmoke 2px solid;}
+		.tdBorderLast{border-left:WhiteSmoke 2px solid;}
+		label {
+			display: inline-block;
+			width: 5em;
+		}
+
+/* Clearfix for the menu */
+.ui-menu:after {
+    content: ".";
+    display: block;
+    clear: both;
+    visibility: hidden;
+    line-height: 0;
+    height: 0;
+}
+
+.ui-menu .ui-menu-item {
+    display: inline-block;
+    float: left;
+    margin: 5;
+    padding: 5;
+    width: auto;
+}
+</style>
+    <title>ekanban</title>
+</head>
+
+<body>
+    
+    <h1>Welcome to ekanban</h1>
+
+	<div id="process" class="panel panel-default" rev = "<%=rev %>">
+		<div>
+		<ul id="nav">
+			<li><a href="#">Manage Console</a></li>
+			<li><a href="#">Add Task</a></li>
+			<li><a href="/logout">logout</a></li>
+		</ul>
+		</div>
+		<table border = "0" align = "center" id = "kanbantable" width = "98%" class="table table-condensed table-responsive ">
+			<% for (var i = 0; i<process.length;  i++) { %>
+				<th><div title = "<%=process[i].description %>"><%=process[i].status_name %>(<%=process[i].tasks.length%>)</div></th>
+			<% } %>
+			<tr>
+				<% for (var i = 0; i<process.length;  i++) { %>
+					<td width = "20%" class = 'tdBorder' id = "status_<%=process[i].status_id %>">
+						<% 
+						for (var j = 0; j<process[i].tasks.length;  j++) { %>
+							<div id = "<%=process[i].tasks[j]%>"></div>
+						<% } %>
+					</td>
+				<% } %>
+			</tr>
+		</table>
+	</div>
+
+	<script type="text/javascript">
+		var socket = io();	
+		socket.on('messages', function(msgObj){
+			if (msgObj._id==null || msgObj._id==undefined) {
+			} else {
+				refreshPage();
+			}
+			
+			//addComment(msgObj);
+		});
+		function getSocket(){
+			if(socket==null || socket==undefined){
+				socket = io();
+			}
+			return socket;
+		}
+
+		function refreshPage() {
+			setTimeout(function(){
+				window.location.reload();
+			},5000);
+			
+		}
+		$(document).ready(function(){
+
+			$( "#nav" ).menu({position: {at: "left bottom"}});
+			$( 'th' ).tooltip();
+			var tasksjson ='<%-JSON.stringify(tasks) %>';
+			var tasks = JSON.parse(tasksjson);
+			var process = JSON.parse('<%-JSON.stringify(process) %>');
+			$.each(tasks, function(index, content){
+				$( '#' + content._id ).replaceWith(""
+					+"<div class='panel panel-primary' id = '" + content._id +"' rev = '" + content._rev +"'>"
+					+"	<div class='panel-title'> <h6 >&nbsp;&nbsp;&nbsp;"+content.task_end_est + "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"
+					+ "&nbsp;&nbsp;&nbsp;<a href = '#'>Detail</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"
+					+"<a href = '#'>Edit</a></h6> </div>"
+					+"	<div class='panel-body'><h5>"+content.task_name+"</h5></div>"
+					+"	<div class='panel-footer'>" +"【"+content.task_assignment+ "】</div>"
+					+"</div>");
+					$('.panel-footer').css({"height":'40',"font-size":'16px',"color":'blue',"text-align":'right',"background-color":"white"});
+					$('.panel-primary').css("width",'100%');
+					//$('.panel-primary').css("width",$(window).width()/process.length - 5);
+					$(".panel-title").css("background-color","lavender");
+					$(".panel-primary").css("background-color","ivory");
+					$(".panel-primary").mouseover(function(){
+					$(".panel-primary").css("cursor","pointer");
+					});
+			});
+			
+			var statusString = "'#status_1";
+			 $.each(process, function(i,status){
+				 if (status.status_id > 1){
+					 statusString = statusString + ",#status_" + status.status_id;
+				 }
+			  });
+			  statusString = statusString + "'"
+			  var startstatus = null;
+			  var endstatus = null;
+			  var startTasksArray = new Array();
+			  var endTasksArray = new Array();
+			$( eval(statusString) ).sortable({
+				connectWith: ".tdBorder",
+				start: function( event, ui ) {
+					startstatus = ui.item.parent();
+					//ui.item.css("width",ui.item.attr("width"));
+				},
+				stop: function( event, ui ) {
+					startstatus.children().each(function(i,task) {
+						startTasksArray.push(task.id);
+						//alert(task.id);
+					});
+					endstatus = ui.item.parent();
+					//alert("end:" + endstatus);
+					//alert(ui.item.parent().children(".panel-primary"));
+					endstatus.children().each(function(i,task) {
+						//alert(task.id);
+						endTasksArray.push(task.id);
+					});
+					$.post(
+						"./tasks",
+						{"_id":ui.item.attr("id"),"task_status":ui.item.parent().attr("id"),
+						 "start_status_id":startstatus.attr("id"),"end_status_id":endstatus.attr("id"),
+						 "start_tasks":startTasksArray.toString(),"end_tasks":endTasksArray.toString(),
+						 "rev":$('#process').attr("rev")},
+						function(data,status) {
+							alert(data.err);
+							//alert(message);
+						}
+					);
+					getSocket().emit('taskedit', {"_id":ui.item.attr("id"),"task_status":ui.item.parent().attr("id"),"rev":ui.item.attr("rev")});
+				},
+
+			});
+		   $( ".tdBorder" ).disableSelection();
+		});
+
+/**
+		function dragAction(){
+			var mousex = 0, mousey = 0;
+			var divLeft, divTop;
+			$(".panel-primary").mousedown(function(event){  
+				var isMove = true;
+				var obj = $(this);
+				var abs_x = event.pageX -obj.offset().left;
+				var abs_y = event.pageY - obj.offset().top;
+				var objWidth = $(this).width();
+				var objHeight = $(this).height();
+				$(document).mousemove(function (event) {
+							if (isMove) {
+								var px = (event.pageX - abs_x) + 'px';
+								var py = (event.pageY - abs_y) + 'px';
+								obj.css({'left': px, 'top': py, 'position' : 'absolute', 'width' : objWidth, 'height' : objHeight});
+							}
+						}
+				).mouseup(
+						function () {
+							alert("sss");
+							isMove = false;
+							$('.panel-primary').unbind('mousemove');
+						}
+				);  
+			});
+		}
+**/
+	</script>
+
+</body>
+
+</html>

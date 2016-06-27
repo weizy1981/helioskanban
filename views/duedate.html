@@ -1,0 +1,33 @@
+<html>
+  <head>
+    <link href="js/c3.css" rel="stylesheet" type="text/css">
+  </head>
+  <body>
+    <div id="chart"></div>
+    
+    <script src="js/d3.js" charset="utf-8"></script>
+    <script src="js/c3.js"></script>
+    <script>
+
+var chart = c3.generate({
+    size: {
+        height: 300,
+        width: 500
+    },
+    data: {
+        // iris data from R
+        columns: [
+            ["Before due date", 0.2],
+            ["On time", 0.4],
+            ["After due date", 0.2],
+        ],
+        type : 'pie',
+        onclick: function (d, i) { console.log("onclick", d, i); },
+        onmouseover: function (d, i) { console.log("onmouseover", d, i); },
+        onmouseout: function (d, i) { console.log("onmouseout", d, i); }
+    }
+});
+
+    </script>
+  </body>
+</html>

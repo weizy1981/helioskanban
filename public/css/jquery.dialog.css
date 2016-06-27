@@ -1,0 +1,120 @@
+/***************************************Dialog Style********************************/
+.DialogMask
+{
+    top: 0px;
+    left: 0px;
+    position: absolute;
+    background-color: #000000;
+    /*IE use private attribute filter, and the browser support opacity, which need supports CSS3(FF 1.5)*/
+    display: block; /* Moz Family use private attribute -moz-opacity: 0.70 */ 
+    filter: alpha(opacity=50);
+    -moz-opacity: 0.5;
+    opacity: 0.5;
+    z-index:800;
+}
+
+.Dialog,.ModalDialog
+{
+    display: none;
+    position: absolute;
+    background: #CCC;
+    border: 1px solid #000000;
+    z-index:900;
+}
+
+.CustomDialog,.ModalCustomDialog
+{
+    display: none;
+    position: absolute;
+    z-index:1000;
+}
+
+/*******************For template************************/
+.WindowClose
+{
+    cursor: pointer;
+    text-align: right;
+    font-size: large;
+    font-weight: bold;
+    color: White;
+}
+
+.DialogTop
+{
+    width: 100%;
+    height: 30px;
+    background-image: url(dialog/top-bottom.png);
+    background-position: top;
+}
+
+.DialogTitle
+{
+    font-size: small;
+    vertical-align: middle;
+    font-weight: bold;
+    color: #15428B;
+    height: 11px;
+    padding-left:5px;
+    font-family:Verdana;
+}
+
+.RoundDialogTitle
+{
+    font-size: 16px;
+    vertical-align: middle;
+    font-weight: bold;
+    color: white;
+    height: 16px;
+    padding-left:5px;
+    font-family:Verdana;
+}
+
+.DialogFrame
+{
+    background-color: White;
+    border-right: 0px solid #99bbe8;
+    border-bottom: 0px solid #99bbe8;
+    border-top: 0px solid #99bbe8;
+    border-left: 0px solid #99bbe8;
+}
+
+.DialogTable
+{
+    display: block;
+    position: relative;
+    background: #DFE8F6;
+    border-right: 3px solid #99bbf1;
+    border-bottom: 3px solid #99bbf1;
+    border-top: 2px solid #99bbf1;
+    border-left: 3px solid #99bbf1;
+    -moz-border-radius:5px;
+    -webkit-border-radius:5px;
+    border-radius: 5px;
+    width:100%;
+    overflow:hidden;
+}
+
+.DialogLine
+{
+    height: 1px;
+    background-image: url(dialog/top-bottom.png);
+    background-position: top;
+}
+
+.DialogContext
+{
+    font-size: small;
+    text-align: left;
+    font-family: tahoma,arial,verdana,sans-serif;
+	text-justify:auto;
+}
+
+.ModalDialog input.button,.ModalCustomDialog input.button{
+	background:url(dialog/bg_button.gif);
+	border:none;
+	color:white;
+	font-weight: bold;
+	height:20px;
+	font-size:11px;
+	font-family: verdana, arial, helvetica, sans-serif;
+}
