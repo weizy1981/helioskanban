@@ -38,6 +38,26 @@
     width: auto;
 }
 </style>
+
+
+
+<script src="http://apps.bdimg.com/libs/angular.js/1.4.6/angular.min.js"></script>
+<link rel="stylesheet" href="/css/task_style.css" media="all">
+
+<script>
+jQuery(document).ready(function($) {
+	$('.theme-login').click(function(){
+		$('.theme-popover-mask').fadeIn(100);
+		$('.theme-popover').slideDown(200);
+	})
+	$('.theme-poptit .close').click(function(){
+		$('.theme-popover-mask').fadeOut(100);
+		$('.theme-popover').slideUp(200);
+	})
+
+})
+</script>
+
     <title>ekanban</title>
 </head>
 
@@ -69,6 +89,127 @@
 			</tr>
 		</table>
 	</div>
+
+
+<!--<a class="btn btn-primary btn-large theme-login" href="javascript:;">Add Task</a>-->
+<a class="btn btn-primary btn-large theme-login" id="btn_add_task" href="javascript:;" hidden>Add Task</a>
+<div class="theme-popover" style="display: none;">
+     <div class="theme-poptit">
+          <a href="javascript:;" title="Close" class="close">×</a>
+          <h3>Add task</h3>
+     </div>
+     <div class="theme-popbod dform" ng-app="myApp" ng-controller="tasksCtrl">
+		 
+           <form class="theme-signin" action="" method="" novalidate name="taskForm">
+                <ol>
+                     <li><h4>Enter task info.</h4></li>
+                     <li>
+						<strong>Type ID:</strong>
+					 	<input type="text" name="taskTypeID" ng-model="task.taskTypeID" required class="ipt">
+						<span style="color:red" ng-show="taskForm.taskTypeID.$dirty && taskForm.taskTypeID.$invalid">
+							<span ng-show="taskForm.taskTypeID.$error.required">
+								Task Type ID is blank.
+							</span>
+						</span>
+					 </li>
+                     <li>
+						<strong>System Name:</strong>
+						<select name="systemName" ng-model="task.systemName" ng-options="x for x in systemNames" required class="ipt"></select>						</select>
+					 	<!--<input type="text" name="systemName" ng-model="task.systemName" required class="ipt">-->
+						<span style="color:red" ng-show="taskForm.systemName.$dirty && taskForm.systemName.$invalid">
+							<span ng-show="taskForm.systemName.$error.required">
+								Task Type ID is blank.
+							</span>
+						</span>
+					 </li>
+                     <li>
+						<strong>Task Name:</strong>
+						<input type="text" name="taskName" ng-model="task.taskName" required class="ipt">
+						<span style="color:red" ng-show="taskForm.taskName.$dirty && taskForm.taskName.$invalid">
+							<span ng-show="taskForm.taskName.$error.required">
+								Task name is blank.
+							</span>
+						</span>
+					 </li>
+                     <li>
+						<strong>Start Estimate:</strong>
+					 	<input type="text" name="startEst" ng-model="task.startEst" required class="ipt">
+						<span style="color:red" ng-show="taskForm.startEst.$dirty && taskForm.startEst.$invalid">
+							<span ng-show="taskForm.startEst.$error.required">
+								Task id is blank.
+							</span>
+						</span>
+					 </li>
+					 <li>
+						<strong>Finish Estimate:</strong>
+					 	<input type="text" name="finishEst" ng-model="task.finishEst" required class="ipt">
+						<span style="color:red" ng-show="taskForm.finishEst.$dirty && taskForm.finishEst.$invalid">
+							<span ng-show="taskForm.finishEst.$error.required">
+								Task id is blank.
+							</span>
+						</span>
+					 </li>
+
+					 <li>
+						<strong>Owner:</strong>
+					 	<input type="text" name="owner" ng-model="task.owner" required class="ipt">
+						<span style="color:red" ng-show="taskForm.owner.$dirty && taskForm.owner.$invalid">
+							<span ng-show="taskForm.owner.$error.required">
+								Task id is blank.
+							</span>
+						</span>
+					 </li>
+
+					 <li>
+						<strong>Approver:</strong>
+					 	<input type="text" name="approver" ng-model="task.approver" required class="ipt">
+						<span style="color:red" ng-show="taskForm.approver.$dirty && taskForm.approver.$invalid">
+							<span ng-show="taskForm.approver.$error.required">
+								Task id is blank.
+							</span>
+						</span>
+					 </li>
+					 <li>
+						<strong>Total Work:</strong>
+					 	<input type="text" name="totalWork" ng-model="task.totalWork" required class="ipt">
+						<span style="color:red" ng-show="taskForm.totalWork.$dirty && taskForm.totalWork.$invalid">
+							<span ng-show="taskForm.totalWork.$error.required">
+								Task id is blank.
+							</span>
+						</span>
+					 </li>
+					 <li>
+						<strong>Remaining Work:</strong>
+					 	<input type="text" name="remainingWork" ng-model="task.remainingWork" required class="ipt">
+						<span style="color:red" ng-show="taskForm.remainingWork.$dirty && taskForm.remainingWork.$invalid">
+							<span ng-show="taskForm.remainingWork.$error.required">
+								Task id is blank.
+							</span>
+						</span>
+					 </li>
+					 <li>
+						<strong>Detail:</strong>
+					 	<input type="text" name="detail" ng-model="task.detail" required class="ipt">
+						<span style="color:red" ng-show="taskForm.detail.$dirty && taskForm.detail.$invalid">
+							<span ng-show="taskForm.detail.$error.required">
+								Task id is blank.
+							</span>
+						</span>
+					 </li>
+                     <li>
+						<button ng-click="reset()" class="btn btn-primary">Reset</button>
+						<!--<button ng-click="add()" class="btn btn-primary" ng-disabled="taskForm.taskID.$dirty && taskForm.taskID.$invalid || taskForm.taskName.$dirty && taskForm.taskName.$invalid">Add</button>-->
+					 </li>
+                </ol>
+           </form>
+		   	<p>task = {{task}}</p>
+			<p>{{result}}</p>
+     </div>
+</div>
+
+<div class="theme-popover-mask" style="display: none;"></div>
+<script src="/js/task.js"></script>
+
 
 	<script type="text/javascript">
 		var socket = io();	

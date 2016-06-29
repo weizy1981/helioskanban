@@ -168,4 +168,40 @@ router.post('/', loginCheck, function(req, res) {
 	//async.series([]);
 });
 
+//add by jiajiao
+router.get('/add', function(req,res){
+		db.get("processes_p001", function(err, data) {
+			console.log("Error:", err);
+			console.log("Data:", data);
+
+			if (data == null || typeof(data) == "undefined") {
+				console.log("fail");
+				data = {"status": "NG"};
+			} else {
+				console.log("success");
+				data = {"status": "OK", "systemNames": data.systemNames};				
+			}
+			res.end(JSON.stringify(data));
+		});
+	
+//	res.render('task_add')
+});
+
+router.post('/add', function(req, res) {
+	
+	// var taskID = req.body.task.taskID;
+  //   var taskName = req.body.taskName;
+	// we are specifying the id of the document so we can update and delete it later
+	// db.insert({ _id: "users_" + email, "user_id":email, "user_password": password}, function(err, data) {
+	// 	console.log("Error:", err);
+	// 	console.log("Data:", data);
+	// 	res.render('register',{ "status": "ok", "message":"register success." });
+	// });
+	console.log('taskId=' + req.body.taskID + ' taskName=' + req.body.taskName)
+//	res.render('task_add',{ "status": "ok", "message":"register success." });
+	data = {"status": "OK", "message":"task is created."}
+	res.end(JSON.stringify(data))
+});
+
+
 module.exports = router;
