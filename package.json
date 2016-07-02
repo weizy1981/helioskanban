@@ -11,7 +11,7 @@
     "mysql": "~2.5.0",
     "cloudant": "~1.4.2",
     "nano": "~6.2.0",
-    //"connect-cloudant": "~1.0.6",
+    "connect-cloudant": "~1.0.6",
     "sequelize": "^3.23.3",
     "express-session": "~1.11.3",
     "cookie-parser": "~1.4.3",
