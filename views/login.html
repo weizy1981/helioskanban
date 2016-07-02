@@ -16,9 +16,14 @@
         <input type="password" name="password" placeholder="Password" />
 		<button id="button">login</button>
     </form>
+	<p id = "errorMessage"></p>
     <a href = "./register">Register</a>
 	<script>
-		$( "button" ).button();
+		$(document).ready(function(){
+			$( "button" ).button();
+			var errorMessage = JSON.parse('<%-JSON.stringify(error) %>');
+			$("#errorMessage").text(errorMessage);
+		});
 	</script>
 </body>
 </html>

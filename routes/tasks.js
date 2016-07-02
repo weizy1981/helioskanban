@@ -15,7 +15,7 @@ var loginCheck = function(req, res, next) {
     if(req.session.user_id){
         next();
     }else{
-        res.redirect('login');
+        res.render('login', { "error":"" });
     }
 };
 
@@ -78,18 +78,14 @@ router.post('/', loginCheck, function(req, res) {
 	// update current process
 	var updateProcess = function(callback) {
 		console.log("Updating process");
-
-		//console.log("rev:" + req.body.rev);
-	    //console.log("doc.rev:" + doc._rev);
-		//console.log(req.body.rev != doc._rev);
 		  if (req.body.rev != doc._rev) {
 			  err = "error";
-			  callback(err, "Task has been changed edited by other user, please try again.");
+			  callback(err, "Task has been modified by other user, please try again.");
 		  } else {
 				var start_status_id = req.body.start_status_id.substr(7);
 				var end_status_id = req.body.end_status_id.substr(7);
 				var work_flow = new Array();
-
+				var isOverWip = false;
 				doc.work_flow.forEach(function(content){
 					//var flow_status = JSON.parse(content);
 					if (content.status_id == start_status_id) {
@@ -98,6 +94,12 @@ router.post('/', loginCheck, function(req, res) {
 							content.tasks = new Array();
 						}
 					} else if (content.status_id == end_status_id) {
+						// check WIP
+						console.log("WIP standard:" + content.wip);
+						if (content.wip < req.body.end_tasks.split(',').length) {
+							isOverWip = true;
+							console.log("WIP:" + content.wip);
+						}
 						content.tasks = req.body.end_tasks.split(',');
 						if (req.body.end_tasks == "") {
 							content.tasks = new Array();
@@ -109,14 +111,19 @@ router.post('/', loginCheck, function(req, res) {
 				//console.log("work_flow:" + JSON.stringify(work_flow));
 				//console.log("start:" + req.body.start_tasks);
 				//console.log("end:" + req.body.end_tasks);
-				
-				db.insert(doc, function(err, data) {
-					console.log("Error:", err);
-					console.log("Data:", data);
-					// keep the revision of the update so we can delete it
-					doc._rev = req.body.rev;
-					callback(err, data);
-				});
+
+				if (isOverWip) {
+				  err = "error";
+				  callback(err, "Operation failed. WIP over.");
+				} else {
+					db.insert(doc, function(err, data) {
+						console.log("Error:", err);
+						console.log("Data:", data);
+						// keep the revision of the update so we can delete it
+						doc._rev = req.body.rev;
+						callback(err, data);
+					});
+				}
 
 		  }
 	};

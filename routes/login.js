@@ -29,7 +29,7 @@ var nano   = require('nano')(process.env.CLOUDANT_URL)
 //db = nano.use('kanban');
 
 router.get('/', function(req, res) {
-    res.render('login');
+    res.render('login', { "error":"" });
 });
 
 router.post('/', function(req, res) {
@@ -59,7 +59,7 @@ router.post('/', function(req, res) {
 
 		if (data == null || typeof(data) == "undefined" || data.user_id!=email || data.user_password!=password) {
 			console.log("fail");
-			res.render('login');
+			res.render('login', { "error":"Login failed." });
 		} else {
 			console.log("success");
 			req.session.user_id = data.user_id;

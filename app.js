@@ -65,12 +65,40 @@ app.set('view engine', 'html');
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser('sctalk admin manager'));
+
 app.use(session({
 	secret:"testkanban",
 	resave: true,
     saveUninitialized: true,
 	cookie:{maxAge:1000*60*60}
 }));
+
+/**
+var CloudantStore = require('connect-cloudant')(session);
+var cloudantStore = new CloudantStore({
+     url: process.env.CLOUDANT_URL, //required
+     databaseName: 'sessions',  //optional
+     ttl: 86400,                 //optional
+     prefix: 'sess',             //optional
+     operationTimeout:2000,      //optional
+     connectionTimeout:2000,      //optional
+}); 
+cloudantStore.on('connect', function() {
+    console.log("Cloudant Session store is ready for use");
+});
+ 
+cloudantStore.on('disconnect', function() {
+    console.log("An error occurred connecting to Cloudant Session Storage");
+});
+app.use(session({
+    store: cloudantStore,
+    secret: 'mykanban',
+	resave: true,
+    saveUninitialized: true,
+    cookie: {maxAge:24*60*60*1000} //stay open for 1 day of inactivity
+}));
+**/
+
 app.use(express.static(path.join(__dirname, 'public')));
 app.use('/', routes);
 app.use('/users', users);
@@ -153,3 +181,4 @@ var sequelize = new Sequelize('syhyhqjb_kanban', 'syhyhqjb_kanban', 'testkanban'
 });
 */
 //var sequelize = new Sequelize('mysql://syhyhqjb_kanban:wang2008@localhost:3306/syhyhqjb_kanban');
+

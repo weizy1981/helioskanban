@@ -42,9 +42,6 @@
 
 
 <script src="http://apps.bdimg.com/libs/angular.js/1.4.6/angular.min.js"></script>
-<!--
-<link rel="stylesheet" href="/css/task_style.css" media="all">
--->
 <script>
 jQuery(document).ready(function($) {
 	$('.theme-login').click(function(){
@@ -76,7 +73,14 @@ jQuery(document).ready(function($) {
 		</div>
 		<table border = "0" align = "center" id = "kanbantable" width = "98%" class="table table-condensed table-responsive ">
 			<% for (var i = 0; i<process.length;  i++) { %>
-				<th><div title = "<%=process[i].description %>"><%=process[i].status_name %>(<%=process[i].tasks.length%>)</div></th>
+				<th>
+					<div class = "processtitle" title = "<%=process[i].description %>">
+						<%=process[i].status_name %>(<%=process[i].tasks.length%>)
+						<% if(process[i].wip) { %>
+							WIP:(<%=process[i].wip %>)
+						<% } %>
+					</div>
+				</th>
 			<% } %>
 			<tr>
 				<% for (var i = 0; i<process.length;  i++) { %>
@@ -91,9 +95,9 @@ jQuery(document).ready(function($) {
 		</table>
 	</div>
 
-
-<!--<a class="btn btn-primary btn-large theme-login" href="javascript:;">Add Task</a>-->
+<!--<a class="btn btn-primary btn-large theme-login" href="javascript:;">Add Task</a>
 <a class="btn btn-primary btn-large theme-login" id="btn_add_task" href="javascript:;" hidden>Add Task</a>
+-->
 
 
 
@@ -109,8 +113,6 @@ jQuery(document).ready(function($) {
 			} else {
 				refreshPage();
 			}
-			
-			//addComment(msgObj);
 		});
 		function getSocket(){
 			if(socket==null || socket==undefined){
@@ -122,9 +124,11 @@ jQuery(document).ready(function($) {
 		function refreshPage() {
 			setTimeout(function(){
 				window.location.reload();
-			},5000);
-			
+			},5000);	
 		}
+
+		$(".processtitle").tooltip();
+
 		$(document).ready(function(){
 			$( "#nav" ).menu({position: {at: "left bottom"}});
 			$( 'th' ).tooltip();
@@ -136,7 +140,9 @@ jQuery(document).ready(function($) {
 				$( '#' + content._id ).replaceWith(""
 					+"<div class='panel panel-primary' id = '" + content._id +"' rev = '" + content._rev +"'>"
 					+"	<div class='panel-title'> <h6 >&nbsp;&nbsp;&nbsp;"+content.task_end_est + "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"
-					+ "&nbsp;&nbsp;&nbsp;<a href = '#'>Detail</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"
+					+ "&nbsp;&nbsp;&nbsp;<a href = '#' class = 'taskdetail' title = '"
+					+ content.task_detail
+					+"'>Detail</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"
 					+"<a href = '#'>Edit</a></h6> </div>"
 					+"	<div class='panel-body'><h5>"+content.task_name+"</h5></div>"
 					+"	<div class='panel-footer'>" +"【"+content.task_assignment+ "】</div>"
@@ -148,6 +154,7 @@ jQuery(document).ready(function($) {
 					$(".panel-primary").css("background-color","ivory");
 					$(".panel-primary").mouseover(function(){
 					$(".panel-primary").css("cursor","pointer");
+					$(".taskdetail").tooltip();
 					});
 			});
 			
@@ -187,6 +194,8 @@ jQuery(document).ready(function($) {
 						 "rev":$('#process').attr("rev")},
 						function(data,status) {
 							alert(data.err);
+							
+							
 							//alert(message);
 						}
 					);
