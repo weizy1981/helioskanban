@@ -92,9 +92,9 @@ a:hover {
 	clear:both;
 	visibility:hidden
 }
-.clearfix, .central, .widget ul, .paging, .pagenav, .base-tit {
+/*.clearfix, .central, .widget ul, .paging, .pagenav, .base-tit {
 *+height:1%;
-}
+}*/
 body, button, input, select, textarea, code {
 	font-size:12px;
 	font-family:microsoft yahei;
@@ -308,7 +308,6 @@ input.btn {
 	color:#fff;
 	line-height:42px;
 	margin-top:10px;
-display:;
 	font-size: 14px;
 }
 .dform-tip-errer {
