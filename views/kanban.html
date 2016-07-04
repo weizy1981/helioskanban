@@ -251,7 +251,7 @@ jQuery(document).ready(function($) {
 			$.each(tasks, function(index, content){
 				$( '#' + content._id ).replaceWith(""
 					+"<div class='panel panel-primary' id = '" + content._id +"' rev = '" + content._rev +"'>"
-					+"	<div class='panel-title'> <h6 >&nbsp;&nbsp;&nbsp;"+content.task_end_est + "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"
+					+"	<div class='panel-title'> <h6 >&nbsp;&nbsp;&nbsp;"+content.task_end_est + "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"
 					+ "&nbsp;&nbsp;&nbsp;<a href = '#' class = 'taskdetail' title = '"
 					+ content.task_detail
 					+"'>Detail</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"
@@ -262,7 +262,7 @@ jQuery(document).ready(function($) {
 					$('.panel-footer').css({"height":'40',"font-size":'16px',"color":'blue',"text-align":'right',"background-color":"white"});
 					$('.panel-primary').css("width",'200');
 					//$('.panel-primary').css("width",$(window).width()/process.length - 5);
-					$(".panel-title").css("background-color","lavender");
+					$(".panel-title").css({"background-color":"lavender","height":'30',"align":"center"});
 					$(".panel-primary").css("background-color","ivory");
 					$(".panel-primary").mouseover(function(){
 					$(".panel-primary").css("cursor","pointer");
