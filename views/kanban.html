@@ -111,7 +111,8 @@ jQuery(document).ready(function($) {
                      <li><h4>Enter task info.</h4></li>
                      <li>
 						<strong>Type ID:</strong>
-					 	<input type="text" name="taskTypeID" ng-model="task.taskTypeID" required class="ipt">
+					 	<!--<input type="text" name="taskTypeID" ng-model="task.taskTypeID" required class="ipt">-->
+						 <select name="taskTypeID" ng-model="task.taskTypeID" ng-options="x for x in taskTypeIDs" required class="ipt"></select>
 						<span style="color:red" ng-show="taskForm.taskTypeID.$dirty && taskForm.taskTypeID.$invalid">
 							<span ng-show="taskForm.taskTypeID.$error.required">
 								Task Type ID is blank.
@@ -120,7 +121,7 @@ jQuery(document).ready(function($) {
 					 </li>
                      <li>
 						<strong>System Name:</strong>
-						<select name="systemName" ng-model="task.systemName" ng-options="x for x in systemNames" required class="ipt"></select>						</select>
+						<select name="systemName" ng-model="task.systemName" ng-options="x for x in systemNames" required class="ipt"></select>
 					 	<!--<input type="text" name="systemName" ng-model="task.systemName" required class="ipt">-->
 						<span style="color:red" ng-show="taskForm.systemName.$dirty && taskForm.systemName.$invalid">
 							<span ng-show="taskForm.systemName.$error.required">
@@ -204,7 +205,7 @@ jQuery(document).ready(function($) {
 					 </li>
                      <li>
 						<button ng-click="reset()" class="btn btn-primary">Reset</button>
-						<button ng-click="add()" class="btn btn-primary" ng-disabled="taskForm.taskID.$dirty && taskForm.taskID.$invalid || taskForm.taskName.$dirty && taskForm.taskName.$invalid">Add</button>
+						<button ng-click="add()" class="btn btn-primary">Add</button>
 					 </li>
                 </ol>
            </form>

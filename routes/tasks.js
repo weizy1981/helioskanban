@@ -8,6 +8,7 @@ var async = require('async'),
   dbname = 'kanban',
   db = null,
   doc = null;
+var doc_process = null;
 db = cloudant.db.use(dbname);
 
 
@@ -186,7 +187,7 @@ router.get('/add', function(req,res){
 				data = {"status": "NG"};
 			} else {
 				console.log("success");
-				data = {"status": "OK", "systemNames": data.systemNames};				
+				data = {"status": "OK", "system_names": data.system_names, "task_types": data.task_types};				
 			}
 			res.end(JSON.stringify(data));
 		});
@@ -204,10 +205,101 @@ router.post('/add', function(req, res) {
 	// 	console.log("Data:", data);
 	// 	res.render('register',{ "status": "ok", "message":"register success." });
 	// });
-	console.log('taskId=' + req.body.taskID + ' taskName=' + req.body.taskName)
+	// console.log('taskId=' + req.body.taskID + ' taskName=' + req.body.taskName)
 //	res.render('task_add',{ "status": "ok", "message":"register success." });
-	data = {"status": "OK", "message":"task is created."}
-	res.end(JSON.stringify(data))
+
+	// update a task document
+	console.log("Updating task document");
+	// make a change to the document, using the copy we kept from reading it back
+	//console.log("before update:" + doc.task_status);
+	//doc.id = "task_20160706010101";
+	var now = new Date();
+	var strNow = now.getFullYear()+ now.getMonth() + now.getDate() + now.getHours() + now.getMinutes() + now.getMilliseconds();
+	var strTaskID = "task_" + strNow;
+
+	doc = {
+		_id : strTaskID,
+		type : "task",
+		process_id : "p_001",
+		task_name : req.body.taskName,
+		task_status : 1,
+		task_detail : req.body.detail,
+		task_start_est : req.startEst,
+		task_end_est : req.finishEst,
+		task_priority : "A",
+		task_tasktype_id : req.body.taskTypeID,
+		task_totaltime : req.body.totalWork,
+		task_remaintime : req.body.totalWork,
+		task_assignment : "jia.jiao",
+		complete_type : ""
+	}
+
+	db.insert(doc, function(err, data) {
+		console.log("Error:", err);
+		console.log("Data:", data);
+	});
+
+
+
+
+var err = "";
+
+	// read current process
+	var readProcess = function(callback) {
+	  console.log("Reading process");
+	  console.log(req.session.user_pref_default_process);
+	  db.get(req.session.user_pref_default_process, function(err, data) {
+		console.log("Error:", err);
+		console.log("Data:", data);
+		// keep a copy of the doc so we know its revision token
+		doc_process = data;
+   	    callback(err, data);
+	  });
+	};
+
+	// update current process
+	var updateProcess = function(callback) {
+		console.log("Updating process");
+
+
+				doc_process.work_flow[0].tasks.push(strTaskID);
+				//console.log("work_flow:" + JSON.stringify(work_flow));
+				//console.log("start:" + req.body.start_tasks);
+				//console.log("end:" + req.body.end_tasks);
+
+
+					db.insert(doc_process, function(err, data) {
+						console.log("Error:", err);
+						console.log("Data:", data);
+
+						callback(err, data);
+					});
+
+		  
+	};
+
+	async.series([readProcess, updateProcess],function(err, results){
+		console.log("final err:" + err);
+		console.log("final results1:" + JSON.stringify(results[0]));
+		console.log("final results2:" + JSON.stringify(results[1]));
+		if (err != null) {
+			//err = "Task has been changed edited by other user, please try again.";
+			// res.contentType('json');
+			// res.send(JSON.stringify({ "status":"success", "err":JSON.stringify(results[1])}));  
+			// res.end(); 
+				data = {"status": "OK", "message":"task is created."}
+				res.end(JSON.stringify(data))
+		}
+		// results is now equal to ['one', 'two']
+	});
+
+
+
+
+
+
+
+
 });
 
 
