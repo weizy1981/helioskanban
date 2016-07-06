@@ -39,7 +39,7 @@ router.get('/', loginCheck, function(req, res) {
 			// get current progress
 			var current_progress = {};
 			var kanban_info = {};
-			db.get("processes_p001", function(err, data) {
+			db.get(req.session.user_pref_default_process, function(err, data) {
 				console.log("Error:", err);
 				console.log("Data:", data);
 
