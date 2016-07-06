@@ -214,8 +214,7 @@ router.post('/add', function(req, res) {
 	//console.log("before update:" + doc.task_status);
 	//doc.id = "task_20160706010101";
 	var now = new Date();
-	var strNow = now.getFullYear()+ now.getMonth() + now.getDate() + now.getHours() + now.getMinutes() + now.getMilliseconds();
-	var strTaskID = "task_" + strNow;
+	var strTaskID = "task_" + now.getTime();
 
 	doc = {
 		_id : strTaskID,

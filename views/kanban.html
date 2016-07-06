@@ -108,7 +108,7 @@ jQuery(document).ready(function($) {
 		 
            <form class="theme-signin" action="" method="" novalidate name="taskForm">
                 <ol>
-                     <li><h4>Enter task info.</h4></li>
+                     <!--<li><h4>Enter task info.</h4></li>-->
                      <li>
 						<strong>Type ID:</strong>
 					 	<!--<input type="text" name="taskTypeID" ng-model="task.taskTypeID" required class="ipt">-->
@@ -185,7 +185,7 @@ jQuery(document).ready(function($) {
 							</span>
 						</span>
 					 </li>
-					 <li>
+					 <!--<li>
 						<strong>Remaining Work:</strong>
 					 	<input type="text" name="remainingWork" ng-model="task.remainingWork" required class="ipt">
 						<span style="color:red" ng-show="taskForm.remainingWork.$dirty && taskForm.remainingWork.$invalid">
@@ -193,10 +193,10 @@ jQuery(document).ready(function($) {
 								Task id is blank.
 							</span>
 						</span>
-					 </li>
+					 </li>-->
 					 <li>
 						<strong>Detail:</strong>
-					 	<input type="text" name="detail" ng-model="task.detail" required class="ipt">
+					 	<textarea name="detail" ng-model="task.detail" required class="ipt" rows="5" style="height:80px;"></textarea>
 						<span style="color:red" ng-show="taskForm.detail.$dirty && taskForm.detail.$invalid">
 							<span ng-show="taskForm.detail.$error.required">
 								Task id is blank.
