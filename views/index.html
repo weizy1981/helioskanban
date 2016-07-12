@@ -4,8 +4,10 @@
   <title>ekanban</title>
 	<link href="/css/jquery-ui.min.css" rel="stylesheet">
 	<link href="/css/jquery-ui.css" rel="stylesheet">
+	<link href="/css/bootstrap.min.css" rel="stylesheet">
     <script src="/js/jquery-2.1.4.min.js"></script>
     <script src="/js/jquery-ui.min.js"></script>
+	<script src="/js/bootstrap.min.js"></script> 
   <style>
     body { font-size: 62.5%; }
     label, input { display:block; }
@@ -41,6 +43,113 @@
 		padding: 10;
 		width: auto;
 	}
+
+	.process-box1 {
+	width: 490px;
+	height: 300px;
+	/* 	margin: 0 auto; */
+	background: white;
+	padding: 0.1em;
+	border: 1px ridge black;
+}
+
+.processlist-box {
+	width: 640px;
+	/* margin: 0 auto; */
+	padding: 0.1em;
+}
+
+.task-box-msg {
+	margin: 0;
+	text-align: center;
+	padding: 0 20px 20px 20px
+}
+
+.label1 {
+	display: block;
+	width: 200px;
+	text-align: right;
+}
+
+.statusBk {
+	padding: 0.3em;
+}
+
+#main-nav {
+	margin-left: 1px;
+}
+
+#main-nav.nav-tabs.nav-stacked>li>a {
+	padding: 10px 8px;
+	font-size: 12px;
+	font-weight: 600;
+	color: #4A515B;
+	background: #E9E9E9;
+	background: -moz-linear-gradient(top, #FAFAFA 0%, #E9E9E9 100%);
+	background: -webkit-gradient(linear, left top, left bottom, color-stop(0%, #FAFAFA),
+		color-stop(100%, #E9E9E9));
+	background: -webkit-linear-gradient(top, #FAFAFA 0%, #E9E9E9 100%);
+	background: -o-linear-gradient(top, #FAFAFA 0%, #E9E9E9 100%);
+	background: -ms-linear-gradient(top, #FAFAFA 0%, #E9E9E9 100%);
+	background: linear-gradient(top, #FAFAFA 0%, #E9E9E9 100%);
+	filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#FAFAFA',
+		endColorstr='#E9E9E9');
+	-ms-filter:
+		"progid:DXImageTransform.Microsoft.gradient(startColorstr='#FAFAFA', endColorstr='#E9E9E9')";
+	border: 1px solid #D5D5D5;
+	border-radius: 4px;
+}
+
+#main-nav.nav-tabs.nav-stacked>li>a>span {
+	color: #4A515B;
+}
+
+#main-nav.nav-tabs.nav-stacked>li.active>a, #main-nav.nav-tabs.nav-stacked>li>a:hover
+	{
+	color: #FFF;
+	background: #3C4049;
+	background: -moz-linear-gradient(top, #4A515B 0%, #3C4049 100%);
+	background: -webkit-gradient(linear, left top, left bottom, color-stop(0%, #4A515B),
+		color-stop(100%, #3C4049));
+	background: -webkit-linear-gradient(top, #4A515B 0%, #3C4049 100%);
+	background: -o-linear-gradient(top, #4A515B 0%, #3C4049 100%);
+	background: -ms-linear-gradient(top, #4A515B 0%, #3C4049 100%);
+	background: linear-gradient(top, #4A515B 0%, #3C4049 100%);
+	filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#4A515B',
+		endColorstr='#3C4049');
+	-ms-filter:
+		"progid:DXImageTransform.Microsoft.gradient(startColorstr='#4A515B', endColorstr='#3C4049')";
+	border-color: #2B2E33;
+}
+
+#main-nav.nav-tabs.nav-stacked>li.active>a, #main-nav.nav-tabs.nav-stacked>li>a:hover>span
+	{
+	color: #FFF;
+}
+
+#main-nav.nav-tabs.nav-stacked>li {
+	margin-bottom: 4px;
+}
+
+/*定义二级菜单样式*/
+.secondmenu a {
+	font-size: 10px;
+	color: #4A515B;
+	text-align: center;
+}
+
+.navbar-static-top {
+	background-color: #212121;
+	margin-bottom: 5px;
+}
+
+.navbar-brand {
+	background: url('') no-repeat 10px 8px;
+	display: inline-block;
+	vertical-align: middle;
+	padding-left: 50px;
+	color: #fff;
+}
   </style>
   <script>
 	function addnewuser(adduserlink) {
@@ -158,6 +267,27 @@
 		$( ".editmember").click(function() {
 			$( '#users-container' ).show();
 		});
+
+		var process = JSON.parse('<%-JSON.stringify(processes) %>');
+		var strRows="";
+		$.each(process,function(colIndex,objProcess) {
+			var id = objProcess.id;
+			//var rev = objProcess._rev;
+			var pname = objProcess.value;
+			var pdescription = objProcess.value.p_description;
+			if (typeof(pdescription) == "undefined"){
+				pdescription = "";
+			}
+			strRows = "<tr>";
+			strRows = strRows + "<td>" + pname + "</td>";
+			strRows = strRows + "<td><span>" + pdescription + "</span><div hidden>" + id + "</div></td>";
+	 		strRows = strRows + "<td><button type='button' class='btn btn-default' onclick='btnUpdate(this)'>";
+			strRows = strRows + " <span class='glyphicon glyphicon-pencil'></span></button>";
+			strRows = strRows + "&nbsp;<button type='button' class='btn btn-default' onclick='btnDelete(this)'>";
+			strRows = strRows + " <span class='glyphicon glyphicon-remove'></span></button></td>";
+			strRows = strRows + "</tr>";
+			$("tbody").append(strRows);
+		});
 	});
 		
 
@@ -206,6 +336,36 @@
 
 	<% }} %>
 </div>
+
+
+	<div class="container-fluid" >
+		<div class="row">
+		<div class="col-md-1">
+		</div>
+			<div class="col-md-11">
+				<!-- Main content -->
+				<section class="content">
+					<form role="form" class="form-horizontal" action="/process"
+						method='post'>
+						<% if (process.length != 0){%>
+						<div class="processlist-box">
+							<table class="table table-bordered1 table-hover table-condensed">
+								<thead>
+									<tr>
+										<th style="width: 25%">Name</th>
+										<th>description</th>
+										<th style="width: 18%"></th>
+									</tr>
+								</thead>
+								<tbody></tbody>
+							</table>
+						</div>
+						<% } %>
+					</form>
+				</section>
+			</div>
+		</div>
+	</div>
 
 <div id="users-container" class="users-container">
 	<h1>Process Members</h1>

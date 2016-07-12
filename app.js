@@ -55,7 +55,6 @@ if (!isBluemix) {
 }
 **/
 
-// view�G���W���̐ݒ�
 app.set('views', path.join(__dirname, 'views'));
 //app.set('view engine', 'ejs');
 app.engine('.html', require('ejs').renderFile);  
@@ -64,7 +63,6 @@ app.set('view engine', 'html');
 
 // serve the files out of ./public as our main files
 //app.use(express.static(__dirname + '/public'));
-// ���[�^�[�̓K�p
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser('sctalk admin manager'));
