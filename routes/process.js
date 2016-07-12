@@ -29,27 +29,19 @@ router.get('/', loginCheck, function(req, res) {
 		data.processes.forEach(function(doc) {
     	  keyArr.push(doc.process_id);
 		});
-		var retDoc = null;
+		var retDoc = [];
 		db.view('processDoc', 'process-view', { keys: keyArr },function(err, body) {
 			if (!err) {console.log("prodoc::" + body.rows);
 			    body.rows.forEach(function(doc) {
 			      data.processes.forEach(function(data) {
 			    	  if (JSON.stringify(doc.id) == JSON.stringify(data.process_id)) {
 			    		  doc.process_authority = data.process_authority;
-			    		  if (retDoc == null){
-			    			  retDoc = "[" + JSON.stringify(doc);  
-			    		  }
-			    		  else {
-			    			  retDoc = retDoc + "," + JSON.stringify(doc);  
-			    		  }
+			    		  retDoc.push(doc);
 			    	  }
 			      });
 			    });
-			    if (retDoc != null){
-			    	retDoc = retDoc + "]";
-			    }
-			    console.log("value2::" + retDoc);
-			    res.render('process', { 'process': JSON.parse(retDoc)});
+			    console.log("value2::" + JSON.stringify(retDoc));
+			    res.render('process', { 'process': retDoc});
 			}
 		});
 	});
