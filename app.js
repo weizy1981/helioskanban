@@ -10,7 +10,7 @@ var express = require('express');
 var session = require('express-session');
 // cfenv provides access to your Cloud Foundry environment
 // for more info, see: https://www.npmjs.com/package/cfenv
-var cfenv = require('cfenv');
+//var cfenv = require('cfenv');
 var path = require('path');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
@@ -21,7 +21,9 @@ var register = require('./routes/register');
 var tasks = require('./routes/tasks');
 var logout = require('./routes/logout');
 var manageflow = require('./routes/manageflow');
+
 //var manage = require('./routes/manage');
+var processcon = require('./routes/process');
 
 // create a new express server
 var app = express();
@@ -53,7 +55,7 @@ if (!isBluemix) {
 }
 **/
 
-// viewƒGƒ“ƒWƒ“‚Ìİ’è
+// viewï¿½Gï¿½ï¿½ï¿½Wï¿½ï¿½ï¿½Ìİ’ï¿½
 app.set('views', path.join(__dirname, 'views'));
 //app.set('view engine', 'ejs');
 app.engine('.html', require('ejs').renderFile);  
@@ -62,7 +64,7 @@ app.set('view engine', 'html');
 
 // serve the files out of ./public as our main files
 //app.use(express.static(__dirname + '/public'));
-// ƒ‹[ƒ^[‚Ì“K—p
+// ï¿½ï¿½ï¿½[ï¿½^ï¿½[ï¿½Ì“Kï¿½p
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser('sctalk admin manager'));
@@ -109,9 +111,10 @@ app.use('/tasks', tasks);
 app.use('/manageflow', manageflow);
 //app.use('/manage', manage);
 app.use('/logout', logout);
+app.use('/process', processcon);
 
 // get the app environment from Cloud Foundry
-var appEnv = cfenv.getAppEnv();
+//var appEnv = cfenv.getAppEnv();
 
 
 // start server on the specified port and binding host

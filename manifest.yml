@@ -6,5 +6,3 @@ applications:
   name: mykanban
   host: mykanban
   disk_quota: 1024M
-  services:
-  - ClearDB MySQL Database-q4
