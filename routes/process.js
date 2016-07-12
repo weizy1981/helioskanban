@@ -121,7 +121,7 @@ router.post('/', loginCheck, function(req, res) {
 							}console.log("Dataprocesses:", body.processes);
 							var prodoc = {};
 							prodoc.process_id = data.id;
-							prodoc.process_authority = "Admin";console.log("Data55:", prodoc);
+							prodoc.process_authority = "Admin";
 							body.processes.push(prodoc);
 							
 							console.log("bodys:", body);
@@ -144,7 +144,7 @@ router.post('/', loginCheck, function(req, res) {
 					}
 					doc = result;
 					console.log("before:" ,result);
-					if(req.body._deleted = "true"){
+					if(req.body.delflag == "true"){
 						doc.delflag = "true";
 					}
 					else {
