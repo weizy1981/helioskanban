@@ -46,7 +46,7 @@
 
 <script>
 jQuery(document).ready(function($) {
-	$('.theme-login').click(function(){
+	$('#btn_add_task').click(function(){
 		$('.theme-popover-mask').fadeIn(100);
 		$('.theme-popover').slideDown(200);
 	})
@@ -68,7 +68,7 @@ jQuery(document).ready(function($) {
 	<div id="process" class="panel panel-default" rev = "<%=rev %>">
 		<div>
 		<ul id="nav">
-			<li><a class="btn theme-login" href="#">Manage Console</a></li>
+			<li><a class="btn theme-login" href="/">Process Management</a></li>
 			<li><a class="btn theme-login" id="btn_add_task" href="javascript:;" hidden>Add Task</a></li>
 			<li><a class="btn theme-login" href="/logout">Logout</a></li>
 		</ul>
@@ -79,7 +79,7 @@ jQuery(document).ready(function($) {
 					<div class = "processtitle" title = "<%=process[i].description %>">
 						<%=process[i].status_name %>(<%=process[i].tasks.length%>)
 						<% if(process[i].wip) { %>
-							WIP:(<%=process[i].wip %>)
+							WIP(<%=process[i].wip %>)
 						<% } %>
 					</div>
 				</th>
@@ -306,9 +306,6 @@ jQuery(document).ready(function($) {
 						 "rev":$('#process').attr("rev")},
 						function(data,status) {
 							alert(data.err);
-							
-							
-							//alert(message);
 						}
 					);
 					getSocket().emit('taskedit', {"_id":ui.item.attr("id"),"task_status":ui.item.parent().attr("id"),"rev":ui.item.attr("rev")});

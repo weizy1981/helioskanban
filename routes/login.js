@@ -65,6 +65,8 @@ router.post('/', function(req, res) {
 			req.session.user_id = data.user_id;
 			req.session.user_pref_default_process = data.user_pref_default_process
 			req.session.user_pref_default_view = data.user_pref_default_view;
+			req.session.user_current_process = data.user_pref_default_process;
+			req.session.user_current_process_authority = data.user_pref_default_process;
 			res.redirect('/');
 		}
 	});

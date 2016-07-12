@@ -34,6 +34,7 @@ angular.module('myApp',[]).controller('tasksCtrl', function($scope, $http){
     }
     
     $scope.add = function(){
+		alert("test");
         $http({
             method : 'POST',
             url : 'tasks/add',
@@ -41,10 +42,15 @@ angular.module('myApp',[]).controller('tasksCtrl', function($scope, $http){
             headers : {'Content-Type': 'application/json'}
         })
             .success(function(data){
+				alert(data.status);
                 if('OK' === data.status){
                     // $scope.result = data.message;
                     getSocket().emit('taskedit', {"_id":data.status});
                 }
+            })
+
+			.error(function(data){
+				alert("tttt");
             })
     }
 });

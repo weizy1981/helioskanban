@@ -1,24 +1,236 @@
-<!DOCTYPE html>
-<html lang="ja">
-
+<html>
 <head>
-    <meta charset="UTF-8">
-    <title>ekanban</title>
+  <meta charset="utf-8">
+  <title>ekanban</title>
+	<link href="/css/jquery-ui.min.css" rel="stylesheet">
+	<link href="/css/jquery-ui.css" rel="stylesheet">
+    <script src="/js/jquery-2.1.4.min.js"></script>
+    <script src="/js/jquery-ui.min.js"></script>
+  <style>
+    body { font-size: 62.5%; }
+    label, input { display:block; }
+    input.text { margin-bottom:12px; width:95%; padding: .4em; }
+    fieldset { padding:0; border:0; margin-top:25px; }
+    h1 { font-size: 1.2em; margin: .6em 0; }
+	div#logo { font-size: 24px; padding:10px}
+    div#users-container {  font-size: 12px; width: 350px; margin: 20px 0; float: left}
+    div#users-container table { margin: 1em 0; border-collapse: collapse; width: 100%; }
+    div#users-container table td, div#users-contain table th { border: 1px solid #eee; padding: .6em 10px; text-align: left; }
+	div#processes-container { font-size: 12px; width: 350px; margin: 20px 0; float: left}
+    .ui-dialog .ui-state-error { padding: .3em; }
+    .validateTips { border: 1px solid transparent; padding: 0.3em; }
+	.process_item {width: 330px; background-color: #f0f8ff; margin: 2px;float:left}
+	.process_item_selected {width: 330px; background-color: #b0c4de; margin: 2px;float:left}
+	.process_name {padding: 25px; float:left}
+	.process_operation {margin: 1px;float:right}
+
+	/* Clearfix for the menu */
+	.ui-menu:after {
+		content: ".";
+		display: block;
+		clear: both;
+		visibility: hidden;
+		line-height: 0;
+		height: 0;
+	}
+
+	.ui-menu .ui-menu-item {
+		display: inline-block;
+		float: left;
+		margin: 0;
+		padding: 10;
+		width: auto;
+	}
+  </style>
+  <script>
+	function addnewuser(adduserlink) {
+		var newuserJsonObj = {};
+		var userItem;
+		$(adduserlink).parent().parent().children().each(function(){
+			userItem  = $(this).children();
+			if(userItem.attr("name") === "user_id") {
+				newuserJsonObj.user_id = userItem.val();
+			} else if (userItem.attr("name") === "user_name") {
+				newuserJsonObj.user_name = userItem.val();
+			} else if (userItem.attr("name") === "authority") {
+				newuserJsonObj.authority = userItem.val();
+			}
+			newuserJsonObj.type = "user";
+		});
+		$.post(
+			"/addmember",
+			newuserJsonObj,
+			function(data,result) {
+				window.location.reload();
+			}
+		);
+	}
+
+
+	function addusercancel() {
+		window.location.reload();
+	}
+
+	function removemember(adduserlink) {
+		var toDeleteUserObj = {};
+		var userItem;
+		$(adduserlink).parent().parent().children().each(function(){
+			
+			userItem  = $(this).children();
+			//alert(userItem);
+			if(userItem.attr("name") === "user_id") {
+				toDeleteUserObj.user_id = userItem.text();
+			} else if (userItem.attr("name") === "user_name") {
+				toDeleteUserObj.user_name = userItem.text();
+			} else if (userItem.attr("name") === "authority") {
+				toDeleteUserObj.authority = userItem.text();
+			}
+		});
+		//alert(JSON.stringify(toDeleteUserObj));
+		$.post(
+			"/removemember",
+			toDeleteUserObj,
+			function(data,result) {
+				window.location.reload();
+			}
+		);
+	}
+	$(window).load(function(){
+		$("#loading").hide();
+	});
+
+	$(function() {
+		$( "#add-member" ).button().on( "click", function() {
+			$( "#user_list" ).append( '<tr>' +
+				  '<td><input type = "text" name="user_name"></td>' +
+				  '<td><input type = "text" name="user_id"></td>' +
+				  '<td><select name="authority"><option value="Member">Member</option><option value="Admin">Admin</option><option value="Viewer">Viewer</option></select></td>' +
+				  '<td><a href = "#" onClick = "addnewuser(this)">Add</a>&nbsp;<a href = "#" onClick = "addusercancel()">Cancel</a></td>' +
+				'</tr>' );
+			$( "#add-member" ).hide();
+		});
+
+		$( ".process_item" )
+		.hover(function(){
+			$(this).css("background-color","yellow"); 
+			$(this).children().eq(1).show();
+			$(this).css("cursor","pointer");
+		},
+
+		function(){
+			$(this).css("background-color","#f0f8ff"); 
+			$(this).children().eq(1).hide();
+		});
+
+		$( ".process_select" ).click(function() {
+			$.post(
+				"selectprocess",
+				{"current_process":$(this).attr('id')},
+				function(data,result) {
+					window.location.href = 'http://' + window.location.host  + '/tasks';
+				}
+			);
+		});
+
+		$( ".process_item_selected" ).click(function() {
+			$.post(
+				"selectprocess",
+				{"current_process":$(this).attr('id')},
+				function(data,result) {
+					window.location.href = 'http://' + window.location.host  + '/tasks';
+				}
+			);
+		})
+		.hover(function(){
+			$(this).css("background-color","yellow"); 
+			$(this).children().eq(1).show();
+			$(this).css("cursor","pointer");
+		},
+
+		function(){
+			$(this).css("background-color","#b0c4de"); 
+			$(this).children().eq(1).hide();
+		});
+
+		$( "#nav" ).menu({position: {at: "left bottom"}});		
+		$( ".process_operation").hide();
+		$( '#users-container' ).hide();
+		$( ".editmember").click(function() {
+			$( '#users-container' ).show();
+		});
+	});
+		
+
+</script>
+<script src="http://apps.bdimg.com/libs/angular.js/1.4.6/angular.min.js"></script>
+<link rel="stylesheet" href="/css/task_style.css" media="all">
+
 </head>
-
 <body>
-    <p>Welcome to ekanban</p>
+	<div id = "logo"><center>Welcome to ekanban Logo</center></div>
+	<div>
+	<ul id="nav">
+		<li><a class="btn theme-login" href="/manage">Manage Console</a></li>
+		<li><a class="btn theme-login" id="btn_add_task" href="javascript:;" hidden>Add Process</a></li>
+		<li><a class="btn theme-login" href="/logout">Logout</a></li>
+	</ul>
+	</div>
+<div id = "loading">
+	<img src = "images/loading.gif">
+</div>
+<div id="processes-container" class="precesses-container">
+	<h1>Process List</h1>
+	<% 
+	for (var j = 0; j<processes.length;  j++) { 
+		if (current_process === processes[j].id) { %>
+			<div id = "<%=processes[j].id%>" class = 'process_item_selected'>
+				<div class = "process_name"><%=processes[j].value%></div>
+				<div class = "process_operation">
+					<a href = "#" class = "process_select">Enter</a><br/>
+					<a href = "#" >Edit Process</a><br/>
+					<a href = "#" class = "editmember">Edit Member</a><br/>
+					<a href = "#">Process Analysis</a>
+				</div>
+			</div>
 
-    <%=user_id %>さん　ようこそ。
-        <p>
-            <a href="/logout">ログアウト</a>
-        </p>
-		<p>
-            <a href="/tasks">タスク一覧</a>
-        </p>
-		<p>
-            <a href="/manageflow">看板分析</a>
-        </p>
-</body>
+		<% } else { %>
+			<div id = "<%=processes[j].id%>" class = 'process_item'>
+				<div class = "process_name"><%=processes[j].value%></div>
+				<div class = "process_operation">
+					<a href = "#" class = "process_select">Enter</a><br/>
+					<a href = "#">Edit Process</a><br/>
+					<a href = "#" class = "editmember">Edit Member</a><br/>
+					<a href = "#">Process Analysis</a>
+				</div>
+			</div>
 
+	<% }} %>
+</div>
+
+<div id="users-container" class="users-container">
+	<h1>Process Members</h1>
+	<table id="users" class="ui-widget ui-widget-content">
+	<thead>
+	  <tr class="ui-widget-header ">
+		<th height = "30px">Name</th>
+		<th>ID/Email</th>
+		<th>Authority</th>
+		<th>Operate</th>
+	  </tr>
+	</thead>
+	<tbody id = "user_list">
+	<% 
+		for (var j = 0; j<process_members.length;  j++) { %>
+			 <tr>
+				<td><div name = "user_name"><%=process_members[j].user_name %></div></td>
+				<td><div name = "user_id"><%=process_members[j].user_id %></div></td>
+				<td><div name = "authority"><%=process_members[j].authority %></div></td>
+				<td><a href = "#" onClick = "removemember(this)">Remove</a></td>
+			  </tr>
+		<% } %>
+	</tbody>
+	</table>
+	<button id="add-member">Add a member</button>
+</div>
+	</body>
 </html>

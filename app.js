@@ -21,6 +21,7 @@ var register = require('./routes/register');
 var tasks = require('./routes/tasks');
 var logout = require('./routes/logout');
 var manageflow = require('./routes/manageflow');
+//var manage = require('./routes/manage');
 
 // create a new express server
 var app = express();
@@ -106,6 +107,7 @@ app.use('/login', login);
 app.use('/register', register);
 app.use('/tasks', tasks);
 app.use('/manageflow', manageflow);
+//app.use('/manage', manage);
 app.use('/logout', logout);
 
 // get the app environment from Cloud Foundry
