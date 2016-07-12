@@ -45,7 +45,7 @@
 	}
 
 	.process-box1 {
-	width: 490px;
+	width: 330px;
 	height: 300px;
 	/* 	margin: 0 auto; */
 	background: white;
@@ -54,7 +54,7 @@
 }
 
 .processlist-box {
-	width: 640px;
+	width: 330px;
 	/* margin: 0 auto; */
 	padding: 0.1em;
 }
@@ -131,7 +131,7 @@
 	margin-bottom: 4px;
 }
 
-/*定义二级菜单样式*/
+
 .secondmenu a {
 	font-size: 10px;
 	color: #4A515B;
@@ -241,6 +241,16 @@
 			);
 		});
 
+		$( ".col-md-11").click(function() {
+			$.post(
+				"selectprocess",
+				{"current_process":$(this).attr('id')},
+				function(data,result) {
+					window.location.href = 'http://' + window.location.host  + '/tasks';
+				}
+			);
+		});
+
 		$( ".process_item_selected" ).click(function() {
 			$.post(
 				"selectprocess",
@@ -264,9 +274,7 @@
 		$( "#nav" ).menu({position: {at: "left bottom"}});		
 		$( ".process_operation").hide();
 		$( '#users-container' ).hide();
-		$( ".editmember").click(function() {
-			$( '#users-container' ).show();
-		});
+
 
 		var process = JSON.parse('<%-JSON.stringify(processes) %>');
 		var strRows="";
@@ -279,14 +287,17 @@
 				pdescription = "";
 			}
 			strRows = "<tr>";
-			strRows = strRows + "<td>" + pname + "</td>";
-			strRows = strRows + "<td><span>" + pdescription + "</span><div hidden>" + id + "</div></td>";
-	 		strRows = strRows + "<td><button type='button' class='btn btn-default' onclick='btnUpdate(this)'>";
+			strRows = strRows + "<td class = 'process_select'>" + pname + "</td>";
+			//strRows = strRows + "<td><span>" + pdescription + "</span><div hidden>" + id + "</div></td>";
+	 		strRows = strRows + "<td><button type='button' class='btn btn-default editmember'>";
 			strRows = strRows + " <span class='glyphicon glyphicon-pencil'></span></button>";
 			strRows = strRows + "&nbsp;<button type='button' class='btn btn-default' onclick='btnDelete(this)'>";
 			strRows = strRows + " <span class='glyphicon glyphicon-remove'></span></button></td>";
 			strRows = strRows + "</tr>";
-			$("tbody").append(strRows);
+			$("#process_list").append(strRows);
+		});
+		$( ".editmember").click(function() {
+			$( '#users-container' ).show();
 		});
 	});
 		
@@ -308,6 +319,7 @@
 <div id = "loading">
 	<img src = "images/loading.gif">
 </div>
+<!--
 <div id="processes-container" class="precesses-container">
 	<h1>Process List</h1>
 	<% 
@@ -336,12 +348,10 @@
 
 	<% }} %>
 </div>
+-->
 
-
-	<div class="container-fluid" >
+	<div id="processes-container" class="precesses-container" >
 		<div class="row">
-		<div class="col-md-1">
-		</div>
 			<div class="col-md-11">
 				<!-- Main content -->
 				<section class="content">
@@ -352,12 +362,11 @@
 							<table class="table table-bordered1 table-hover table-condensed">
 								<thead>
 									<tr>
-										<th style="width: 25%">Name</th>
-										<th>description</th>
+										<th style="width: 25%">Process List</th>
 										<th style="width: 18%"></th>
 									</tr>
 								</thead>
-								<tbody></tbody>
+								<tbody id = "process_list"></tbody>
 							</table>
 						</div>
 						<% } %>
