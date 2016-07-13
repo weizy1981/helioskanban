@@ -21,6 +21,8 @@ var register = require('./routes/register');
 var tasks = require('./routes/tasks');
 var logout = require('./routes/logout');
 var manageflow = require('./routes/manageflow');
+
+//var manage = require('./routes/manage');
 var processcon = require('./routes/process');
 
 // create a new express server
@@ -53,7 +55,6 @@ if (!isBluemix) {
 }
 **/
 
-// view�G���W���̐ݒ�
 app.set('views', path.join(__dirname, 'views'));
 //app.set('view engine', 'ejs');
 app.engine('.html', require('ejs').renderFile);  
@@ -62,7 +63,6 @@ app.set('view engine', 'html');
 
 // serve the files out of ./public as our main files
 //app.use(express.static(__dirname + '/public'));
-// ���[�^�[�̓K�p
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser('sctalk admin manager'));
@@ -107,6 +107,7 @@ app.use('/login', login);
 app.use('/register', register);
 app.use('/tasks', tasks);
 app.use('/manageflow', manageflow);
+//app.use('/manage', manage);
 app.use('/logout', logout);
 app.use('/process', processcon);
 

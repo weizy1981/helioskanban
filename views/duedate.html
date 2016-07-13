@@ -1,33 +1,89 @@
 <html>
   <head>
-    <link href="js/c3.css" rel="stylesheet" type="text/css">
+    <link href="css/c3.css" rel="stylesheet" type="text/css">
   </head>
   <body>
-    <div id="chart"></div>
-    
+	<table>
+		<tr>
+			<td>
+				<div style="float:left" id="chart"></div>
+			</td>
+		</tr>
+		<tr>
+			<td>
+				<a href="javascript:void(0)" onclick="doDueDate()">Due-date performance</a>&nbsp;||&nbsp;
+				<a href="javascript:void(0)" onclick="doCycleTime()">Cycle Time</a>
+			</td>
+		</tr>
+	</table>
     <script src="js/d3.js" charset="utf-8"></script>
     <script src="js/c3.js"></script>
     <script>
-
-var chart = c3.generate({
-    size: {
-        height: 300,
-        width: 500
-    },
-    data: {
-        // iris data from R
-        columns: [
-            ["Before due date", 0.2],
-            ["On time", 0.4],
-            ["After due date", 0.2],
-        ],
-        type : 'pie',
-        onclick: function (d, i) { console.log("onclick", d, i); },
-        onmouseover: function (d, i) { console.log("onmouseover", d, i); },
-        onmouseout: function (d, i) { console.log("onmouseout", d, i); }
-    }
-});
-
-    </script>
+	function doDueDate(){
+		var chart = c3.generate({
+			size: {
+				height: 300,
+				width: 500
+			},
+			data: {
+				// iris data from R
+				columns: [
+					["Before due date", <%- before %>],
+					["On time", <%- ondate %>],
+					["After due date", <%- after %>],
+				],
+				type : 'pie',
+				onclick: function (d, i) { console.log("onclick", d, i); },
+				onmouseover: function (d, i) { console.log("onmouseover", d, i); },
+				onmouseout: function (d, i) { console.log("onmouseout", d, i); }
+			}
+		});
+	}
+	function doCycleTime(){
+		var cycleTimeChart = c3.generate({
+		size: {
+			height: 300,
+			width: 800
+		},
+		data: {
+			x : 'x',
+			columns: [
+				['x', 'Q1', 'Q2', 'Q3', 'Q4', 'Q5'],
+				['Done', 0.3, 0.2, 0.1, 0.4, 0.15],
+				['Ready For Test', 0.3, 0.30, 0.15, 0.10, 0.25],
+				['Development', 0.3, 0.30, 0.5, 0.40, 0.35],
+				['Analyze', 0.1, 0.20, 0.25, 0.10, 0.25],
+			],
+			groups: [
+				['Done', 'Ready For Test', 'Development', 'Analyze']
+			],
+			type: 'bar'
+		},
+		axis: {
+			x: {
+				type: 'category' // this needed to load string x value
+			},
+			y : {
+				max: 0.99,
+				tick: {
+					format: d3.format("%")
+				}
+			}
+		},
+		legend: {
+			position: 'right'
+		},
+		grid: {
+			x: {
+				show: false
+			},
+			y: {
+				show: true
+			}
+		}
+		});
+	}
+	doDueDate();
+	</script>
   </body>
 </html>

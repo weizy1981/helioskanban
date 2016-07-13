@@ -18,13 +18,18 @@ router.get('/', function(req, res) {
 
 router.post('/', function(req, res) {
 	
-	var email = req.body.email;
-    var password = req.body.password;
-	// we are specifying the id of the document so we can update and delete it later
-	db.insert({ _id: "users_" + email, "user_id":email, "user_password": password}, function(err, data) {
+	var user_id = req.body.user_id;
+    var user_password = req.body.user_password;
+	var user_name = req.body.user_name;
+	
+	db.insert({ _id: "users_" + user_id, "user_name":user_name, "user_id":user_id, "user_password": user_password, "type":"user", processes: new Array()}, function(err, data) {
 		console.log("Error:", err);
 		console.log("Data:", data);
-		res.render('register',{ "status": "ok", "message":"register success." });
+		if (err) {
+			res.render('register',{ "status": "ok", "message":"register failed." });
+		} else {
+			res.render('register',{ "status": "ok", "message":"register success." });
+		}
 	});
 
 	// Insert User using MySQL getTime()

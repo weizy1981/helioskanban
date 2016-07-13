@@ -2,6 +2,19 @@ var express = require('express');
 var moment = require('moment');
 var router = express.Router();
 
+if (process.env.hasOwnProperty("VCAP_SERVICES")) {
+  // Running on Bluemix. Parse out the port and host that we've been assigned.
+  var env = JSON.parse(process.env.VCAP_SERVICES);
+  var host = process.env.VCAP_APP_HOST; 
+  var port = process.env.VCAP_APP_PORT;
+
+  console.log('VCAP_SERVICES: %s', process.env.VCAP_SERVICES);    
+
+  // Also parse out Cloudant settings.
+  credentials = env['cloudantNoSQLDB'][0].credentials;
+  process.env.CLOUDANT_URL = credentials.url;
+}
+
  //load the Cloudant DB
 var async = require('async'),
   Cloudant = require('cloudant'),

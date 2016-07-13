@@ -1,6 +1,19 @@
 var express = require('express');
 var router = express.Router();
 
+if (process.env.hasOwnProperty("VCAP_SERVICES")) {
+  // Running on Bluemix. Parse out the port and host that we've been assigned.
+  var env = JSON.parse(process.env.VCAP_SERVICES);
+  var host = process.env.VCAP_APP_HOST; 
+  var port = process.env.VCAP_APP_PORT;
+
+  console.log('VCAP_SERVICES: %s', process.env.VCAP_SERVICES);    
+
+  // Also parse out Cloudant settings.
+  credentials = env['cloudantNoSQLDB'][0].credentials;
+  process.env.CLOUDANT_URL = credentials.url;
+}
+
 // load the Cloudant DB
 var async = require('async'),
   Cloudant = require('cloudant'),
@@ -22,10 +35,6 @@ var loginCheck = function(req, res, next) {
 
 router.get('/', loginCheck, function(req, res) {
 	db.find({selector:{process_id:'p_001'}}, function(er, result) {
-	  if (er) {
-		throw er;
-	  }
-
 	  console.log('Found %d documents with name Alice', result.docs.length);
 	if (result == null || typeof(result) == "undefined") {
 		console.log("fail");
@@ -33,17 +42,17 @@ router.get('/', loginCheck, function(req, res) {
 	} else {
 		console.log("success");
 		//res.setEncoding('utf8');
-		if (req.session.user_pref_default_view == "list") {
-			res.render('tasklist', { 'tasks': result.docs });
-		} else　if (req.session.user_pref_default_view == "kanban") {
+		//if (req.session.user_pref_default_view == "list") {
+		//	res.render('tasklist', { 'tasks': result.docs });
+		//} else　if (req.session.user_pref_default_view == "kanban") {
 			
 			// get current progress
 			var current_progress = {};
 			var kanban_info = {};
-			db.get(req.session.user_pref_default_process, function(err, data) {
+			db.get(req.session.user_current_process, function(err, data) {
 				console.log("Error:", err);
 				console.log("Data:", data);
-
+				console.log("HHHHHHHHHHHHHHHHHHHHHHHHere");
 				if (data == null || typeof(data) == "undefined") {
 					console.log("fail");
 					res.render('login');
@@ -51,10 +60,11 @@ router.get('/', loginCheck, function(req, res) {
 					console.log("success");
 					current_progress = data.work_flow;
 					kanban_info = {"column_number":process.length}
+					console.log("####################################################");
 					res.render('kanban', { "tasks": result.docs, "process":current_progress, "rev": data._rev });
 				}
 			});
-		}
+		//}
 		
 	}
 	});
@@ -65,8 +75,7 @@ router.post('/', loginCheck, function(req, res) {
 
 	// read current process
 	var readProcess = function(callback) {
-	  console.log("Reading process");
-	  console.log(req.session.user_pref_default_process);
+	  console.log("Reading process");;
 	  db.get(req.session.user_pref_default_process, function(err, data) {
 		console.log("Error:", err);
 		console.log("Data:", data);
@@ -181,7 +190,6 @@ router.get('/add', function(req,res){
 		db.get("processes_p001", function(err, data) {
 			console.log("Error:", err);
 			console.log("Data:", data);
-
 			if (data == null || typeof(data) == "undefined") {
 				console.log("fail");
 				data = {"status": "NG"};
@@ -209,27 +217,29 @@ router.post('/add', function(req, res) {
 //	res.render('task_add',{ "status": "ok", "message":"register success." });
 
 	// update a task document
+	console.log("***********************************************************************************************");
 	console.log("Updating task document");
 	// make a change to the document, using the copy we kept from reading it back
 	//console.log("before update:" + doc.task_status);
 	//doc.id = "task_20160706010101";
 	var now = new Date();
 	var strTaskID = "task_" + now.getTime();
-
+	//strTaskID = "task_20160707010101";
+    console.log(strTaskID);
 	doc = {
 		_id : strTaskID,
 		type : "task",
 		process_id : "p_001",
 		task_name : req.body.taskName,
-		task_status : 1,
+		task_status : "1",
 		task_detail : req.body.detail,
-		task_start_est : req.startEst,
-		task_end_est : req.finishEst,
+		task_start_est : req.body.startEst,
+		task_end_est : req.body.finishEst,
 		task_priority : "A",
 		task_tasktype_id : req.body.taskTypeID,
 		task_totaltime : req.body.totalWork,
 		task_remaintime : req.body.totalWork,
-		task_assignment : "jia.jiao",
+		task_assignment : req.body.owner,
 		complete_type : ""
 	}
 
@@ -281,22 +291,11 @@ var err = "";
 		console.log("final err:" + err);
 		console.log("final results1:" + JSON.stringify(results[0]));
 		console.log("final results2:" + JSON.stringify(results[1]));
-		if (err != null) {
-			//err = "Task has been changed edited by other user, please try again.";
-			// res.contentType('json');
-			// res.send(JSON.stringify({ "status":"success", "err":JSON.stringify(results[1])}));  
-			// res.end(); 
+		if (err === null) {
 				data = {"status": "OK", "message":"task is created."}
 				res.end(JSON.stringify(data))
 		}
-		// results is now equal to ['one', 'two']
 	});
-
-
-
-
-
-
 
 
 });

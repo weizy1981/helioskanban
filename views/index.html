@@ -1,24 +1,405 @@
-<!DOCTYPE html>
-<html lang="ja">
-
+<html>
 <head>
-    <meta charset="UTF-8">
-    <title>ekanban</title>
+  <meta charset="utf-8">
+  <title>ekanban</title>
+	<link href="/css/jquery-ui.min.css" rel="stylesheet">
+	<link href="/css/jquery-ui.css" rel="stylesheet">
+	<link href="/css/bootstrap.min.css" rel="stylesheet">
+    <script src="/js/jquery-2.1.4.min.js"></script>
+    <script src="/js/jquery-ui.min.js"></script>
+	<script src="/js/bootstrap.min.js"></script> 
+  <style>
+    body { font-size: 62.5%; }
+    label, input { display:block; }
+    input.text { margin-bottom:12px; width:95%; padding: .4em; }
+    fieldset { padding:0; border:0; margin-top:25px; }
+    h1 { font-size: 1.2em; margin: .6em 0; }
+	div#logo { font-size: 24px; padding:10px}
+    div#users-container {  font-size: 12px; width: 350px; margin: 20px 0; float: left}
+    div#users-container table { margin: 1em 0; border-collapse: collapse; width: 100%; }
+    div#users-container table td, div#users-contain table th { border: 1px solid #eee; padding: .6em 10px; text-align: left; }
+	div#processes-container { font-size: 12px; width: 350px; margin: 20px 0; float: left}
+    .ui-dialog .ui-state-error { padding: .3em; }
+    .validateTips { border: 1px solid transparent; padding: 0.3em; }
+	.process_item {width: 330px; background-color: #f0f8ff; margin: 2px;float:left}
+	.process_item_selected {width: 330px; background-color: #b0c4de; margin: 2px;float:left}
+	.process_name {padding: 25px; float:left}
+	.process_operation {margin: 1px;float:right}
+
+	/* Clearfix for the menu */
+	.ui-menu:after {
+		content: ".";
+		display: block;
+		clear: both;
+		visibility: hidden;
+		line-height: 0;
+		height: 0;
+	}
+
+	.ui-menu .ui-menu-item {
+		display: inline-block;
+		float: left;
+		margin: 0;
+		padding: 10;
+		width: auto;
+	}
+
+	.process-box1 {
+	width: 330px;
+	height: 300px;
+	/* 	margin: 0 auto; */
+	background: white;
+	padding: 0.1em;
+	border: 1px ridge black;
+}
+
+.processlist-box {
+	width: 330px;
+	/* margin: 0 auto; */
+	padding: 0.1em;
+}
+
+.task-box-msg {
+	margin: 0;
+	text-align: center;
+	padding: 0 20px 20px 20px
+}
+
+.label1 {
+	display: block;
+	width: 200px;
+	text-align: right;
+}
+
+.statusBk {
+	padding: 0.3em;
+}
+
+#main-nav {
+	margin-left: 1px;
+}
+
+#main-nav.nav-tabs.nav-stacked>li>a {
+	padding: 10px 8px;
+	font-size: 12px;
+	font-weight: 600;
+	color: #4A515B;
+	background: #E9E9E9;
+	background: -moz-linear-gradient(top, #FAFAFA 0%, #E9E9E9 100%);
+	background: -webkit-gradient(linear, left top, left bottom, color-stop(0%, #FAFAFA),
+		color-stop(100%, #E9E9E9));
+	background: -webkit-linear-gradient(top, #FAFAFA 0%, #E9E9E9 100%);
+	background: -o-linear-gradient(top, #FAFAFA 0%, #E9E9E9 100%);
+	background: -ms-linear-gradient(top, #FAFAFA 0%, #E9E9E9 100%);
+	background: linear-gradient(top, #FAFAFA 0%, #E9E9E9 100%);
+	filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#FAFAFA',
+		endColorstr='#E9E9E9');
+	-ms-filter:
+		"progid:DXImageTransform.Microsoft.gradient(startColorstr='#FAFAFA', endColorstr='#E9E9E9')";
+	border: 1px solid #D5D5D5;
+	border-radius: 4px;
+}
+
+#main-nav.nav-tabs.nav-stacked>li>a>span {
+	color: #4A515B;
+}
+
+#main-nav.nav-tabs.nav-stacked>li.active>a, #main-nav.nav-tabs.nav-stacked>li>a:hover
+	{
+	color: #FFF;
+	background: #3C4049;
+	background: -moz-linear-gradient(top, #4A515B 0%, #3C4049 100%);
+	background: -webkit-gradient(linear, left top, left bottom, color-stop(0%, #4A515B),
+		color-stop(100%, #3C4049));
+	background: -webkit-linear-gradient(top, #4A515B 0%, #3C4049 100%);
+	background: -o-linear-gradient(top, #4A515B 0%, #3C4049 100%);
+	background: -ms-linear-gradient(top, #4A515B 0%, #3C4049 100%);
+	background: linear-gradient(top, #4A515B 0%, #3C4049 100%);
+	filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#4A515B',
+		endColorstr='#3C4049');
+	-ms-filter:
+		"progid:DXImageTransform.Microsoft.gradient(startColorstr='#4A515B', endColorstr='#3C4049')";
+	border-color: #2B2E33;
+}
+
+#main-nav.nav-tabs.nav-stacked>li.active>a, #main-nav.nav-tabs.nav-stacked>li>a:hover>span
+	{
+	color: #FFF;
+}
+
+#main-nav.nav-tabs.nav-stacked>li {
+	margin-bottom: 4px;
+}
+
+
+.secondmenu a {
+	font-size: 10px;
+	color: #4A515B;
+	text-align: center;
+}
+
+.navbar-static-top {
+	background-color: #212121;
+	margin-bottom: 5px;
+}
+
+.navbar-brand {
+	background: url('') no-repeat 10px 8px;
+	display: inline-block;
+	vertical-align: middle;
+	padding-left: 50px;
+	color: #fff;
+}
+  </style>
+  <script>
+	function addnewuser(adduserlink) {
+		var newuserJsonObj = {};
+		var userItem;
+		$(adduserlink).parent().parent().children().each(function(){
+			userItem  = $(this).children();
+			if(userItem.attr("name") === "user_id") {
+				newuserJsonObj.user_id = userItem.val();
+			} else if (userItem.attr("name") === "user_name") {
+				newuserJsonObj.user_name = userItem.val();
+			} else if (userItem.attr("name") === "authority") {
+				newuserJsonObj.authority = userItem.val();
+			}
+			newuserJsonObj.type = "user";
+		});
+		$.post(
+			"/addmember",
+			newuserJsonObj,
+			function(data,result) {
+				window.location.reload();
+			}
+		);
+	}
+
+
+	function addusercancel() {
+		window.location.reload();
+	}
+
+	function removemember(adduserlink) {
+		var toDeleteUserObj = {};
+		var userItem;
+		$(adduserlink).parent().parent().children().each(function(){
+			
+			userItem  = $(this).children();
+			//alert(userItem);
+			if(userItem.attr("name") === "user_id") {
+				toDeleteUserObj.user_id = userItem.text();
+			} else if (userItem.attr("name") === "user_name") {
+				toDeleteUserObj.user_name = userItem.text();
+			} else if (userItem.attr("name") === "authority") {
+				toDeleteUserObj.authority = userItem.text();
+			}
+		});
+		//alert(JSON.stringify(toDeleteUserObj));
+		$.post(
+			"/removemember",
+			toDeleteUserObj,
+			function(data,result) {
+				window.location.reload();
+			}
+		);
+	}
+	$(window).load(function(){
+		$("#loading").hide();
+	});
+
+	$(function() {
+		$( "#add-member" ).button().on( "click", function() {
+			$( "#user_list" ).append( '<tr>' +
+				  '<td><input type = "text" name="user_name"></td>' +
+				  '<td><input type = "text" name="user_id"></td>' +
+				  '<td><select name="authority"><option value="Member">Member</option><option value="Admin">Admin</option><option value="Viewer">Viewer</option></select></td>' +
+				  '<td><a href = "#" onClick = "addnewuser(this)">Add</a>&nbsp;<a href = "#" onClick = "addusercancel()">Cancel</a></td>' +
+				'</tr>' );
+			$( "#add-member" ).hide();
+		});
+
+		$( ".process_item" )
+		.hover(function(){
+			$(this).css("background-color","yellow"); 
+			$(this).children().eq(1).show();
+			$(this).css("cursor","pointer");
+		},
+
+		function(){
+			$(this).css("background-color","#f0f8ff"); 
+			$(this).children().eq(1).hide();
+		});
+
+		$( ".process_select" ).click(function() {
+			$.post(
+				"selectprocess",
+				{"current_process":$(this).attr('id')},
+				function(data,result) {
+					window.location.href = 'http://' + window.location.host  + '/tasks';
+				}
+			);
+		});
+
+		$( ".col-md-11").click(function() {
+			$.post(
+				"selectprocess",
+				{"current_process":$(this).attr('id')},
+				function(data,result) {
+					window.location.href = 'http://' + window.location.host  + '/tasks';
+				}
+			);
+		});
+
+		$( ".process_item_selected" ).click(function() {
+			$.post(
+				"selectprocess",
+				{"current_process":$(this).attr('id')},
+				function(data,result) {
+					window.location.href = 'http://' + window.location.host  + '/tasks';
+				}
+			);
+		})
+		.hover(function(){
+			$(this).css("background-color","yellow"); 
+			$(this).children().eq(1).show();
+			$(this).css("cursor","pointer");
+		},
+
+		function(){
+			$(this).css("background-color","#b0c4de"); 
+			$(this).children().eq(1).hide();
+		});
+
+		$( "#nav" ).menu({position: {at: "left bottom"}});		
+		$( ".process_operation").hide();
+		$( '#users-container' ).hide();
+
+
+		var process = JSON.parse('<%-JSON.stringify(processes) %>');
+		var strRows="";
+		$.each(process,function(colIndex,objProcess) {
+			var id = objProcess.id;
+			//var rev = objProcess._rev;
+			var pname = objProcess.value;
+			var pdescription = objProcess.value.p_description;
+			if (typeof(pdescription) == "undefined"){
+				pdescription = "";
+			}
+			strRows = "<tr>";
+			strRows = strRows + "<td class = 'process_select'>" + pname + "</td>";
+			//strRows = strRows + "<td><span>" + pdescription + "</span><div hidden>" + id + "</div></td>";
+	 		strRows = strRows + "<td><button type='button' class='btn btn-default editmember'>";
+			strRows = strRows + " <span class='glyphicon glyphicon-pencil'></span></button>";
+			strRows = strRows + "&nbsp;<button type='button' class='btn btn-default' onclick='btnDelete(this)'>";
+			strRows = strRows + " <span class='glyphicon glyphicon-remove'></span></button></td>";
+			strRows = strRows + "</tr>";
+			$("#process_list").append(strRows);
+		});
+		$( ".editmember").click(function() {
+			$( '#users-container' ).show();
+		});
+	});
+		
+
+</script>
+<script src="http://apps.bdimg.com/libs/angular.js/1.4.6/angular.min.js"></script>
+<link rel="stylesheet" href="/css/task_style.css" media="all">
+
 </head>
-
 <body>
-    <p>Welcome to ekanban</p>
+	<div id = "logo"><center>Welcome to ekanban Logo</center></div>
+	<div>
+	<ul id="nav">
+		<li><a class="btn theme-login" href="/manage">Manage Console</a></li>
+		<li><a class="btn theme-login" id="btn_add_task" href="javascript:;" hidden>Add Process</a></li>
+		<li><a class="btn theme-login" href="/logout">Logout</a></li>
+	</ul>
+	</div>
+<div id = "loading">
+	<img src = "images/loading.gif">
+</div>
+<!--
+<div id="processes-container" class="precesses-container">
+	<h1>Process List</h1>
+	<% 
+	for (var j = 0; j<processes.length;  j++) { 
+		if (current_process === processes[j].id) { %>
+			<div id = "<%=processes[j].id%>" class = 'process_item_selected'>
+				<div class = "process_name"><%=processes[j].value%></div>
+				<div class = "process_operation">
+					<a href = "#" class = "process_select">Enter</a><br/>
+					<a href = "#" >Edit Process</a><br/>
+					<a href = "#" class = "editmember">Edit Member</a><br/>
+					<a href = "#">Process Analysis</a>
+				</div>
+			</div>
 
-    <%=user_id %>さん　ようこそ。
-        <p>
-            <a href="/logout">ログアウト</a>
-        </p>
-		<p>
-            <a href="/tasks">タスク一覧</a>
-        </p>
-		<p>
-            <a href="/manageflow">看板分析</a>
-        </p>
-</body>
+		<% } else { %>
+			<div id = "<%=processes[j].id%>" class = 'process_item'>
+				<div class = "process_name"><%=processes[j].value%></div>
+				<div class = "process_operation">
+					<a href = "#" class = "process_select">Enter</a><br/>
+					<a href = "#">Edit Process</a><br/>
+					<a href = "#" class = "editmember">Edit Member</a><br/>
+					<a href = "#">Process Analysis</a>
+				</div>
+			</div>
 
+	<% }} %>
+</div>
+-->
+
+	<div id="processes-container" class="precesses-container" >
+		<div class="row">
+			<div class="col-md-11">
+				<!-- Main content -->
+				<section class="content">
+					<form role="form" class="form-horizontal" action="/process"
+						method='post'>
+						<% if (process.length != 0){%>
+						<div class="processlist-box">
+							<table class="table table-bordered1 table-hover table-condensed">
+								<thead>
+									<tr>
+										<th style="width: 25%">Process List</th>
+										<th style="width: 18%"></th>
+									</tr>
+								</thead>
+								<tbody id = "process_list"></tbody>
+							</table>
+						</div>
+						<% } %>
+					</form>
+				</section>
+			</div>
+		</div>
+	</div>
+
+<div id="users-container" class="users-container">
+	<h1>Process Members</h1>
+	<table id="users" class="ui-widget ui-widget-content">
+	<thead>
+	  <tr class="ui-widget-header ">
+		<th height = "30px">Name</th>
+		<th>ID/Email</th>
+		<th>Authority</th>
+		<th>Operate</th>
+	  </tr>
+	</thead>
+	<tbody id = "user_list">
+	<% 
+		for (var j = 0; j<process_members.length;  j++) { %>
+			 <tr>
+				<td><div name = "user_name"><%=process_members[j].user_name %></div></td>
+				<td><div name = "user_id"><%=process_members[j].user_id %></div></td>
+				<td><div name = "authority"><%=process_members[j].authority %></div></td>
+				<td><a href = "#" onClick = "removemember(this)">Remove</a></td>
+			  </tr>
+		<% } %>
+	</tbody>
+	</table>
+	<button id="add-member">Add a member</button>
+</div>
+	</body>
 </html>
