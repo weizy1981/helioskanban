@@ -42,9 +42,16 @@ angular.module('myApp',[]).controller('tasksCtrl', function($scope, $http){
         })
             .success(function(data){
                 if('OK' === data.status){
+                    //alert("OK");
                     // $scope.result = data.message;
-                    getSocket().emit('taskedit', {"_id":data.status});
+                    //getSocket().emit('taskedit', {"_id":data.status});
+                    $('.theme-popover-mask').fadeOut(100);
+		            $('.theme-popover').slideUp(200);
+                }
+                else{
+                    alert("error");
                 }
             })
+            
     }
 });
