@@ -37,12 +37,11 @@ angular.module('myApp',[]).controller('tasksCtrl', function($scope, $http){
 
         $http({
             method : 'POST',
-            url : 'add',
+            url : '/tasks/add',
             data : $scope.task,
             headers : {'Content-Type': 'application/json'}
         })
             .success(function(data){
-				alert(data.status);
                 if('OK' === data.status){
                     //alert("OK");
                     // $scope.result = data.message;
