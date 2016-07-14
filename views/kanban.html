@@ -241,6 +241,31 @@ jQuery(document).ready(function($) {
 
 		$(".processtitle").tooltip();
 
+		function deleteTask(currentObj) {
+			var toDeleteTaskObj = {};
+			var currentStatusTasks = new Array();
+			var currentStatus;
+			toDeleteTaskObj.process_rev = $('#process').attr("rev");
+			toDeleteTaskObj.task_id = $(currentObj).parent().parent().parent().attr('id');
+			toDeleteTaskObj.task_rev = $(currentObj).parent().parent().parent().attr('rev');
+			currentStatus = $(currentObj).parent().parent().parent().parent();
+			toDeleteTaskObj.current_status_id = currentStatus.attr('id');
+			currentStatus.children().each(function(i,task) {
+				if (toDeleteTaskObj.task_id != task.id) {
+					currentStatusTasks.push(task.id);
+				}
+			});
+			toDeleteTaskObj.current_status_tasks = currentStatusTasks.toString();
+			alert(JSON.stringify(toDeleteTaskObj));
+			$.post(
+				"/tasks/deletetask",
+				toDeleteTaskObj,
+				function(data,result) {
+					window.location.reload();
+				}
+			);
+			$(currentObj).parent().parent().parent().remove();
+		}
 		$(document).ready(function(){
 			$( "#nav" ).menu({position: {at: "left bottom"}});
 			$( 'th' ).tooltip();
@@ -251,11 +276,11 @@ jQuery(document).ready(function($) {
 			$.each(tasks, function(index, content){
 				$( '#' + content._id ).replaceWith(""
 					+"<div class='panel panel-primary' id = '" + content._id +"' rev = '" + content._rev +"'>"
-					+"	<div class='panel-title'> <h6 >&nbsp;&nbsp;&nbsp;"+content.task_end_est + "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"
-					+ "&nbsp;&nbsp;&nbsp;<a href = '#' class = 'taskdetail' title = '"
+					+"	<div class='panel-title'> <h6 >&nbsp;&nbsp;&nbsp;"+content.task_end_est + "&nbsp;&nbsp;&nbsp;"
+					+ "<a href = '#' class = 'taskdetail' title = '"
 					+ content.task_detail
-					+"'>Detail</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"
-					+"<a href = '#'>Edit</a></h6> </div>"
+					+"'>Detail</a>&nbsp;&nbsp;&nbsp;"
+					+"<a href = '#'>Edit</a>&nbsp;&nbsp;&nbsp;<a href = '#' onClick = 'deleteTask(this)'>Delete</a></h6> </div>"
 					+"	<div class='panel-body'><h5>"+content.task_name+"</h5></div>"
 					+"	<div class='panel-footer'>" +"【"+content.task_assignment+ "】</div>"
 					+"</div>");

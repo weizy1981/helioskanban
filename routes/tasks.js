@@ -52,7 +52,6 @@ router.get('/', loginCheck, function(req, res) {
 			db.get(req.session.user_current_process, function(err, data) {
 				console.log("Error:", err);
 				console.log("Data:", data);
-				console.log("HHHHHHHHHHHHHHHHHHHHHHHHere");
 				if (data == null || typeof(data) == "undefined") {
 					console.log("fail");
 					res.render('login');
@@ -60,7 +59,6 @@ router.get('/', loginCheck, function(req, res) {
 					console.log("success");
 					current_progress = data.work_flow;
 					kanban_info = {"column_number":process.length}
-					console.log("####################################################");
 					res.render('kanban', { "tasks": result.docs, "process":current_progress, "rev": data._rev });
 				}
 			});
@@ -76,7 +74,7 @@ router.post('/', loginCheck, function(req, res) {
 	// read current process
 	var readProcess = function(callback) {
 	  console.log("Reading process");;
-	  db.get(req.session.user_pref_default_process, function(err, data) {
+	  db.get(req.session.user_current_process, function(err, data) {
 		console.log("Error:", err);
 		console.log("Data:", data);
 		// keep a copy of the doc so we know its revision token
@@ -217,7 +215,6 @@ router.post('/add', function(req, res) {
 //	res.render('task_add',{ "status": "ok", "message":"register success." });
 
 	// update a task document
-	console.log("***********************************************************************************************");
 	console.log("Updating task document");
 	// make a change to the document, using the copy we kept from reading it back
 	//console.log("before update:" + doc.task_status);
@@ -256,8 +253,8 @@ var err = "";
 	// read current process
 	var readProcess = function(callback) {
 	  console.log("Reading process");
-	  console.log(req.session.user_pref_default_process);
-	  db.get(req.session.user_pref_default_process, function(err, data) {
+	  console.log(req.session.user_current_process);
+	  db.get(req.session.user_current_process, function(err, data) {
 		console.log("Error:", err);
 		console.log("Data:", data);
 		// keep a copy of the doc so we know its revision token
@@ -292,7 +289,7 @@ var err = "";
 		console.log("final results1:" + JSON.stringify(results[0]));
 		console.log("final results2:" + JSON.stringify(results[1]));
 		if (err === null) {
-				data = {"status": "OK", "message":"task is created."}
+				data = {"status": "OK", "message":"task created."}
 				res.end(JSON.stringify(data))
 		}
 	});
@@ -300,5 +297,70 @@ var err = "";
 
 });
 
+router.post('/deletetask', function(req,res){
+
+	// read current process
+	var readProcess = function(callback) {
+	  console.log("Reading process");;
+	  db.get(req.session.user_current_process, function(err, data) {
+		console.log("Error:", err);
+		console.log("Data:", data);
+		// keep a copy of the doc so we know its revision token
+		doc = data;
+   	    callback(err, data);
+	  });
+	};
+
+	// update current process
+	var updateProcess = function(callback) {
+		console.log("Updating process");
+		  if (req.body.process_rev != doc._rev) {
+			  err = "error";
+			  callback(err, "Task has been modified by other user, please try again.");
+		  } else {
+				var current_status_id = req.body.current_status_id.substr(7);
+				var work_flow = new Array();
+				doc.work_flow.forEach(function(content){
+					//var flow_status = JSON.parse(content);
+					if (content.status_id == current_status_id) {
+						content.tasks = req.body.current_status_tasks.split(',');
+						if (req.body.start_tasks == "") {
+							content.tasks = new Array();
+						}
+					}
+					work_flow.push(content);
+				});
+				doc.work_flow = work_flow;
+				db.insert(doc, function(err, data) {
+					console.log("Error:", err);
+					console.log("Data:", data);
+					// keep the revision of the update so we can delete it
+					doc._rev = req.body.rev;
+					callback(err, data);
+				});
+		  }
+	};
+
+	async.series([readProcess, updateProcess],function(err, results){
+		console.log("final err:" + err);
+		console.log("final results1:" + JSON.stringify(results[0]));
+		console.log("final results2:" + JSON.stringify(results[1]));
+		if (err != null) {
+			//err = "Task has been changed edited by other user, please try again.";
+			res.contentType('json');//返回的数据类型
+			res.send(JSON.stringify({ "status":"success", "err":JSON.stringify(results[1])}));  
+			res.end(); 
+		}
+		// results is now equal to ['one', 'two']
+	});
+
+	db.destroy(req.body.task_id, req.body.task_rev, function(err, data) {
+		console.log("Error:", err);
+		console.log("Data:", data);
+		data = {"status": "OK", "message":"task deleted."}
+		res.end(JSON.stringify(data))
+	});
+
+});
 
 module.exports = router;
