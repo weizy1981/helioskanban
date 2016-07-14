@@ -34,23 +34,30 @@ angular.module('myApp',[]).controller('tasksCtrl', function($scope, $http){
     }
     
     $scope.add = function(){
-		alert("test");
+
         $http({
             method : 'POST',
-            url : 'tasks/add',
+            url : 'add',
             data : $scope.task,
             headers : {'Content-Type': 'application/json'}
         })
             .success(function(data){
 				alert(data.status);
                 if('OK' === data.status){
+                    //alert("OK");
                     // $scope.result = data.message;
+                    
+                    $('.theme-popover-mask').fadeOut(100);
+		            $('.theme-popover').slideUp(200);
                     getSocket().emit('taskedit', {"_id":data.status});
                 }
+                else{
+                    alert("NG");
+                }
+            })
+			.error(function(data){
+				alert("error");
             })
 
-			.error(function(data){
-				alert("tttt");
-            })
     }
 });
