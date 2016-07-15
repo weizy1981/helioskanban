@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="ja">
 
 <head>
@@ -63,7 +63,7 @@ jQuery(document).ready(function($) {
 
 <body>
     
-    <h1>Welcome to ekanban</h1>
+    <h1>Welcome to Watson Kanban</h1>
 
 	<div id="process" class="panel panel-default" rev = "<%=rev %>">
 		<div>
@@ -256,7 +256,7 @@ jQuery(document).ready(function($) {
 				}
 			});
 			toDeleteTaskObj.current_status_tasks = currentStatusTasks.toString();
-			alert(JSON.stringify(toDeleteTaskObj));
+			//alert(JSON.stringify(toDeleteTaskObj));
 			$.post(
 				"/tasks/deletetask",
 				toDeleteTaskObj,
