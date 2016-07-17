@@ -178,7 +178,8 @@ jQuery(document).ready(function($) {
 					 </li>
 					 <li>
 						<strong>Total Work:</strong>
-					 	<input type="text" name="totalWork" ng-model="task.totalWork" required class="ipt">
+					 	
+						 <select name="totalWork" ng-model="task.totalWork" ng-options="x for x in totalWorks" required class="ipt"></select>
 						<span style="color:red" ng-show="taskForm.totalWork.$dirty && taskForm.totalWork.$invalid">
 							<span ng-show="taskForm.totalWork.$error.required">
 								Task id is blank.

@@ -20,13 +20,18 @@ angular.module('myApp',[]).controller('tasksCtrl', function($scope, $http){
 		function refreshPage() {
 			setTimeout(function(){
 				window.location.reload();
-			},5000);	
+			},500);	
 		}
 
 
     $http.get('/tasks/add').success(function(response) {
         $scope.systemNames = response.system_names;
         $scope.taskTypeIDs = response.task_types;
+        $scope.totalWorks = ['Difficult','Normal','Easy'];
+        // $scope.task.totalWork = $scope.totalWorks[0];
+        $scope.task = {
+            'totalWork': 'Normal'
+        }
     })
 
     $scope.reset = function(){
