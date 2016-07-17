@@ -27,13 +27,19 @@
 	.process_item_selected {width: 330px; background-color: #b0c4de; margin: 2px;float:left}
 	.process_name {padding: 25px; float:left}
 	.process_operation {margin: 1px;float:right}
-	.process_select {width: 60%}
 
-	.work-flow-item {width: 330px; height: 60px; background-color: #f0f8ff;}
-	.work-flow-item-start,.work-flow-item-end {margin: 3px; width: 330px; height: 60px; background-color: #f0f8ff;}
+	.process_select {width: 200px; height: 70px;}
+	.new_process_select {width: 260px; height: 70px;}
+	
+	.new_process_item_row {width: 330px; height: 70px;}
+
+	.work-flow-item-row {margin: 3px; width: 350px; height: 66px; background-color: #f0f8ff;float:left}
+	.work-flow-item {margin: 3px; width: 300px; height: 60px; background-color: #f0f8ff;float:left}
+	.work-flow-item-start,.work-flow-item-end {margin: 3px; width: 300px; height: 60px; float:left}
+	.work-flow-item-operation{padding: 2px; float:right}
 	#sortable { }
 	#sortable div { margin: 3px; padding: 0.4em; padding-left: 1.5em; font-size: 1.4em; }
-	#sortable div span { position: absolute; margin-left: -1.3em; }
+
 
 	/* Clearfix for the menu */
 	.ui-menu:after {
@@ -162,20 +168,43 @@
   </style>
   <script>
 
+	var current_process = JSON.parse('<%-JSON.stringify(current_process) %>');
+
+	function saveNewProcess(currentObj) {
+		$.post(
+			"/addprocess",
+			{"current_process":$(currentObj).parent().prev().attr('id'),"process_name":$(currentObj).parent().prev().children(":first").text(),"action_name":"showWorkFlow"},
+			function(data,result) {
+				window.location.reload();
+			}
+		);
+	}
+
 	function showEditMember(currentObj) {
-		hidecontainers();
-		$( '#users-container' ).show();
+		$.post(
+			"selectprocess",
+			{"current_process":$(currentObj).parent().prev().attr('id'),"action_name":"showEditMember"},
+			function(data,result) {
+				window.location.reload();
+			}
+		);
 	}
 
 	function showWorkflow(currentObj) {
-		hidecontainers();
-		$( '#workflow-container' ).show();
+		$.post(
+			"selectprocess",
+			{"current_process":$(currentObj).parent().prev().attr('id'),"action_name":"showWorkFlow"},
+			function(data,result) {
+				window.location.reload();
+			}
+		);
 	}
 
 	function showAnalyzation(currentObj) {
 		hidecontainers();
 		$( '#analyzation-container' ).show();
 	}
+
   
 	function addnewuser(currentObj) {
 		var newuserJsonObj = {};
@@ -230,6 +259,11 @@
 		);
 		$(currentObj).parent().parent().remove();
 	}
+
+	function removeWorkflow(currentObj) {
+		$(currentObj).parent().parent().remove();
+	}
+
 	$(window).load(function(){
 		$("#loading").hide();
 	});
@@ -252,7 +286,13 @@
 		});
 
 		hidecontainers();
-
+		
+		var action_name = JSON.parse('<%-JSON.stringify(action_name) %>');
+		if (action_name === "showEditMember") {
+			$( '#users-container' ).show();
+		} else if (action_name === "showWorkFlow") {
+			$( '#workflow-container' ).show();
+		}
 		$( "#sortable" ).sortable();
 		$( "#sortable" ).disableSelection();
 
@@ -284,23 +324,19 @@
 		var process = JSON.parse('<%-JSON.stringify(processes) %>');
 		var strRows="";
 		$.each(process,function(colIndex,objProcess) {
-			var id = objProcess.id;
+			var id = objProcess.process_id;
 			//var rev = objProcess._rev;
-			var pname = objProcess.value;
-			var pdescription = objProcess.value.p_description;
-			if (typeof(pdescription) == "undefined"){
-				pdescription = "";
-			}
+			var pname = objProcess.process_name;
 			strRows = "<tr class = 'process_item'>";
-			strRows = strRows + "<td class = 'process_select' id ='"+ objProcess.id +"'>" + pname + "</td><td>";
+			strRows = strRows + "<td class = 'process_select' id ='"+ objProcess.process_id +"' contenteditable=true>" + pname + "</td><td>";
 	 		strRows = strRows + "&nbsp;<button type='button' class='btn btn-default process_operation' title = 'Edit Process Member' onclick='showEditMember(this)'>";
 			strRows = strRows + " <span class='glyphicon glyphicon-user'></span></button>";
 			strRows = strRows + "&nbsp;<button type='button' class='btn btn-default process_operation' title = 'Define WorkFlow' onclick='showWorkflow(this)'>";
-			strRows = strRows + " <span class='glyphicon glyphicon-cog'></span></button>";
+			strRows = strRows + " <span class='glyphicon glyphicon-list'></span></button>";
 			strRows = strRows + "&nbsp;<button type='button' class='btn btn-default process_operation' title = 'Remove Process' onclick='btnDelete(this)'>";
 			strRows = strRows + " <span class='glyphicon glyphicon-remove'></span></button>";
 			strRows = strRows + "&nbsp;<button type='button' class='btn btn-default process_operation' title = 'Analyze Process' onclick='showAnalyzation(this)'>";
-			strRows = strRows + " <span class='glyphicon glyphicon-facetime-video'></span></button>";
+			strRows = strRows + " <span class='glyphicon glyphicon-stats'></span></button>";
 			strRows = strRows + "</td></tr>";
 			$("#process_list").append(strRows);
 			$( ".process_select" ).click(function() {
@@ -321,116 +357,102 @@
 			},
 
 			function(){
-				$(this).css("background-color","#f0f8ff"); 
+				if ($(this).children(":first").attr('id') === current_process) {
+					$(this).css("background-color","#b0c4de");
+			    } else {
+					$(this).css("background-color","#f0f8ff");
+				}		 
 				$(this).children().eq(1).children().hide();
 			});
-
 		});
+		var current_process_string = "#" + current_process;
+		$(current_process_string).parent().css("background-color","#b0c4de");
+
 		$( ".editmember").click(function() {
 			$( '#users-container' ).show();
 		});
 
 		$( "#add-workflow" ).on( "click", function() {
-			$( "#sortable" ).append( '<div class="work-flow-item"><span class="ui-icon ui-icon-arrowthick-2-n-s"></span>New Status</div>');
+			$( "#work-flow-items" ).append( '<div class = "work-flow-item-row"><div class="work-flow-item" contenteditable=true>New Stage</div><div class = "work-flow-item-operation"><button id = "remove-workflow" type="button" class="btn btn-default" onClick = "removeWorkflow(this)"><span class="glyphicon glyphicon-remove"></span></button></div></div>');
 		});
 
 		$( "#add-process" ).on( "click", function() {
-			strRows = "<tr class = 'process_item'>";
-			strRows = strRows + "<td class = 'process_select' id ='test'>New Process</td><td>";
-	 		strRows = strRows + "&nbsp;<button type='button' class='btn btn-default process_operation' title = 'Edit Process Member' onclick='showEditMember(this)'>";
-			strRows = strRows + " <span class='glyphicon glyphicon-user'></span></button>";
-			strRows = strRows + "&nbsp;<button type='button' class='btn btn-default process_operation' title = 'Define WorkFlow' onclick='showWorkflow(this)'>";
-			strRows = strRows + " <span class='glyphicon glyphicon-cog'></span></button>";
-			strRows = strRows + "&nbsp;<button type='button' class='btn btn-default process_operation' title = 'Remove Process' onclick='btnDelete(this)'>";
-			strRows = strRows + " <span class='glyphicon glyphicon-remove'></span></button>";
-			strRows = strRows + "&nbsp;<button type='button' class='btn btn-default process_operation' title = 'Analyze Process' onclick='showAnalyzation(this)'>";
-			strRows = strRows + " <span class='glyphicon glyphicon-facetime-video'></span></button>";
+			var now = new Date();
+			var newProcessID = "process_" + now.getTime();
+
+			//strRows = "<tr class = 'new_process_item_row' id = ''>";
+			//strRows = strRows + "<td class = 'new_process_select' id = '" + newProcessID + "' contenteditable=true>New Process</td><td>";
+			//strRows = strRows + "&nbsp;<button type='button' class='btn btn-default process_operation' title = 'Save' onclick='showWorkflow(this)'>";
+			//strRows = strRows + " <span class='glyphicon glyphicon-ok'></span></button>";
+			//strRows = strRows + "</td></tr>";
+
+			strRows = "<tr class = 'process_item' id = 'new_process_item'>";
+			strRows = strRows + "<td class = 'new_process_select' id ='"+ newProcessID +"' contenteditable=true><div contenteditable=true>New Process</div></td><td>";
+			strRows = strRows + "&nbsp;<button type='button' class='btn btn-default process_operation' title = 'Save' onclick='saveNewProcess(this)'>";
+			strRows = strRows + " <span class='glyphicon glyphicon-ok'></span></button>";
 			strRows = strRows + "</td></tr>";
+
 			$("#process_list").append(strRows);
+			var newProcessIDString = "'#" + newProcessID + "'";
+			$( "#new_process_item").focus();
+			$('#new_process_item').css("background-color","yellow");
+			$(this).attr('disabled',true);
+			//$.post(
+			//	"/addprocess",
+			//	{"current_process":newProcessID},
+			//	function(data,result) {
+					//window.location.href = 'http://' + window.location.host  + '/tasks';
+			//	}
+			//);
+			//$(eval(newProcessIDString)).on('focus', function() {
+			//  before = $(this).html();
+			//}).on('blur', function() { 
+			//  if (before != $(this).html()) { $(this).trigger('change'); }
+			//});
+			//$(eval(newProcessIDString)).on('change', function() {
+			//	$.post(
+			//		"/changeprocessname",
+			//		{"new_process_name":$('.new_process_select').text()},
+			//		function(data,result) {
+						//window.location.href = 'http://' + window.location.host  + '/tasks';
+			//		}
+			//	);
+			//});
+		});
+		$( "#add-process" ).attr('disabled',false);
 
-			$( ".process_operation").hide();
-			$( ".process_item" )
-			.hover(function(){
-				$(this).css("background-color","yellow"); 
-				$(this).children().eq(1).children().show();
-				$(this).css("cursor","pointer");
-			},
-
-			function(){
-				$(this).css("background-color","#f0f8ff"); 
-				$(this).children().eq(1).children().hide();
+		//$('.work-flow-item').on('focus', function() {
+		// before = $(this).html();
+		//}).on('blur', function() { 
+		 // if (before != $(this).html()) { $(this).trigger('change'); }
+		//});
+		//$('.work-flow-item').on('change', function() {alert('changed')});
+		
+		$( "#save-workflow").click(function() {
+			var newWorkFlow = new Array();
+			var newStage = {};
+			var i = 1;
+			$('.work-flow-item-row').each(function() {
+				newStage = {};
+				newStage.status_id = i.toString();
+				newStage.status_name = $(this).text().trim();
+				newStage.tasks = new Array();
+				newWorkFlow.push(newStage);
+				i = i + 1;
 			});
+			newWorkFlow[newWorkFlow.length-1].status_id = "999"
+			var newWorkFlowString = JSON.stringify(newWorkFlow);
+			$.post(
+				"saveworkflow",
+				{"new_workflow":newWorkFlowString},
+				function(data,result) {
+					window.location.reload();
+				}
+			);
 		});
 		
-
 	});
 		
-        // Define our elements
-        var $log = $('#log').val('');
-        var $editables = $('.editable');
-        var $info = $('#info em');
-
-        /**
-         * Log a text message
-         * @param {String} txt
-         */
-        function log(txt) {
-            var val = $log.val();
-            if(val)
-                val += '\n';
-            val += txt;
-            $log.val( val );
-            $log.scrollTop( $log[0].scrollHeight - $log.height() );
-        }
-
-        /**
-         * Make the elements editable
-         */
-        function makeThingsEditable() {
-            $editables.editable({
-                emptyMessage : '<em>Please write something...</em>',
-                callback : function( data ) {
-                    $info.hide();
-                    $info.eq(0).show();
-                    log('Stopped editing ' + data.$el[0].nodeName );
-                    if( data.content )
-                        log('   * The text was changed');
-                    if( data.fontSize )
-                        log('   * Font size was changed to '+data.fontSize);
-                }
-            });
-            log('jQuery Editable - initiated');
-        }
-
-        // Listen on when elements getting edited
-        $editables.on('edit', function( $textArea ) {
-            $info.hide();
-            $info.eq(1).show();
-            log('Started editing element '+ this.nodeName);
-        });
-
-
-        // Button that starts the editing of the h2 element
-        $('#h2Button').click(function() {
-            $('h2').editable('open');
-        });
-
-
-        // Button that toggles the editable feature
-        $('#removeButton').click(function() {
-            if( $editables.is(':editable') ) {
-                $editables.editable('destroy');
-                this.innerHTML = 'Make elements editable again';
-                log('Remove editable feature');
-            } else {
-                makeThingsEditable();
-                this.innerHTML = 'Remove editable feature';
-            }
-        });
-
-        // Let's go!
-        makeThingsEditable();
-
 </script>
 
 </head>
@@ -471,14 +493,37 @@
 	</div>
 
 	<div id = "workflow-container" class="workflow-container">
-		<h1>WorkFlow Defination&nbsp;&nbsp;<button id = "add-workflow" type='button' class='btn btn-default'><span class='glyphicon glyphicon-plus'></span></button></h1>
-		<div class="work-flow-item-start">ToDo</div>
-		<div id="sortable">
-		  <div class="work-flow-item"><span class="ui-icon ui-icon-arrowthick-2-n-s"></span>Accepted</div>
-		  <div class="work-flow-item"><span class="ui-icon ui-icon-arrowthick-2-n-s"></span>In Process</div>
-		  <div class="work-flow-item"><span class="ui-icon ui-icon-arrowthick-2-n-s"></span>In Confirm</div>
+		<div>WorkFlow Defination&nbsp;&nbsp;<button id = "add-workflow" type='button' class='btn btn-default' title = 'Add Flow'><span class='glyphicon glyphicon-plus'></span></button>
+			&nbsp;&nbsp;<button id = "save-workflow" type='button' class='btn btn-default' title = 'Save'><span class='glyphicon glyphicon-ok'></span></button></div>
+		<div class = "work-flow-item-row">
+			<div class="work-flow-item" contenteditable=true>
+				<% if(process_workflow) { %>
+					<%=process_workflow[0].status_name %>
+				<% } %>
+			</div>
 		</div>
-		<div class="work-flow-item-end">Done</div>
+		<div id = "work-flow-items">
+		<% 
+			if(process_workflow) {
+				for (var i = 0; i<process_workflow.length;  i++) {
+					if (process_workflow[i].status_id === "1" || process_workflow[i].status_id === "999") {
+					} else {
+					%>		
+						<div class = "work-flow-item-row">
+							<div class="work-flow-item" contenteditable=true><%=process_workflow[i].status_name %></div>
+							<div class = "work-flow-item-operation"><button id = "remove-workflow" type='button' class='btn btn-default' onClick = "removeWorkflow(this)"><span class='glyphicon glyphicon-remove'></span></button></div>
+						</div>			
+			<%		}
+				}
+			} %>
+		</div>
+		<div class = "work-flow-item-row">
+			<div class="work-flow-item" contenteditable=true>
+				<% if(process_workflow) { %>
+					<%=process_workflow[process_workflow.length-1].status_name %>
+				<% } %>
+			</div>
+		</div>
 	</div>
 
 	<div id="users-container" class="users-container">

@@ -63,10 +63,12 @@ router.post('/', function(req, res) {
 		} else {
 			console.log("success");
 			req.session.user_id = data.user_id;
+			req.session.user_name = data.user_name;
 			req.session.user_pref_default_process = data.user_pref_default_process
 			req.session.user_pref_default_view = data.user_pref_default_view;
 			req.session.user_current_process = data.user_pref_default_process;
 			req.session.user_current_process_authority = data.user_pref_default_process;
+			req.session.processes = data.processes;
 			res.redirect('/');
 		}
 	});

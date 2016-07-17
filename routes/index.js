@@ -33,7 +33,11 @@ var loginCheck = function(req, res, next) {
 };
 
 router.get('/', loginCheck, function(req, res) {
+	if (!req.session.action_name) {
+		req.session.action_name = "";
+	}
 	db.view('kanbanviews', 'processes', function(err, processes) {
+
 	  if (!err) {
 			processes.rows.forEach(function(doc) {
 				console.log(JSON.stringify(doc));
@@ -47,17 +51,238 @@ router.get('/', loginCheck, function(req, res) {
 
 				if (data == null || typeof(data) == "undefined") {
 					console.log("fail");
-					res.render('login');
+					res.render('login',{ "error":"" });
 				} else {
+					console.log("%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%req.session.data:" + data);
 					console.log("success");
 					process_members = data.members;
-					res.render('index',{ "processes":processes.rows, "current_process":req.session.user_current_process, "process_members":process_members });
+					process_workflow = data.work_flow;
+					console.log(process_workflow);
+					console.log("***************************************************");
+					res.render('index',{ "processes":req.session.processes, "current_process":req.session.user_current_process, "process_workflow":process_workflow, "process_members":process_members, "action_name":req.session.action_name });
 				}
 			});
 	  }
 	});
 });
 
+//***********************************************************************
+// Add Process
+//***********************************************************************
+router.post('/addprocess', loginCheck, function(req, res) {
+	var process_id = req.body.current_process;
+	req.session.user_current_process = process_id;
+	var process_name = req.body.process_name;
+	// New Process
+	var insertProcess = function(callback) {
+		db.insert({ _id: process_id, "type":"process", "p_name":process_name,
+			"members": [{
+			  "user_id": req.session.user_id,
+			  "user_name": req.session.user_name,
+			  "authority": "Admin"
+			}], 
+			"work_flow": [
+				{
+				  "status_id": "1",
+				  "status_name": "ToDo",
+				  "tasks": [],
+				  "update_time": "",
+				  "description": "Everyone shoud add task to this column firstly."
+				},
+				{
+				  "status_id": "2",
+				  "status_name": "In Process",
+				  "tasks": [],
+				  "update_time": "",
+				  "description": "Put tasks on going  to this column."
+				},
+				{
+				  "status_id": "999",
+				  "status_name": "Done",
+				  "tasks": [
+				  ],
+				  "update_time": "",
+				  "description": "Put tasks finished to this column."
+				}
+			]
+			}, function(err, data) {
+				console.log("Error:", err);
+				console.log("Data:", data);
+				callback(err, data);
+		});
+	};
+
+	// read user document
+	var readUserInfo = function(callback) {
+	  console.log("Reading User Info");
+	  console.log("*****************************************************************88");
+	  db.get("users_" + req.session.user_id, function(err, data) {
+		console.log("Error:", err);
+		console.log("Data:", data);
+		// keep a copy of the doc so we know its revision token
+		doc = data;
+   	    callback(err, data);
+	  });
+	};
+
+	// Update User Info
+	var updateUserInfo = function(callback) {
+		console.log("Updating User Info");
+		var newProcessObj = {};
+		newProcessObj.process_id = req.session.user_current_process;
+		newProcessObj.process_name = process_name;
+		newProcessObj.process_authority = "Admin";
+		doc.processes.push(newProcessObj);
+		req.session.processes = doc.processes;
+		db.insert(doc, function(err, data) {
+			console.log("Error:", err);
+			console.log("Data:", data);
+			callback(err, data);
+		});
+	};
+
+	async.series([insertProcess, readUserInfo, updateUserInfo],function(err, results){
+		console.log("final err:" + err);
+		if (err === null) {
+			//err = "Task has been changed edited by other user, please try again.";
+			res.contentType('json');
+			res.send(JSON.stringify({ "status":"ok", "err":""}));  
+			res.end(); 
+		} else {
+			res.contentType('json');
+			res.send(JSON.stringify({ "status":"ok", "err":""}));  
+			res.end(); 
+		}
+		// results is now equal to ['one', 'two']
+	});
+});
+
+//***********************************************************************
+// Save Work Flow
+//***********************************************************************
+router.post('/saveworkflow', loginCheck, function(req, res) {
+
+	// read current process
+	var readProcess = function(callback) {
+	  console.log("Reading process");;
+	  db.get(req.session.user_current_process, function(err, data) {
+		console.log("Error:", err);
+		console.log("Data:", data);
+		// keep a copy of the doc so we know its revision token
+		doc = data;
+   	    callback(err, data);
+	  });
+	};
+
+	// update current process
+	var updateProcess = function(callback) {
+		console.log("Updating process");
+		doc.work_flow = JSON.parse(req.body.new_workflow);
+		console.log(doc.work_flow);
+		db.insert(doc, function(err, data) {
+			console.log("Error:", err);
+			console.log("Data:", data);
+			callback(err, data);
+		});
+	};
+
+	async.series([readProcess, updateProcess],function(err, results){
+		console.log("final err:" + err);
+		if (err === null) {
+			//err = "Task has been changed edited by other user, please try again.";
+			res.contentType('json');
+			res.send(JSON.stringify({ "status":"ok", "err":""}));  
+			res.end(); 
+		} else {
+			res.contentType('json');
+			res.send(JSON.stringify({ "status":"ok", "err":""}));  
+			res.end(); 
+		}
+	});
+});
+
+//***********************************************************************
+// Change Process Name
+//***********************************************************************
+router.post('/changeprocessname', loginCheck, function(req, res) {
+	var process_id = req.session.user_current_process;
+	var process_name = req.body.new_process_name;
+
+	// read current process
+	var readProcess = function(callback) {
+	  console.log("Reading process");;
+	  db.get(req.session.user_current_process, function(err, data) {
+		console.log("Error:", err);
+		console.log("Data:", data);
+		// keep a copy of the doc so we know its revision token
+		doc = data;
+   	    callback(err, data);
+	  });
+	};
+
+	// update current process
+	var updateProcess = function(callback) {
+		console.log("Updating process");
+		doc.p_name = process_name;
+		db.insert(doc, function(err, data) {
+			console.log("Error:", err);
+			console.log("Data:", data);
+			// keep the revision of the update so we can delete it
+			doc._rev = req.body.rev;
+			callback(err, data);
+		});
+	};
+
+	// read user document
+	var readUserInfo = function(callback) {
+	  console.log("Reading User Info");
+	  db.get("users_" + req.session.user_id, function(err, data) {
+		console.log("Error:", err);
+		console.log("Data:", data);
+		// keep a copy of the doc so we know its revision token
+		doc = data;
+   	    callback(err, data);
+	  });
+	};
+
+	// Update User Info
+	var updateUserInfo = function(callback) {
+		console.log("Updating User Info");
+		var processesArray = new Array();
+		doc.processes.forEach(function(content){
+			if (content.process_id === req.session.user_current_process) {
+				content.process_name = req.body.new_process_name;
+			}
+			processesArray.push(content);
+		});
+		doc.processes = processesArray;
+		req.session.processes = processesArray;
+		db.insert(doc, function(err, data) {
+			console.log("Error:", err);
+			console.log("Data:", data);
+			callback(err, data);
+		});
+	};
+
+	async.series([readProcess, updateProcess, readUserInfo, updateUserInfo],function(err, results){
+		console.log("final err:" + err);
+		if (err === null) {
+			//err = "Task has been changed edited by other user, please try again.";
+			res.contentType('json');
+			res.send(JSON.stringify({ "status":"ok", "err":""}));  
+			res.end(); 
+		} else {
+			res.contentType('json');
+			res.send(JSON.stringify({ "status":"ok", "err":""}));  
+			res.end(); 
+		}
+		// results is now equal to ['one', 'two']
+	});
+});
+
+//***********************************************************************
+// Add Process Member
+//***********************************************************************
 router.post('/addmember', loginCheck, function(req, res) {
 	// read current process
 	var readProcess = function(callback) {
@@ -132,6 +357,9 @@ router.post('/addmember', loginCheck, function(req, res) {
 	//async.series([]);
 });
 
+//***********************************************************************
+// Remove Process Member
+//***********************************************************************
 router.post('/removemember', loginCheck, function(req, res) {
 	// read current process
 	var readProcess = function(callback) {
@@ -247,7 +475,8 @@ router.post('/editprocessmember', loginCheck, function(req, res) {
 
 router.post('/selectprocess', loginCheck, function(req, res) {
 	req.session.user_current_process = req.body.current_process;
-	res.send(JSON.stringify({ "status":"ok", "err":"ok"}));  
+	req.session.action_name =  req.body.action_name;
+	res.send(JSON.stringify({ "status":"ok", "action_name":req.session.action_name}));  
 	res.end(); 
 });
 

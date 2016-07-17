@@ -233,7 +233,7 @@ router.post('/add', function(req, res) {
 		task_start_est : req.body.startEst,
 		task_end_est : req.body.finishEst,
 		task_priority : "A",
-		task_tasktype_id : req.body.taskTypeID,
+		task_type : req.body.taskTypeID,
 		task_totaltime : req.body.totalWork,
 		task_remaintime : req.body.totalWork,
 		task_assignment : req.body.owner,

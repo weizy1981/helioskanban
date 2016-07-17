@@ -110,7 +110,7 @@ jQuery(document).ready(function($) {
                 <ol>
                      <!--<li><h4>Enter task info.</h4></li>-->
                      <li>
-						<strong>Type ID:</strong>
+						<strong>Task Type:</strong>
 					 	<!--<input type="text" name="taskTypeID" ng-model="task.taskTypeID" required class="ipt">-->
 						 <select name="taskTypeID" ng-model="task.taskTypeID" ng-options="x for x in taskTypeIDs" required class="ipt"></select>
 						<span style="color:red" ng-show="taskForm.taskTypeID.$dirty && taskForm.taskTypeID.$invalid">
@@ -217,7 +217,6 @@ jQuery(document).ready(function($) {
 <div class="theme-popover-mask" style="display: none;"></div>
 <script src="/js/task.js"></script>
 
-
 	<script type="text/javascript">
 		var socket = io();	
 		socket.on('messages', function(msgObj){
@@ -278,7 +277,8 @@ jQuery(document).ready(function($) {
 					+"<div class='panel panel-primary' id = '" + content._id +"' rev = '" + content._rev +"'>"
 					+"	<div class='panel-title'> <h6 >&nbsp;&nbsp;&nbsp;"+content.task_end_est + "&nbsp;&nbsp;&nbsp;"
 					+ "<a href = '#' class = 'taskdetail' title = '"
-					+ content.task_detail
+					+ "Task Type:" + content.task_type
+					+ "&#13;Task Detail:" + content.task_detail
 					+"'>Detail</a>&nbsp;&nbsp;&nbsp;"
 					+"<a href = '#'>Edit</a>&nbsp;&nbsp;&nbsp;<a href = '#' onClick = 'deleteTask(this)'>Delete</a></h6> </div>"
 					+"	<div class='panel-body'><h5>"+content.task_name+"</h5></div>"
