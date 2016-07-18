@@ -32,6 +32,9 @@ var loginCheck = function(req, res, next) {
     }
 };
 
+//***********************************************************************
+// Show Process List
+//***********************************************************************
 router.get('/', loginCheck, function(req, res) {
 	if (!req.session.action_name) {
 		req.session.action_name = "";
@@ -39,29 +42,30 @@ router.get('/', loginCheck, function(req, res) {
 	db.view('kanbanviews', 'processes', function(err, processes) {
 
 	  if (!err) {
-			processes.rows.forEach(function(doc) {
-				console.log(JSON.stringify(doc));
-				console.log(doc.value);
-			});
-			// get current progress
-			var process_members = {};
-			db.get(req.session.user_current_process, function(err, data) {
-				console.log("Error:", err);
-				console.log("Data:", data);
+		processes.rows.forEach(function(doc) {
+			console.log(JSON.stringify(doc));
+			console.log(doc.value);
+		});
+		// get current progress
+		var process_members = {};
+		db.get(req.session.user_current_process, function(err, data) {
+			console.log("Error:", err);
+			console.log("Data:", data);
 
-				if (data == null || typeof(data) == "undefined") {
-					console.log("fail");
-					res.render('login',{ "error":"" });
-				} else {
-					console.log("%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%req.session.data:" + data);
-					console.log("success");
-					process_members = data.members;
-					process_workflow = data.work_flow;
-					console.log(process_workflow);
-					console.log("***************************************************");
-					res.render('index',{ "processes":req.session.processes, "current_process":req.session.user_current_process, "process_workflow":process_workflow, "process_members":process_members, "action_name":req.session.action_name });
-				}
-			});
+			if (data == null || typeof(data) == "undefined") {
+				console.log("fail");
+				res.render('login',{ "error":"" });
+			} else {
+
+				console.log("%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%req.session.data:" + data);
+				console.log("success");
+				process_members = data.members;
+				process_workflow = data.work_flow;
+				console.log(process_workflow);
+				console.log("***************************************************");
+				res.render('index',{ "login_user_id":req.session.user_id, "processes":req.session.processes, "current_process":req.session.user_current_process, "process_workflow":process_workflow, "process_members":process_members, "action_name":req.session.action_name });
+			}
+		});
 	  }
 	});
 });
@@ -329,6 +333,7 @@ router.post('/addmember', loginCheck, function(req, res) {
 		console.log("Updating User Info");
 		var newProcessObj = {};
 		newProcessObj.process_id = req.session.user_current_process;
+		newProcessObj.process_name = req.session.user_current_process_name;
 		newProcessObj.process_authority = req.body.authority;
 		doc.processes.push(newProcessObj);
 		db.insert(doc, function(err, data) {
@@ -446,7 +451,7 @@ router.post('/removemember', loginCheck, function(req, res) {
 
 router.post('/editprocessmember', loginCheck, function(req, res) {
 	req.session.user_current_process = req.body.current_process;
-		db.view('test123456', 'processes', function(err, processes) {
+		db.view('kanbanviews', 'processes', function(err, processes) {
 	  if (!err) {
 			processes.rows.forEach(function(doc) {
 				console.log(JSON.stringify(doc));
@@ -476,6 +481,13 @@ router.post('/editprocessmember', loginCheck, function(req, res) {
 router.post('/selectprocess', loginCheck, function(req, res) {
 	req.session.user_current_process = req.body.current_process;
 	req.session.action_name =  req.body.action_name;
+	db.get(req.session.user_current_process, function(err, data) {
+		//data.processes.forEach(function(content){
+		//	if (content.porcess_id === req.session.user_current_process) {
+		//		req.session.user_current_process_name = $(this).process_name;
+		//	}
+		//});
+	});
 	res.send(JSON.stringify({ "status":"ok", "action_name":req.session.action_name}));  
 	res.end(); 
 });
