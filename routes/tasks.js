@@ -37,7 +37,7 @@ var loginCheck = function(req, res, next) {
 // Show tasks
 //***********************************************************************
 router.get('/', loginCheck, function(req, res) {
-	db.find({selector:{process_id:'p_001'}}, function(er, result) {
+	db.find({selector:{process_id:req.session.user_current_process}}, function(er, result) {
 	  console.log('Found %d documents with name Alice', result.docs.length);
 	if (result == null || typeof(result) == "undefined") {
 		console.log("fail");
