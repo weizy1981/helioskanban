@@ -1,7 +1,7 @@
 <html>
 <head>
   <meta charset="utf-8">
-  <title>ekanban</title>
+  <title>Watson Kanban</title>
 	<link href="/css/jquery-ui.min.css" rel="stylesheet">
 	<link href="/css/jquery-ui.css" rel="stylesheet">
 	<link href="/css/bootstrap.min.css" rel="stylesheet">
@@ -205,6 +205,7 @@
 	function showAnalyzation(currentObj) {
 		hidecontainers();
 		$( '#analytics-container' ).show();
+		drawThroughput();
 		drawDueDate();
 		drawLeadTime();
 		drawCycleTime();
@@ -315,7 +316,7 @@
 			);
 		})
 		.hover(function(){
-			$(this).css("background-color","yellow"); 
+			$(this).css("background-color","orange"); 
 			$(this).children().eq(1).show();
 			$(this).css("cursor","pointer");
 		},
@@ -358,7 +359,7 @@
 			$( ".process_operation").hide();
 			$( ".process_item" )
 			.hover(function(){
-				$(this).css("background-color","yellow"); 
+				$(this).css("background-color","orange"); 
 				$(this).children().eq(1).children().show();
 				$(this).css("cursor","pointer");
 			},
@@ -402,7 +403,7 @@
 			$("#process_list").append(strRows);
 			var newProcessIDString = "'#" + newProcessID + "'";
 			$( "#new_process_item").focus();
-			$('#new_process_item').css("background-color","yellow");
+			$('#new_process_item').css("background-color","orange");
 			$(this).attr('disabled',true);
 			//$.post(
 			//	"/addprocess",
@@ -464,12 +465,47 @@
     <script src="js/d3.js" charset="utf-8"></script>
     <script src="js/c3.js"></script>
     <script>
+
+	function drawThroughput(){
+		var throughputChart = c3.generate({
+			bindto: '#chart_throughput',
+			size: {
+				height: 300,
+				width: 400
+			},
+			data: {
+				x: 'x',
+				columns: [
+					['x', '2016-07-01', '2016-07-08', '2016-07-15', '2016-07-22', '2016-07-29'],
+					['Throughput', 17, 16, 12, 15, 16]
+				],
+				colors: {
+				   Throughput: 'blue'
+				 }
+			},
+			axis: {
+				x: {
+					type: 'timeseries',
+					tick: {
+						format: '%Y-%m-%d'
+					}
+				},
+				y: {
+					max: 30,
+					min: 0,
+					// Range includes padding, set 0 if no padding needed
+					// padding: {top:0, bottom:0}
+				}
+			}
+		});
+	}
+
 	function drawDueDate(){
-		var chart = c3.generate({
+		var dueDateChart = c3.generate({
 			bindto: '#chart_due_date',
 			size: {
 				height: 300,
-				width: 500
+				width: 400
 			},
 			data: {
 				// iris data from R
@@ -572,7 +608,7 @@
 				colors: {
 				   ToDo: 'red',
 				   InProcess: 'blue',
-				   Confirming: 'yellow',
+				   Confirming: 'orange',
 				   Done: 'green'
 				 },
 				groups: [[
@@ -599,7 +635,7 @@
 	<h1>Welcome to Watson Kanban</h1>
 	<div>
 	<ul id="nav">
-		<div><a class="btn theme-login" href="/logout">Logout</a></div>
+		<div><a href="/logout">Logout</a></div>
 	</ul>
 	</div>
 <div id = "loading">
@@ -700,13 +736,14 @@
 		<table>
 			<tr>
 				<td>
+					<div algin = "center">Throughput & Due-date Performance</div>
+					<div style="float:left" id="chart_throughput"></div>
+					<div style="float:right" id="chart_due_date"></div>
 					<div>Cumulative Flow Diagram</div>
-					<div style="float:left" id="chart_cumulated_flow">Cumulative Flow Diagram</div>
+					<div style="float:left" id="chart_cumulated_flow"></div>
 					<div>Lead Time & Cycle Time</div>
 					<div style="float:left" id="chart_lead_time"></div>
 					<div style="float:right" id="chart_cycle_time"></div>
-					<div>Due-date Performance</div>
-					<div style="float:left" id="chart_due_date"></div>
 				</td>
 			</tr>
 		</table>

@@ -61,7 +61,7 @@ router.get('/', loginCheck, function(req, res) {
 				console.log("success");
 				process_members = data.members;
 				process_workflow = data.work_flow;
-				console.log(process_workflow);
+				console.log(process_members);
 				console.log("***************************************************");
 				res.render('index',{ "login_user_id":req.session.user_id, "processes":req.session.processes, "current_process":req.session.user_current_process, "process_workflow":process_workflow, "process_members":process_members, "action_name":req.session.action_name });
 			}

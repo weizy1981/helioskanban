@@ -20,45 +20,45 @@
 			width: 5em;
 		}
 
-/* Clearfix for the menu */
-.ui-menu:after {
-    content: ".";
-    display: block;
-    clear: both;
-    visibility: hidden;
-    line-height: 0;
-    height: 0;
-}
+	/* Clearfix for the menu */
+	.ui-menu:after {
+		content: ".";
+		display: block;
+		clear: both;
+		visibility: hidden;
+		line-height: 0;
+		height: 0;
+	}
 
-.ui-menu .ui-menu-item {
-    display: inline-block;
-    float: left;
-    margin: 5;
-    padding: 5;
-    width: auto;
-}
-</style>
+	.ui-menu .ui-menu-item {
+		display: inline-block;
+		float: left;
+		margin: 5;
+		padding: 5;
+		width: auto;
+	}
+	</style>
 
 
 
-<script src="/js/angular.min.js"></script>
-<link rel="stylesheet" href="/css/task_style.css" media="all">
+	<script src="/js/angular.min.js"></script>
+	<link rel="stylesheet" href="/css/task_style.css" media="all">
 
-<script>
-jQuery(document).ready(function($) {
-	$('#btn_add_task').click(function(){
-		$('.theme-popover-mask').fadeIn(100);
-		$('.theme-popover').slideDown(200);
+	<script>
+	jQuery(document).ready(function($) {
+		$('#btn_add_task').click(function(){
+			$('.theme-popover-mask').fadeIn(100);
+			$('.theme-popover').slideDown(200);
+		})
+		$('.theme-poptit .close').click(function(){
+			$('.theme-popover-mask').fadeOut(100);
+			$('.theme-popover').slideUp(200);
+		})
+
 	})
-	$('.theme-poptit .close').click(function(){
-		$('.theme-popover-mask').fadeOut(100);
-		$('.theme-popover').slideUp(200);
-	})
+	</script>
 
-})
-</script>
-
-    <title>ekanban</title>
+    <title>Watson Kanban</title>
 </head>
 
 <body>
@@ -97,8 +97,6 @@ jQuery(document).ready(function($) {
 		</table>
 	</div>
 
-<!--<a class="btn btn-primary btn-large theme-login" href="javascript:;">Add Task</a>-->
-<!--<a class="btn btn-primary btn-large theme-login" id="btn_add_task" href="javascript:;" hidden>Add Task</a>-->
 <div class="theme-popover" style="display: none;">
      <div class="theme-poptit">
           <a href="javascript:;" title="Close" class="close">×</a>
@@ -272,23 +270,32 @@ jQuery(document).ready(function($) {
 			var tasksjson ='<%-JSON.stringify(tasks) %>';
 			var tasks = JSON.parse(tasksjson);
 			var process = JSON.parse('<%-JSON.stringify(process) %>');
-			
 			$.each(tasks, function(index, content){
+				var assignment = content.task_assignment;
+				if (typeof(assignment) == "undefined") {
+					var assignment = "Unassigned";
+				}
+				var endtime_estimated = content.task_end_est;
+				if (typeof(endtime_estimated) == "undefined") {
+					var endtime_estimated = "";
+				}
 				$( '#' + content._id ).replaceWith(""
 					+"<div class='panel panel-primary' id = '" + content._id +"' rev = '" + content._rev +"'>"
-					+"	<div class='panel-title'> <h6 >&nbsp;&nbsp;&nbsp;"+content.task_end_est + "&nbsp;&nbsp;&nbsp;"
-					+ "<a href = '#' class = 'taskdetail' title = '"
+					+"	<div class='panel-title'> <h6 >"
+					+ "&nbsp;&nbsp;<a href = '#' class = 'taskdetail' title = '"
 					+ "Task Type:" + content.task_type
 					+ "&#13;Task Detail:" + content.task_detail
 					+"'>Detail</a>&nbsp;&nbsp;&nbsp;"
-					+"<a href = '#'>Edit</a>&nbsp;&nbsp;&nbsp;<a href = '#' onClick = 'deleteTask(this)'>Delete</a></h6> </div>"
+					+"<a href = '#'>Edit</a>&nbsp;&nbsp;&nbsp;<a href = '#' onClick = 'deleteTask(this)'>Delete</a>"
+					+"&nbsp;&nbsp;&nbsp;<font color = red>"+endtime_estimated + "</font>&nbsp;"
+					+"</h6> </div>"
 					+"	<div class='panel-body'><h5>"+content.task_name+"</h5></div>"
-					+"	<div class='panel-footer'>" +"【"+content.task_assignment+ "】</div>"
+					+"	<div class='panel-footer'>" +"【"+assignment+ "】</div>"
 					+"</div>");
 					$('.panel-footer').css({"height":'40',"font-size":'16px',"color":'blue',"text-align":'right',"background-color":"white"});
 					$('.panel-primary').css("width",'200');
 					//$('.panel-primary').css("width",$(window).width()/process.length - 5);
-					$(".panel-title").css({"background-color":"lavender","height":'30',"align":"center"});
+					$(".panel-title").css({"background-color":"lavender","height":'30',"align":"center","padding-top":'8px'});
 					$(".panel-primary").css("background-color","ivory");
 					$(".panel-primary").mouseover(function(){
 					$(".panel-primary").css("cursor","pointer");
@@ -340,35 +347,6 @@ jQuery(document).ready(function($) {
 			});
 		   $( ".tdBorder" ).disableSelection();
 		});
-
-/**
-		function dragAction(){
-			var mousex = 0, mousey = 0;
-			var divLeft, divTop;
-			$(".panel-primary").mousedown(function(event){  
-				var isMove = true;
-				var obj = $(this);
-				var abs_x = event.pageX -obj.offset().left;
-				var abs_y = event.pageY - obj.offset().top;
-				var objWidth = $(this).width();
-				var objHeight = $(this).height();
-				$(document).mousemove(function (event) {
-							if (isMove) {
-								var px = (event.pageX - abs_x) + 'px';
-								var py = (event.pageY - abs_y) + 'px';
-								obj.css({'left': px, 'top': py, 'position' : 'absolute', 'width' : objWidth, 'height' : objHeight});
-							}
-						}
-				).mouseup(
-						function () {
-							alert("sss");
-							isMove = false;
-							$('.panel-primary').unbind('mousemove');
-						}
-				);  
-			});
-		}
-**/
 	</script>
 
 </body>

@@ -33,6 +33,9 @@ var loginCheck = function(req, res, next) {
     }
 };
 
+//***********************************************************************
+// Show tasks
+//***********************************************************************
 router.get('/', loginCheck, function(req, res) {
 	db.find({selector:{process_id:'p_001'}}, function(er, result) {
 	  console.log('Found %d documents with name Alice', result.docs.length);
@@ -116,9 +119,6 @@ router.post('/', loginCheck, function(req, res) {
 					work_flow.push(content);
 				});
 				doc.work_flow = work_flow;
-				//console.log("work_flow:" + JSON.stringify(work_flow));
-				//console.log("start:" + req.body.start_tasks);
-				//console.log("end:" + req.body.end_tasks);
 
 				if (isOverWip) {
 				  err = "error";
@@ -127,7 +127,6 @@ router.post('/', loginCheck, function(req, res) {
 					db.insert(doc, function(err, data) {
 						console.log("Error:", err);
 						console.log("Data:", data);
-						// keep the revision of the update so we can delete it
 						doc._rev = req.body.rev;
 						callback(err, data);
 					});
@@ -203,17 +202,6 @@ router.get('/add', function(req,res){
 
 router.post('/add', function(req, res) {
 	
-	// var taskID = req.body.task.taskID;
-  //   var taskName = req.body.taskName;
-	// we are specifying the id of the document so we can update and delete it later
-	// db.insert({ _id: "users_" + email, "user_id":email, "user_password": password}, function(err, data) {
-	// 	console.log("Error:", err);
-	// 	console.log("Data:", data);
-	// 	res.render('register',{ "status": "ok", "message":"register success." });
-	// });
-	// console.log('taskId=' + req.body.taskID + ' taskName=' + req.body.taskName)
-//	res.render('task_add',{ "status": "ok", "message":"register success." });
-
 	// update a task document
 	console.log("Updating task document");
 	// make a change to the document, using the copy we kept from reading it back
@@ -226,7 +214,7 @@ router.post('/add', function(req, res) {
 	doc = {
 		_id : strTaskID,
 		type : "task",
-		process_id : "p_001",
+		process_id : req.session.user_current_process,
 		task_name : req.body.taskName,
 		task_status : "1",
 		task_detail : req.body.detail,

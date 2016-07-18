@@ -70,7 +70,7 @@ router.post('/', function(req, res) {
 			req.session.user_current_process_authority = data.user_pref_default_process;
 			data.processes.forEach(function(content){
 				if (content.porcess_id === req.session.user_current_process) {
-					req.session.user_current_process_name = $(this).process_name;
+					req.session.user_current_process_name = content.process_name;
 				}
 			});
 			req.session.processes = data.processes;
