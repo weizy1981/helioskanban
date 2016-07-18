@@ -23,6 +23,7 @@
     div#users-container table { margin: 1em 0; border-collapse: collapse; width: 100%; }
     div#users-container table td, div#users-contain table th { border: 1px solid #eee; padding: .6em 10px; text-align: left; }
 	div#analytics-container {  font-size: 12px; width: 350px; margin: 20px 0; float: left}
+	div#navigation {padding-top:60px}
     .ui-dialog .ui-state-error { padding: .3em; }
     .validateTips { border: 1px solid transparent; padding: 0.3em; }
 	.process_item {width: 330px; height: 70px; background-color: #f0f8ff; margin: 2px;float:left}
@@ -185,7 +186,7 @@
 	function showEditMember(currentObj) {
 		$.post(
 			"selectprocess",
-			{"current_process":$(currentObj).parent().prev().attr('id'),"action_name":"showEditMember"},
+			{"current_process":$(currentObj).parent().prev().attr('id'),"current_process_name":$(currentObj).parent().prev().text(),"action_name":"showEditMember"},
 			function(data,result) {
 				window.location.reload();
 			}
@@ -195,7 +196,7 @@
 	function showWorkflow(currentObj) {
 		$.post(
 			"selectprocess",
-			{"current_process":$(currentObj).parent().prev().attr('id'),"action_name":"showWorkFlow"},
+			{"current_process":$(currentObj).parent().prev().attr('id'),"current_process_name":$(currentObj).parent().prev().text(),"action_name":"showWorkFlow"},
 			function(data,result) {
 				window.location.reload();
 			}
@@ -350,7 +351,7 @@
 			$( ".process_select" ).click(function() {
 				$.post(
 					"selectprocess",
-					{"current_process":$(this).attr('id')},
+					{"current_process":$(this).attr('id'),"current_process_name":$(this).text()},
 					function(data,result) {
 						window.location.href = 'http://' + window.location.host  + '/tasks';
 					}
@@ -632,8 +633,11 @@
 	</script>
 </head>
 <body>
-	<h1>Welcome to Watson Kanban</h1>
-	<div>
+	<div id = "logo-container">
+		<div style="float:left; padding:2px"><img src = "images/logo.jpg"></img></div>
+		<div style="float:left;"><h3>Welcome to Watson Kanban</h3></div>
+	</div>
+	<div id = "navigation">
 	<ul id="nav">
 		<div><a href="/logout">Logout</a></div>
 	</ul>

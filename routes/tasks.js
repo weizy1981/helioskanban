@@ -44,11 +44,6 @@ router.get('/', loginCheck, function(req, res) {
 		res.render('login');
 	} else {
 		console.log("success");
-		//res.setEncoding('utf8');
-		//if (req.session.user_pref_default_view == "list") {
-		//	res.render('tasklist', { 'tasks': result.docs });
-		//} else　if (req.session.user_pref_default_view == "kanban") {
-			
 			// get current progress
 			var current_progress = {};
 			var kanban_info = {};
@@ -60,9 +55,10 @@ router.get('/', loginCheck, function(req, res) {
 					res.render('login');
 				} else {
 					console.log("success");
+					console.log("$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$" + req.session.user_current_process_name);
 					current_progress = data.work_flow;
 					kanban_info = {"column_number":process.length}
-					res.render('kanban', { "tasks": result.docs, "process":current_progress, "rev": data._rev });
+					res.render('kanban', { "tasks": result.docs, "process":current_progress,"current_progress_name":req.session.user_current_process_name, "rev": data._rev });
 				}
 			});
 		//}
@@ -173,13 +169,12 @@ router.post('/', loginCheck, function(req, res) {
 		console.log("final results2:" + JSON.stringify(results[1]));
 		if (err != null) {
 			//err = "Task has been changed edited by other user, please try again.";
-			res.contentType('json');//返回的数据类型
+			res.contentType('json');
 			res.send(JSON.stringify({ "status":"success", "err":JSON.stringify(results[1])}));  
 			res.end(); 
 		}
 		// results is now equal to ['one', 'two']
 	});
-	//async.series([]);
 });
 
 //add by jiajiao
@@ -254,22 +249,13 @@ var err = "";
 	// update current process
 	var updateProcess = function(callback) {
 		console.log("Updating process");
+		doc_process.work_flow[0].tasks.push(strTaskID);
+			db.insert(doc_process, function(err, data) {
+				console.log("Error:", err);
+				console.log("Data:", data);
 
-
-				doc_process.work_flow[0].tasks.push(strTaskID);
-				//console.log("work_flow:" + JSON.stringify(work_flow));
-				//console.log("start:" + req.body.start_tasks);
-				//console.log("end:" + req.body.end_tasks);
-
-
-					db.insert(doc_process, function(err, data) {
-						console.log("Error:", err);
-						console.log("Data:", data);
-
-						callback(err, data);
-					});
-
-		  
+				callback(err, data);
+			});	  
 	};
 
 	async.series([readProcess, updateProcess],function(err, results){

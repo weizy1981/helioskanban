@@ -481,13 +481,7 @@ router.post('/editprocessmember', loginCheck, function(req, res) {
 router.post('/selectprocess', loginCheck, function(req, res) {
 	req.session.user_current_process = req.body.current_process;
 	req.session.action_name =  req.body.action_name;
-	db.get(req.session.user_current_process, function(err, data) {
-		//data.processes.forEach(function(content){
-		//	if (content.porcess_id === req.session.user_current_process) {
-		//		req.session.user_current_process_name = $(this).process_name;
-		//	}
-		//});
-	});
+	req.session.user_current_process_name = req.body.current_process_name;
 	res.send(JSON.stringify({ "status":"ok", "action_name":req.session.action_name}));  
 	res.end(); 
 });
