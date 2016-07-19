@@ -215,6 +215,11 @@
      </div>
 </div>
 
+<div id="error-message" title="Error occured." style="display: none;">
+  <p>
+	<b><div id = "err-message-content">Error.</div></b>
+  </p>
+</div>
 
 <div class="theme-popover-mask" style="display: none;"></div>
 <script src="/js/task.js"></script>
@@ -237,7 +242,7 @@
 		function refreshPage() {
 			setTimeout(function(){
 				window.location.reload();
-			},5000);	
+			},10000);	
 		}
 
 		$(".processtitle").tooltip();
@@ -325,13 +330,9 @@
 				stop: function( event, ui ) {
 					startstatus.children().each(function(i,task) {
 						startTasksArray.push(task.id);
-						//alert(task.id);
 					});
 					endstatus = ui.item.parent();
-					//alert("end:" + endstatus);
-					//alert(ui.item.parent().children(".panel-primary"));
 					endstatus.children().each(function(i,task) {
-						//alert(task.id);
 						endTasksArray.push(task.id);
 					});
 					$.post(
@@ -341,10 +342,14 @@
 						 "start_tasks":startTasksArray.toString(),"end_tasks":endTasksArray.toString(),
 						 "rev":$('#process').attr("rev")},
 						function(data,status) {
-							alert(data.err);
-						}
+							if (JSON.stringify(data.err) != '"null"') {
+								//$('#err-message-content').text(data.err);
+								alert(data.err);
+							}
+							getSocket().emit('taskedit', {"_id":ui.item.attr("id"),"task_status":ui.item.parent().attr("id"),"rev":ui.item.attr("rev")});
+						},
+						"json"
 					);
-					getSocket().emit('taskedit', {"_id":ui.item.attr("id"),"task_status":ui.item.parent().attr("id"),"rev":ui.item.attr("rev")});
 				},
 
 			});

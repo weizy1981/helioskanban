@@ -36,10 +36,11 @@
 	
 	.new_process_item_row {width: 330px; height: 70px;}
 
-	.work-flow-item-row {margin: 3px; width: 350px; height: 66px; background-color: #f0f8ff;float:left}
-	.work-flow-item {margin: 3px; width: 300px; height: 60px; background-color: #f0f8ff;float:left}
-	.work-flow-item-start,.work-flow-item-end {margin: 3px; width: 300px; height: 60px; float:left}
-	.work-flow-item-operation{padding: 2px; float:right}
+	.work-flow-item-row {margin: 3px; width: 350px; height: 66px; background-color: white;float:left}
+	.work-flow-item {margin: 3px; width: 200px; height: 60px; background-color: #f0e68c;float:left}
+	.work-flow-item-start,.work-flow-item-end {margin: 3px; width: 344px; height: 60px; background-color: #f0e68c; float:left}
+	.work-flow-wip {margin: 3px; width: 80px; height: 60px; background-color: #ffd700;float:left}
+	.work-flow-item-operation{padding-top: 18px; padding-right: 5px; float:right}
 	#sortable { }
 	#sortable div { margin: 3px; padding: 0.4em; padding-left: 1.5em; font-size: 1.4em; }
 
@@ -382,7 +383,9 @@
 		});
 
 		$( "#add-workflow" ).on( "click", function() {
-			$( "#work-flow-items" ).append( '<div class = "work-flow-item-row"><div class="work-flow-item" contenteditable=true>New Stage</div><div class = "work-flow-item-operation"><button id = "remove-workflow" type="button" class="btn btn-default" onClick = "removeWorkflow(this)"><span class="glyphicon glyphicon-remove"></span></button></div></div>');
+			$( "#work-flow-items" ).append( '<div class = "work-flow-item-row"><div class="work-flow-item" contenteditable=true>New Stage</div>'
+			+ '<div class="work-flow-wip" contenteditable=true title= "Please input Work In Process Number if needed.">WIP</div>'
+			+ '<div class = "work-flow-item-operation"><button id = "remove-workflow" type="button" class="btn btn-default" onClick = "removeWorkflow(this)"><span class="glyphicon glyphicon-remove"></span></button></div></div>');
 		});
 
 		$( "#add-process" ).on( "click", function() {
@@ -675,7 +678,7 @@
 		<div>WorkFlow Defination&nbsp;&nbsp;<button id = "add-workflow" type='button' class='btn btn-default' title = 'Add Flow'><span class='glyphicon glyphicon-plus'></span></button>
 			&nbsp;&nbsp;<button id = "save-workflow" type='button' class='btn btn-default' title = 'Save'><span class='glyphicon glyphicon-ok'></span></button></div>
 		<div class = "work-flow-item-row">
-			<div class="work-flow-item" contenteditable=true>
+			<div class="work-flow-item-start" contenteditable=true>
 				<% if(process_workflow) { %>
 					<%=process_workflow[0].status_name %>
 				<% } %>
@@ -690,6 +693,7 @@
 					%>		
 						<div class = "work-flow-item-row">
 							<div class="work-flow-item" contenteditable=true><%=process_workflow[i].status_name %></div>
+							<div class="work-flow-wip" contenteditable=true title= "Please input Work In Process Number if needed.">WIP</div>
 							<div class = "work-flow-item-operation"><button id = "remove-workflow" type='button' class='btn btn-default' onClick = "removeWorkflow(this)"><span class='glyphicon glyphicon-remove'></span></button></div>
 						</div>			
 			<%		}
@@ -697,7 +701,7 @@
 			} %>
 		</div>
 		<div class = "work-flow-item-row">
-			<div class="work-flow-item" contenteditable=true>
+			<div class="work-flow-item-end" contenteditable=true>
 				<% if(process_workflow) { %>
 					<%=process_workflow[process_workflow.length-1].status_name %>
 				<% } %>

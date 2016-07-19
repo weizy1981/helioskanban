@@ -124,7 +124,7 @@ router.post('/', loginCheck, function(req, res) {
 						console.log("Error:", err);
 						console.log("Data:", data);
 						doc._rev = req.body.rev;
-						callback(err, data);
+						callback(err, null);
 					});
 				}
 
@@ -154,26 +154,21 @@ router.post('/', loginCheck, function(req, res) {
 		  db.insert(doc, function(err, data) {
 			console.log("Error:", err);
 			console.log("Data:", data);
-			// keep the revision of the update so we can delete it
-			doc._rev = data.rev;
-			callback(err, data);
+			callback(err, "");
 		  });
 	  } else {
-		  callback(err, "");
+		  callback(err, "error");
 	  }
 	};
 
 	async.series([readProcess, updateProcess, readDocument, updateDocument],function(err, results){
 		console.log("final err:" + err);
 		console.log("final results1:" + JSON.stringify(results[0]));
-		console.log("final results2:" + JSON.stringify(results[1]));
-		if (err != null) {
-			//err = "Task has been changed edited by other user, please try again.";
-			res.contentType('json');
-			res.send(JSON.stringify({ "status":"success", "err":JSON.stringify(results[1])}));  
-			res.end(); 
-		}
-		// results is now equal to ['one', 'two']
+		console.log("final aaaaaaaaaaaaresults2:" + JSON.stringify(results[1]));
+		console.log("send json ####################################################################");
+		res.contentType('json');
+		res.send(JSON.stringify({ "status":"success", "err":JSON.stringify(results[1])}));  
+		res.end(); 
 	});
 });
 
