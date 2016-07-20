@@ -181,7 +181,21 @@ router.post('/saveworkflow', loginCheck, function(req, res) {
 	// update current process
 	var updateProcess = function(callback) {
 		console.log("Updating process");
-		doc.work_flow = JSON.parse(req.body.new_workflow);
+		var new_work_flow = JSON.parse(req.body.new_workflow);
+		var new_work_flow_item = {};
+		var new_work_flow_obj = new Array();
+		new_work_flow.forEach(function(content){
+			new_work_flow_item = {};
+			new_work_flow_item.status_id = content.status_id;
+			new_work_flow_item.status_name = content.status_name;
+			if (content.wip === "" || content.wip === "WIP") {
+			} else {
+				new_work_flow_item.wip = content.wip;
+			}
+			new_work_flow_item.tasks = new Array();
+			new_work_flow_obj.push(new_work_flow_item);
+		});
+		doc.work_flow = new_work_flow_obj;
 		console.log(doc.work_flow);
 		db.insert(doc, function(err, data) {
 			console.log("Error:", err);

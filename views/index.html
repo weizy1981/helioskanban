@@ -37,9 +37,9 @@
 	.new_process_item_row {width: 330px; height: 70px;}
 
 	.work-flow-item-row {margin: 3px; width: 350px; height: 66px; background-color: white;float:left}
-	.work-flow-item {margin: 3px; width: 200px; height: 60px; background-color: #f0e68c;float:left}
-	.work-flow-item-start,.work-flow-item-end {margin: 3px; width: 344px; height: 60px; background-color: #f0e68c; float:left}
-	.work-flow-wip {margin: 3px; width: 80px; height: 60px; background-color: #ffd700;float:left}
+	.work-flow-item {margin: 3px; width: 200px; height: 60px; background-color: #e5ccff;float:left}
+	.work-flow-item-start,.work-flow-item-end {margin: 3px; width: 344px; height: 60px; background-color: #e5fffc; float:left}
+	.work-flow-wip {margin: 3px; width: 80px; height: 60px; background-color: #eddbff;float:left}
 	.work-flow-item-operation{padding-top: 18px; padding-right: 5px; float:right}
 	#sortable { }
 	#sortable div { margin: 3px; padding: 0.4em; padding-left: 1.5em; font-size: 1.4em; }
@@ -384,7 +384,7 @@
 
 		$( "#add-workflow" ).on( "click", function() {
 			$( "#work-flow-items" ).append( '<div class = "work-flow-item-row"><div class="work-flow-item" contenteditable=true>New Stage</div>'
-			+ '<div class="work-flow-wip" contenteditable=true title= "Please input Work In Process Number if needed.">WIP</div>'
+			+ '<div class="work-flow-wip" contenteditable=true title= "Please input Work In Process Number if necessary.">WIP</div>'
 			+ '<div class = "work-flow-item-operation"><button id = "remove-workflow" type="button" class="btn btn-default" onClick = "removeWorkflow(this)"><span class="glyphicon glyphicon-remove"></span></button></div></div>');
 		});
 
@@ -447,7 +447,12 @@
 			$('.work-flow-item-row').each(function() {
 				newStage = {};
 				newStage.status_id = i.toString();
-				newStage.status_name = $(this).text().trim();
+				newStage.status_name = $(this).children(":first").text().trim();
+				if ($(this).children().length > 1) {
+					newStage.wip = $(this).children().eq(1).text().trim();
+				} else {
+					newStage.wip = "";
+				}
 				newStage.tasks = new Array();
 				newWorkFlow.push(newStage);
 				i = i + 1;
@@ -693,7 +698,13 @@
 					%>		
 						<div class = "work-flow-item-row">
 							<div class="work-flow-item" contenteditable=true><%=process_workflow[i].status_name %></div>
-							<div class="work-flow-wip" contenteditable=true title= "Please input Work In Process Number if needed.">WIP</div>
+							<div class="work-flow-wip" contenteditable=true title= "Please input Work In Process Number if needed.">
+								<% if(process_workflow[i].wip) {%>
+									<%=process_workflow[i].wip%>	
+								<%} else {%>
+									WIP
+								<%}%>
+							</div>
 							<div class = "work-flow-item-operation"><button id = "remove-workflow" type='button' class='btn btn-default' onClick = "removeWorkflow(this)"><span class='glyphicon glyphicon-remove'></span></button></div>
 						</div>			
 			<%		}
