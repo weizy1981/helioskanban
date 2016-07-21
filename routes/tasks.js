@@ -173,8 +173,8 @@ router.post('/', loginCheck, function(req, res) {
 });
 
 //add by jiajiao
-router.get('/add', function(req,res){
-		db.get("processes_p001", function(err, data) {
+router.get('/add',loginCheck, function(req,res){
+		db.get(req.session.user_current_process, function(err, data) {
 			console.log("Error:", err);
 			console.log("Data:", data);
 			if (data == null || typeof(data) == "undefined") {
@@ -182,7 +182,7 @@ router.get('/add', function(req,res){
 				data = {"status": "NG"};
 			} else {
 				console.log("success");
-				data = {"status": "OK", "system_names": data.system_names, "task_types": data.task_types};				
+				data = {"status": "OK", "system_names": data.system_names, "task_types": data.task_types, "owners": data.members};				
 			}
 			res.end(JSON.stringify(data));
 		});
@@ -190,7 +190,7 @@ router.get('/add', function(req,res){
 //	res.render('task_add')
 });
 
-router.post('/add', function(req, res) {
+router.post('/add',loginCheck, function(req, res) {
 	
 	// update a task document
 	console.log("Updating task document");

@@ -110,82 +110,82 @@
            <form class="theme-signin" action="" method="" novalidate name="taskForm">
                 <ol>
                      <!--<li><h4>Enter task info.</h4></li>-->
+					 <li>
+						<strong>Task Name<font color="red">(*)</font>:</strong>
+						<input type="text" name="taskName" ng-model="task.taskName" required class="ipt">
+						<span style="color:red" ng-show="taskForm.taskName.$dirty && taskForm.taskName.$invalid">
+							<span ng-show="taskForm.taskName.$error.required">
+								Required.
+							</span>
+						</span>
+					 </li>
                      <li>
 						<strong>Task Type:</strong>
 					 	<!--<input type="text" name="taskTypeID" ng-model="task.taskTypeID" required class="ipt">-->
 						 <select name="taskTypeID" ng-model="task.taskTypeID" ng-options="x for x in taskTypeIDs" required class="ipt"></select>
-						<span style="color:red" ng-show="taskForm.taskTypeID.$dirty && taskForm.taskTypeID.$invalid">
+						<!--<span style="color:red" ng-show="taskForm.taskTypeID.$dirty && taskForm.taskTypeID.$invalid">
 							<span ng-show="taskForm.taskTypeID.$error.required">
 								Task Type ID is blank.
 							</span>
-						</span>
+						</span>-->
 					 </li>
                      <li>
 						<strong>System Name:</strong>
 						<select name="systemName" ng-model="task.systemName" ng-options="x for x in systemNames" required class="ipt"></select>
 					 	<!--<input type="text" name="systemName" ng-model="task.systemName" required class="ipt">-->
-						<span style="color:red" ng-show="taskForm.systemName.$dirty && taskForm.systemName.$invalid">
+						<!--<span style="color:red" ng-show="taskForm.systemName.$dirty && taskForm.systemName.$invalid">
 							<span ng-show="taskForm.systemName.$error.required">
 								Task Type ID is blank.
 							</span>
-						</span>
-					 </li>
-                     <li>
-						<strong>Task Name:</strong>
-						<input type="text" name="taskName" ng-model="task.taskName" required class="ipt">
-						<span style="color:red" ng-show="taskForm.taskName.$dirty && taskForm.taskName.$invalid">
-							<span ng-show="taskForm.taskName.$error.required">
-								Task name is blank.
-							</span>
-						</span>
+						</span>-->
 					 </li>
                      <li>
 						<strong>Start Estimate:</strong>
 					 	<input type="text" name="startEst" ng-model="task.startEst" required class="ipt">
-						<span style="color:red" ng-show="taskForm.startEst.$dirty && taskForm.startEst.$invalid">
+						<!--<span style="color:red" ng-show="taskForm.startEst.$dirty && taskForm.startEst.$invalid">
 							<span ng-show="taskForm.startEst.$error.required">
 								Task id is blank.
 							</span>
-						</span>
+						</span>-->
 					 </li>
 					 <li>
 						<strong>Finish Estimate:</strong>
 					 	<input type="text" name="finishEst" ng-model="task.finishEst" required class="ipt">
-						<span style="color:red" ng-show="taskForm.finishEst.$dirty && taskForm.finishEst.$invalid">
+						<!--<span style="color:red" ng-show="taskForm.finishEst.$dirty && taskForm.finishEst.$invalid">
 							<span ng-show="taskForm.finishEst.$error.required">
 								Task id is blank.
 							</span>
-						</span>
+						</span>-->
 					 </li>
 
 					 <li>
 						<strong>Owner:</strong>
-					 	<input type="text" name="owner" ng-model="task.owner" required class="ipt">
-						<span style="color:red" ng-show="taskForm.owner.$dirty && taskForm.owner.$invalid">
+						<select name="owner" ng-model="task.owner" ng-options="x for x in owners" required class="ipt"></select>
+						<!--<span style="color:red" ng-show="taskForm.owner.$dirty && taskForm.owner.$invalid">
 							<span ng-show="taskForm.owner.$error.required">
 								Task id is blank.
 							</span>
-						</span>
+						</span>-->
 					 </li>
 
 					 <li>
 						<strong>Approver:</strong>
-					 	<input type="text" name="approver" ng-model="task.approver" required class="ipt">
-						<span style="color:red" ng-show="taskForm.approver.$dirty && taskForm.approver.$invalid">
+						<select name="approver" ng-model="task.approver" ng-options="x for x in approvers" required class="ipt"></select>
+						<!--<span style="color:red" ng-show="taskForm.approver.$dirty && taskForm.approver.$invalid">
 							<span ng-show="taskForm.approver.$error.required">
 								Task id is blank.
 							</span>
-						</span>
+						</span>-->
 					 </li>
 					 <li>
 						<strong>Total Work:</strong>
 					 	
 						 <select name="totalWork" ng-model="task.totalWork" ng-options="x for x in totalWorks" required class="ipt"></select>
-						<span style="color:red" ng-show="taskForm.totalWork.$dirty && taskForm.totalWork.$invalid">
+						<!--<span style="color:red" ng-show="taskForm.totalWork.$dirty && taskForm.totalWork.$invalid">
 							<span ng-show="taskForm.totalWork.$error.required">
 								Task id is blank.
 							</span>
-						</span>
+						</span>-->
 					 </li>
 					 <!--<li>
 						<strong>Remaining Work:</strong>
@@ -199,16 +199,18 @@
 					 <li>
 						<strong>Detail:</strong>
 					 	<textarea name="detail" ng-model="task.detail" required class="ipt" rows="5" style="height:80px;"></textarea>
-						<span style="color:red" ng-show="taskForm.detail.$dirty && taskForm.detail.$invalid">
+						<!--<span style="color:red" ng-show="taskForm.detail.$dirty && taskForm.detail.$invalid">
 							<span ng-show="taskForm.detail.$error.required">
 								Task id is blank.
 							</span>
-						</span>
+						</span>-->
 					 </li>
                      <li>
-						<input type="button" ng-click="reset()" class="btn btn-primary" value="Reset">
-						<input type="button" ng-click="add()" class="btn btn-primary" value="Add">
+						<span style="color:red;">(*) is required.</span>
+						<input type="button" ng-click="reset()" class="btn btn-primary" style="margin-left: 30px;" value="Reset">
+						<input id="btn_add" type="button" ng-click="add()" ng-disabled="taskForm.taskName.$invalid" class="btn btn-primary" value="Add">
 					 </li>
+
                 </ol>
            </form>
 
