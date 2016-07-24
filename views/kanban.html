@@ -48,6 +48,9 @@
 	<script>
 	jQuery(document).ready(function($) {
 		$('#btn_add_task').click(function(){
+			$('#add_edit_task_lable').html('Add task');
+			$('#btn_add').val('Add');
+
 			$('.theme-popover-mask').fadeIn(100);
 			$('.theme-popover').slideDown(200);
 		})
@@ -103,7 +106,7 @@
 <div class="theme-popover" style="display: none;">
      <div class="theme-poptit">
           <a href="javascript:;" title="Close" class="close">×</a>
-          <h3>Add task</h3>
+          <h3 id="add_edit_task_lable">Add task</h3>
      </div>
      <div class="theme-popbod dform" ng-app="myApp" ng-controller="tasksCtrl">
 		 
@@ -274,6 +277,17 @@
 			);
 			$(currentObj).parent().parent().parent().remove();
 		}
+
+		function editTask(currentObj){
+			$('#add_edit_task_lable').html('Edit task');
+			$('#btn_add').val('Edit');
+			$('.theme-popover-mask').fadeIn(100);
+			$('.theme-popover').slideDown(200);
+
+			//TODO: fetch detail from DB
+
+		}	
+
 		$(document).ready(function(){
 			$( "#nav" ).menu({position: {at: "left bottom"}});
 			$( 'th' ).tooltip();
@@ -296,7 +310,7 @@
 					+ "Task Type:" + content.task_type
 					+ "&#13;Task Detail:" + content.task_detail
 					+"'>Detail</a>&nbsp;&nbsp;&nbsp;"
-					+"<a href = '#'>Edit</a>&nbsp;&nbsp;&nbsp;<a href = '#' onClick = 'deleteTask(this)'>Delete</a>"
+					+"<a href = '#' onclick ='editTask(this)'>Edit</a>&nbsp;&nbsp;&nbsp;<a href = '#' onClick = 'deleteTask(this)'>Delete</a>"
 					+"&nbsp;&nbsp;&nbsp;<font color = red>"+endtime_estimated + "</font>&nbsp;"
 					+"</h6> </div>"
 					+"	<div class='panel-body'><h5>"+content.task_name+"</h5></div>"
