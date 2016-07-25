@@ -26,20 +26,21 @@
 	div#navigation {padding-top:60px}
     .ui-dialog .ui-state-error { padding: .3em; }
     .validateTips { border: 1px solid transparent; padding: 0.3em; }
-	.process_item {width: 330px; height: 70px; background-color: #f0f8ff; margin: 2px;float:left}
-	.process_item_selected {width: 330px; background-color: #b0c4de; margin: 2px;float:left}
+	.process_item {width: 345px; height: 70px; background-color: #ddddff; margin: 2px;float:left}
+	.process_item_selected {width: 345px; background-color: #ffcccc; margin: 2px;float:left}
 	.process_name {padding: 25px; float:left}
 	.process_operation {margin: 1px;float:right}
+	.process_status {margin-left: 1px;}
 
-	.process_select {width: 200px; height: 70px;}
+	.process_select {width: 220px; height: 70px;}
 	.new_process_select {width: 260px; height: 70px;}
 	
 	.new_process_item_row {width: 330px; height: 70px;}
 
 	.work-flow-item-row {margin: 3px; width: 350px; height: 66px; background-color: white;float:left}
-	.work-flow-item {margin: 3px; width: 200px; height: 60px; background-color: #e5ccff;float:left}
-	.work-flow-item-start,.work-flow-item-end {margin: 3px; width: 344px; height: 60px; background-color: #e5fffc; float:left}
-	.work-flow-wip {margin: 3px; width: 80px; height: 60px; background-color: #eddbff;float:left}
+	.work-flow-item {margin: 3px; width: 235px; height: 60px; background-color: #ffffcc;float:left}
+	.work-flow-item-start,.work-flow-item-end {margin: 3px; width: 344px; height: 60px; background-color: #ddddff;float:left}
+	.work-flow-wip {margin: 3px; width: 45px; height: 60px; background-color: #ffffcc;float:left}
 	.work-flow-item-operation{padding-top: 18px; padding-right: 5px; float:right}
 	#sortable { }
 	#sortable div { margin: 3px; padding: 0.4em; padding-left: 1.5em; font-size: 1.4em; }
@@ -324,7 +325,7 @@
 		},
 
 		function(){
-			$(this).css("background-color","#b0c4de"); 
+			$(this).css("background-color","#ddddff"); 
 			$(this).children().eq(1).hide();
 		});
 
@@ -348,6 +349,7 @@
 			strRows = strRows + "&nbsp;<button type='button' class='btn btn-default process_operation' title = 'Analyze Process' onclick='showAnalyzation(this)'>";
 			strRows = strRows + " <span class='glyphicon glyphicon-stats'></span></button>";
 			strRows = strRows + "</td></tr>";
+			//strRows = strRows + "<tr><td>ccc</td></tr>";
 			$("#process_list").append(strRows);
 			$( ".process_select" ).click(function() {
 				$.post(
@@ -361,22 +363,22 @@
 			$( ".process_operation").hide();
 			$( ".process_item" )
 			.hover(function(){
-				$(this).css("background-color","orange"); 
+				$(this).css("background-color","#ffffcc"); 
 				$(this).children().eq(1).children().show();
 				$(this).css("cursor","pointer");
 			},
 
 			function(){
 				if ($(this).children(":first").attr('id') === current_process) {
-					$(this).css("background-color","#b0c4de");
+					$(this).css("background-color","#ffffcc");
 			    } else {
-					$(this).css("background-color","#f0f8ff");
+					$(this).css("background-color","#ddddff");
 				}		 
 				$(this).children().eq(1).children().hide();
 			});
 		});
 		var current_process_string = "#" + current_process;
-		$(current_process_string).parent().css("background-color","#b0c4de");
+		$(current_process_string).parent().css("background-color","#ffffcc");
 
 		$( ".editmember").click(function() {
 			$( '#users-container' ).show();
@@ -407,7 +409,7 @@
 			$("#process_list").append(strRows);
 			var newProcessIDString = "'#" + newProcessID + "'";
 			$( "#new_process_item").focus();
-			$('#new_process_item').css("background-color","orange");
+			$('#new_process_item').css("background-color","#ddddff");
 			$(this).attr('disabled',true);
 			//$.post(
 			//	"/addprocess",
@@ -663,7 +665,7 @@
 						method='post'>
 						<% if (process.length != 0){%>
 						<div class="processlist-box">
-							<table class="table table-bordered1 table-hover table-condensed">
+							<table class="table table-hover table-condensed">
 								<thead>
 									<tr>
 										<th>Process List&nbsp;&nbsp;<button id = "add-process" type='button' class='btn btn-default' title = 'Add Process'><span class='glyphicon glyphicon-plus'></span></button></th>
