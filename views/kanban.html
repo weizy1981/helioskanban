@@ -297,12 +297,19 @@
 			var process = JSON.parse('<%-JSON.stringify(process) %>');
 			$.each(tasks, function(index, content){
 				var assignment = content.task_assignment;
+				var priority = content.task_priority;
+				var taskType = content.task_tasktype_id;
 				if (typeof(assignment) == "undefined") {
 					var assignment = "Unassigned";
 				}
 				var endtime_estimated = content.task_end_est;
-				if (typeof(endtime_estimated) == "undefined") {
+				if (typeof(endtime_estimated) === "undefined") {
 					var endtime_estimated = "";
+				}
+				if (priority === "A") {
+					priority = "⭐️⭐️⭐️";
+				} else {
+					priority = "";
 				}
 				$( '#' + content._id ).replaceWith(""
 					+"<div class='panel panel-primary' id = '" + content._id +"' rev = '" + content._rev +"'>"
@@ -315,13 +322,17 @@
 					+"&nbsp;&nbsp;&nbsp;<font color = red>"+endtime_estimated + "</font>&nbsp;"
 					+"</h6> </div>"
 					+"	<div class='panel-body'><h5>"+content.task_name+"</h5></div>"
-					+"	<div class='panel-footer'>" +"【"+assignment+ "】</div>"
+					+"	<div class='panel-footer'>"
+					+ priority + "【" +assignment+ "】</div>"
 					+"</div>");
 					$('.panel-footer').css({"height":'40',"font-size":'16px',"color":'blue',"text-align":'right',"background-color":"white"});
 					$('.panel-primary').css("width",'200');
 					//$('.panel-primary').css("width",$(window).width()/process.length - 5);
 					$(".panel-title").css({"background-color":"lavender","height":'30',"align":"center","padding-top":'8px'});
 					$(".panel-primary").css("background-color","ivory");
+					if (taskType === "emergency") {
+						$(".panel-body").css("background-color","red");
+					}
 					$(".panel-primary").mouseover(function(){
 					$(".panel-primary").css("cursor","pointer");
 					$(".taskdetail").tooltip();
