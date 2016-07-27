@@ -105,7 +105,7 @@ body, button, input, select, textarea, code {
 
 /* input */
 .ipt {
-	border: solid 1px #d2d2d2;
+	/*border: solid 1px #d2d2d2;
 	border-left-color: #ccc;
 	border-top-color: #ccc;
 	border-radius: 2px;
@@ -114,9 +114,20 @@ body, button, input, select, textarea, code {
 	padding: 4px 6px;
 	height: 26px;
 	line-height: 21px;
-	color: #555;
+	color: #555;*/
 	width: 260px;
-	vertical-align: baseline;
+	height: 32px;
+	font-size: 12px;
+
+	color: #555;
+    background-color: #fff;
+    background-image: none;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-shadow: inset 0 1px 1px rgba(0, 0, 0, .075);
+    transition: border-color ease-in-out .15s, box-shadow ease-in-out .15s;
+	
+	/*vertical-align: baseline;*/
 }
 
 .ipt-narrow {
@@ -164,9 +175,9 @@ body, button, input, select, textarea, code {
 	background: -moz-linear-gradient(top, #F5F5F5, #F1F1F1);
 	background: linear-gradient(top, #F5F5F5, #F1F1F1);*/
 }
-input.btn {
+/*input.btn {
 	height: 29px;
-}
+}*/
 /*.btn:hover {
 	border-color:#c6c6c6;
 	color:#333;
@@ -256,7 +267,7 @@ input.btn {
 	top:35%;
 	left:50%;
 	width:660px;
-	height:580px;
+	height:620px;
 	margin:-180px 0 0 -330px;
 	border-radius:5px;
 	border:solid 2px #666;
@@ -368,9 +379,9 @@ input.btn {
 	line-height: 32px;
 	margin-right: 10px;
 }
-.theme-signin .btn {
+/*.theme-signin .btn {
 	margin-bottom: 10px;
-}
+}*/
 .theme-signin p {
 	font-size: 12px;
 	color: #999;

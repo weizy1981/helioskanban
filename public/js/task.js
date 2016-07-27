@@ -27,11 +27,14 @@ angular.module('myApp',[]).controller('tasksCtrl', function($scope, $http){
     $http.get('/tasks/add').success(function(response) {
         $scope.systemNames = response.system_names;
         $scope.taskTypeIDs = response.task_types;
-        alert(response.members[0].user_name);
-        // for(var o in response.members){
-        //     alert(o.user_name);
-        //     $scope.owners.add(o.user_name);
-        // }
+        //alert(response.members[0].user_name);
+        var arrayObj = new Array();　
+        for(var o in response.members){
+            //alert(response.members[o].user_name);
+            arrayObj.push(response.members[o].user_name);
+        }
+        $scope.owners = arrayObj;
+        $scope.approvers = arrayObj;
         // $scope.owners = response.members;
         // $scope.approvers = response.members;
         $scope.totalWorks = ['Difficult','Normal','Easy'];
