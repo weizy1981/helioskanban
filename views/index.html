@@ -26,14 +26,14 @@
 	div#navigation {padding-top:60px}
     .ui-dialog .ui-state-error { padding: .3em; }
     .validateTips { border: 1px solid transparent; padding: 0.3em; }
-	.process_item {width: 345px; height: 70px; background-color: #ddddff; margin: 2px;float:left}
-	.process_item_selected {width: 345px; background-color: #ffcccc; margin: 2px;float:left}
+	.process_item {width: 345px; height: 70px; background-color: #f9f9f9; margin: 2px;float:left}
+	.process_item_selected {width: 345px; background-color: #F09B22; margin: 2px;float:left; color:white}
 	.process_name {padding: 25px; float:left}
 	.process_operation {margin: 1px;float:right}
 	.process_status {margin-left: 1px;}
 
 	.process_select {width: 220px; height: 70px;}
-	.new_process_select {width: 260px; height: 70px;}
+	.new_process_select {width: 270px; height: 70px;}
 	
 	.new_process_item_row {width: 330px; height: 70px;}
 
@@ -363,22 +363,26 @@
 			$( ".process_operation").hide();
 			$( ".process_item" )
 			.hover(function(){
-				$(this).css("background-color","#ffffcc"); 
+				$(this).css("background-color","#F09B22"); 
+				$(this).css("color","white");
 				$(this).children().eq(1).children().show();
 				$(this).css("cursor","pointer");
 			},
 
 			function(){
 				if ($(this).children(":first").attr('id') === current_process) {
-					$(this).css("background-color","#ffffcc");
+					$(this).css("background-color","#F09B22");
+					$(this).css("color","white");
 			    } else {
-					$(this).css("background-color","#ddddff");
+					$(this).css("background-color","#f9f9f9");
+					$(this).css("color","black");
 				}		 
 				$(this).children().eq(1).children().hide();
 			});
 		});
 		var current_process_string = "#" + current_process;
-		$(current_process_string).parent().css("background-color","#ffffcc");
+		$(current_process_string).parent().css("background-color","#F09B22");
+        $(current_process_string).parent().css("color","white");
 
 		$( ".editmember").click(function() {
 			$( '#users-container' ).show();
@@ -409,7 +413,9 @@
 			$("#process_list").append(strRows);
 			var newProcessIDString = "'#" + newProcessID + "'";
 			$( "#new_process_item").focus();
-			$('#new_process_item').css("background-color","#ddddff");
+			$('#new_process_item').css("background-color","#F09B22");
+			$('#new_process_item').css("color","white");
+			$('.new_process_select').focus();
 			$(this).attr('disabled',true);
 			//$.post(
 			//	"/addprocess",
@@ -665,7 +671,7 @@
 						method='post'>
 						<% if (process.length != 0){%>
 						<div class="processlist-box">
-							<table class="table table-hover table-condensed">
+							<table class="table-hover table-condensed">
 								<thead>
 									<tr>
 										<th>Process List&nbsp;&nbsp;<button id = "add-process" type='button' class='btn btn-default' title = 'Add Process'><span class='glyphicon glyphicon-plus'></span></button></th>
