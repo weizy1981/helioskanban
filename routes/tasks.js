@@ -182,7 +182,7 @@ router.get('/add',loginCheck, function(req,res){
 				data = {"status": "NG"};
 			} else {
 				console.log("success");
-				data = {"status": "OK", "system_names": data.system_names, "task_types": data.task_types, "owners": data.members};				
+				data = {"status": "OK", "system_names": data.system_names, "task_types": data.task_types, "members": data.members};				
 			}
 			res.end(JSON.stringify(data));
 		});
