@@ -1,6 +1,4 @@
 
-
-
 angular.module('myApp',[]).controller('tasksCtrl', function($scope, $http){
 
 		var socket = io();	
@@ -79,4 +77,33 @@ angular.module('myApp',[]).controller('tasksCtrl', function($scope, $http){
             })
 
     }
+
+   $scope.edit = function(){
+
+        $http({
+            method : 'POST',
+            url : '/tasks/edittask',
+            data : $scope.task,
+            headers : {'Content-Type': 'application/json'}
+        })
+            .success(function(data){
+                if('OK' === data.status){
+                    //alert("OK");
+                    // $scope.result = data.message;
+                    
+                    $('.theme-popover-mask').fadeOut(100);
+		            $('.theme-popover').slideUp(200);
+                    getSocket().emit('taskedit', {"_id":data.status});
+                }
+                else{
+                    alert("NG");
+                }
+            })
+			.error(function(data){
+				alert("error");
+            })
+
+    }
+
+
 });

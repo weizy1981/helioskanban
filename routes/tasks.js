@@ -266,6 +266,94 @@ var err = "";
 
 });
 
+
+//add by jiajiao
+router.get('/edittask',loginCheck, function(req,res){
+	console.log("edit task");
+	console.log(req.query.task_id);
+		db.get(req.query.task_id, req.query.task_rev, function(err, data) {
+			console.log("Error:", err);
+			console.log("Data:", data);
+			if (data == null || typeof(data) == "undefined") {
+				console.log("fail");
+				data = {"status": "NG"};
+			} else {
+				console.log("success");
+				data = {"status": "OK", "task_name": data.task_name, "task_type": data.task_type, "task_start_est": data.task_start_est, "task_end_est": data.task_end_est, "task_totaltime": data.task_totaltime, "task_remaintime": data.task_remaintime, "task_assignment": data.task_assignment};				
+			}
+			res.end(JSON.stringify(data));
+		});
+	
+//	res.render('task_add')
+});
+
+router.post('/edittask', function(req,res){
+
+	// read current process
+	var readProcess = function(callback) {
+	  console.log("Reading process");;
+	  db.get(req.session.user_current_process, function(err, data) {
+		console.log("Error:", err);
+		console.log("Data:", data);
+		// keep a copy of the doc so we know its revision token
+		doc = data;
+   	    callback(err, data);
+	  });
+	};
+
+	// update current process
+	var updateProcess = function(callback) {
+		console.log("Updating process");
+		  if (req.body.process_rev != doc._rev) {
+			  err = "error";
+			  callback(err, "Task has been modified by other user, please try again.");
+		  } else {
+				var current_status_id = req.body.current_status_id.substr(7);
+				var work_flow = new Array();
+				doc.work_flow.forEach(function(content){
+					//var flow_status = JSON.parse(content);
+					if (content.status_id == current_status_id) {
+						content.tasks = req.body.current_status_tasks.split(',');
+						if (req.body.start_tasks == "") {
+							content.tasks = new Array();
+						}
+					}
+					work_flow.push(content);
+				});
+				doc.work_flow = work_flow;
+				db.insert(doc, function(err, data) {
+					console.log("Error:", err);
+					console.log("Data:", data);
+					// keep the revision of the update so we can delete it
+					doc._rev = req.body.rev;
+					callback(err, data);
+				});
+		  }
+	};
+
+	async.series([readProcess, updateProcess],function(err, results){
+		console.log("final err:" + err);
+		console.log("final results1:" + JSON.stringify(results[0]));
+		console.log("final results2:" + JSON.stringify(results[1]));
+		if (err != null) {
+			//err = "Task has been changed edited by other user, please try again.";
+			res.contentType('json');//返回的数据类型
+			res.send(JSON.stringify({ "status":"success", "err":JSON.stringify(results[1])}));  
+			res.end(); 
+		}
+		// results is now equal to ['one', 'two']
+	});
+
+	db.destroy(req.body.task_id, req.body.task_rev, function(err, data) {
+		console.log("Error:", err);
+		console.log("Data:", data);
+		data = {"status": "OK", "message":"task deleted."}
+		res.end(JSON.stringify(data))
+	});
+
+});
+
+
 router.post('/deletetask', function(req,res){
 
 	// read current process
