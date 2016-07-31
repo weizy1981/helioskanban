@@ -55,7 +55,6 @@ router.get('/', loginCheck, function(req, res) {
 					res.render('login');
 				} else {
 					console.log("success");
-					console.log("$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$" + req.session.user_current_process_name);
 					current_progress = data.work_flow;
 					kanban_info = {"column_number":process.length}
 					res.render('kanban', { "tasks": result.docs, "process":current_progress,"current_progress_name":req.session.user_current_process_name, "rev": data._rev });
@@ -182,7 +181,8 @@ router.get('/add',loginCheck, function(req,res){
 				data = {"status": "NG"};
 			} else {
 				console.log("success");
-				data = {"status": "OK", "system_names": data.system_names, "task_types": data.task_types, "members": data.members};				
+				data = {"status": "OK", "system_names": data.system_names, "task_types": data.task_types, "members": data.members};		
+				//data = {"status": "OK", "task_settings": data.task_settings};
 			}
 			res.end(JSON.stringify(data));
 		});

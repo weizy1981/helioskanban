@@ -9,7 +9,6 @@
     <script src="/js/jquery-2.1.4.min.js"></script>
     <script src="/js/jquery-ui.min.js"></script>
 	<script src="/js/bootstrap.min.js"></script> 
-	<script src="/js/jquery.editable.min.js"></script> 
 	
   <style>
     label, input { display:block; }
@@ -19,10 +18,11 @@
 	div#logo { font-size: 24px; padding:10px}
 	div#processes-container { font-size: 12px; width: 350px; margin: 20px 0; float: left}
 	div#workflow-container {  font-size: 12px; width: 350px; margin: 20px 0; float: left}
-    div#users-container {  font-size: 12px; width: 350px; margin: 20px 0; float: left}
+    div#users-container {  font-size: 12px; width: 500px; margin: 20px 0; float: left}
     div#users-container table { margin: 1em 0; border-collapse: collapse; width: 100%; }
     div#users-container table td, div#users-contain table th { border: 1px solid #eee; padding: .6em 10px; text-align: left; }
 	div#analytics-container {  font-size: 12px; width: 350px; margin: 20px 0; float: left}
+	div#task-setting-container{  font-size: 12px; width: 500px; margin: 20px 0; float: left}
 	div#navigation {padding-top:60px}
     .ui-dialog .ui-state-error { padding: .3em; }
     .validateTips { border: 1px solid transparent; padding: 0.3em; }
@@ -42,6 +42,14 @@
 	.work-flow-item-start,.work-flow-item-end {margin: 3px; width: 344px; height: 60px; background-color: #ddddff;float:left}
 	.work-flow-wip {margin: 3px; width: 45px; height: 60px; background-color: #ffffcc;float:left}
 	.work-flow-item-operation{padding-top: 18px; padding-right: 5px; float:right}
+
+	.task_setting_table {border:1px solid #d6e9ca;}
+	.task_setting_table td{padding: 1px; border:1px solid #d6e9ca;}
+	.task-setting-table-header,.user-setting-table-header{padding: 1px; border:1px solid #d6e9ca;background-color: #98d98e; color:#4d5aaf; align:center }
+	.task_item_option{margin: 3px; width: 150px; height: 28px; background-color: #ffffcc;float:left}
+	#task_name {margin: 3px; width: 350px; height: 36px; background-color: #c7b370;float:left}
+	#task_size {margin: 3px; width: 350px; height: 36px; background-color: #c7b370;float:left}
+
 	#sortable { }
 	#sortable div { margin: 3px; padding: 0.4em; padding-left: 1.5em; font-size: 1.4em; }
 
@@ -205,6 +213,16 @@
 		);
 	}
 
+	function showTaskSetting(currentObj) {
+		$.post(
+			"selectprocess",
+			{"current_process":$(currentObj).parent().prev().attr('id'),"current_process_name":$(currentObj).parent().prev().text(),"action_name":"showTaskSetting"},
+			function(data,result) {
+				window.location.reload();
+			}
+		);
+	}
+
 	function showAnalyzation(currentObj) {
 		hidecontainers();
 		$( '#analytics-container' ).show();
@@ -274,6 +292,10 @@
 		$(currentObj).parent().parent().remove();
 	}
 
+	function removeWorkTaskItem(currentObj) {
+		$(currentObj).parent().parent().remove();
+	}
+
 	$(window).load(function(){
 		$("#loading").hide();
 	});
@@ -282,6 +304,7 @@
 		$( '#users-container' ).hide();
 		$( '#workflow-container' ).hide();
 		$( '#analytics-container' ).hide();
+		$( '#task-setting-container' ).hide();
 	}
 
 	$(function() {
@@ -303,6 +326,8 @@
 			$( '#users-container' ).show();
 		} else if (action_name === "showWorkFlow") {
 			$( '#workflow-container' ).show();
+		} else if (action_name === "showTaskSetting") {
+			$( '#task-setting-container' ).show();
 		}
 		$( "#sortable" ).sortable();
 		$( "#sortable" ).disableSelection();
@@ -344,10 +369,10 @@
 			strRows = strRows + " <span class='glyphicon glyphicon-user'></span></button>";
 			strRows = strRows + "&nbsp;<button type='button' class='btn btn-default process_operation' title = 'Define WorkFlow' onclick='showWorkflow(this)'>";
 			strRows = strRows + " <span class='glyphicon glyphicon-list'></span></button>";
-			strRows = strRows + "&nbsp;<button type='button' class='btn btn-default process_operation' title = 'Remove Process' onclick='btnDelete(this)'>";
-			strRows = strRows + " <span class='glyphicon glyphicon-remove'></span></button>";
 			strRows = strRows + "&nbsp;<button type='button' class='btn btn-default process_operation' title = 'Analyze Process' onclick='showAnalyzation(this)'>";
 			strRows = strRows + " <span class='glyphicon glyphicon-stats'></span></button>";
+			strRows = strRows + "&nbsp;<button type='button' class='btn btn-default process_operation' title = 'Edit Task Setting' onclick='showTaskSetting(this)'>";
+			strRows = strRows + " <span class='glyphicon glyphicon-pencil'></span></button>";
 			strRows = strRows + "</td></tr>";
 			//strRows = strRows + "<tr><td>ccc</td></tr>";
 			$("#process_list").append(strRows);
@@ -440,13 +465,6 @@
 			//});
 		});
 		$( "#add-process" ).attr('disabled',false);
-
-		//$('.work-flow-item').on('focus', function() {
-		// before = $(this).html();
-		//}).on('blur', function() { 
-		 // if (before != $(this).html()) { $(this).trigger('change'); }
-		//});
-		//$('.work-flow-item').on('change', function() {alert('changed')});
 		
 		$( "#save-workflow").click(function() {
 			var newWorkFlow = new Array();
@@ -475,7 +493,11 @@
 				}
 			);
 		});
-		
+
+		$( ".add-task-option").click(function() {
+			$(this).parent().parent().next().append('<div class = "task_item_option"><div style="float:left" contenteditable=true></div><div style="float:right"><button type="button" class="btn btn-default remove-task-item-option" title = "Remove Item Option" onClick = "removeWorkTaskItem(this)"><span class="glyphicon glyphicon-remove"></span></button></div></div>');
+			
+		});
 	});
 		
 </script>
@@ -688,7 +710,7 @@
 	</div>
 
 	<div id = "workflow-container" class="workflow-container">
-		<div>WorkFlow Defination&nbsp;&nbsp;<button id = "add-workflow" type='button' class='btn btn-default' title = 'Add Flow'><span class='glyphicon glyphicon-plus'></span></button>
+		<div>WorkFlow Setting&nbsp;&nbsp;<button id = "add-workflow" type='button' class='btn btn-default' title = 'Add Flow'><span class='glyphicon glyphicon-plus'></span></button>
 			&nbsp;&nbsp;<button id = "save-workflow" type='button' class='btn btn-default' title = 'Save'><span class='glyphicon glyphicon-ok'></span></button></div>
 		<div class = "work-flow-item-row">
 			<div class="work-flow-item-start" contenteditable=true>
@@ -732,7 +754,7 @@
 		<h1>Process Members&nbsp;&nbsp;<button id = "add-member" type='button' class='btn btn-default'><span class='glyphicon glyphicon-plus'></span></button></h1>
 		<table id="users" class="ui-widget ui-widget-content">
 		<thead>
-		  <tr class="ui-widget-header ">
+		  <tr class="user-setting-table-header">
 			<th height = "30px">Name</th>
 			<th>ID/Email</th>
 			<th>Authority</th>
@@ -752,6 +774,55 @@
 						<% } else { %>
 							<button type='button' class='btn btn-default'  onClick = 'removemember(this)'><span class='glyphicon glyphicon-remove'></span></button>
 						<% } %>
+					</td>
+				  </tr>
+			<% } %>
+		</tbody>
+		</table>
+	</div>
+
+	<div id = "task-setting-container">
+		<h1>Task Setting&nbsp;&nbsp;<button id = "add-member" type='button' class='btn btn-default' title = 'save'><span class='glyphicon glyphicon-ok'></span></button></h1>
+		<table id="task_setting" class="task_setting_table">
+		<thead>
+		  <tr class="task-setting-table-header" align = "center">
+			<th width = "28%" height = "30px">Item Name</th>
+			<th width = "36%">Item Type</th>
+			<th width = "36%">Item Option</th>
+		  </tr>
+		</thead>
+		<tbody id = "task_setting_list">
+
+		<% 
+			for(var task_setting_id in task_settings){ %>
+				 <tr>
+					<td><div name = "user_name"><%=task_settings[task_setting_id].item_name %></div></td>
+					<td>
+						<div name = "user_id">
+							<select name="item_type">
+								<option value="Editable" <% if(task_settings[task_setting_id].item_type === "Editable"){%> selected = "selected" <% } %>>Editable</option>
+								<% if(task_setting_id != "task_name") { %>
+									<option value="Selectable" <% if(task_settings[task_setting_id].item_type === "Selectable"){%> selected = "selected" <% } %>>Selectable</option>
+									<option value="Unused" <% if(task_settings[task_setting_id].item_type === "Unused"){%> selected = "selected" <% } %>>Unused</option>
+								<% } %>
+							</select>
+							<% if(task_settings[task_setting_id].item_type === "Selectable") { %>
+								<button type='button' class='btn btn-default add-task-option' title = 'Add Item Option'><span class='glyphicon glyphicon-plus'></span></button>
+							<% } %>
+						</div>
+					</td>
+					<td>
+						<% 
+						if(task_settings[task_setting_id].item_type === "Selectable") { 
+							for (var k = 0; k<task_settings[task_setting_id].item_options.length;  k++) { %>
+								<div class = "task_item_option">
+									<div style="float:left" contenteditable=true><%=task_settings[task_setting_id].item_options[k] %></div>
+									<div style="float:right"><button type='button' class='btn btn-default remove-task-item-option' title = 'Remove Task Item Option' onClick = "removeWorkTaskItem(this)"><span class='glyphicon glyphicon-remove'></span></button></div>
+								</div>
+								<br />
+						<% } } else {%>
+						<div name = "authority">&nbsp;</div>
+						<% }%>
 					</td>
 				  </tr>
 			<% } %>

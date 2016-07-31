@@ -60,10 +60,13 @@ router.get('/', loginCheck, function(req, res) {
 				console.log("%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%req.session.data:" + data);
 				console.log("success");
 				process_members = data.members;
+				task_settings = data.task_settings;
 				process_workflow = data.work_flow;
 				console.log(process_members);
 				console.log("***************************************************");
-				res.render('index',{ "login_user_id":req.session.user_id, "processes":req.session.processes, "current_process":req.session.user_current_process, "process_workflow":process_workflow, "process_members":process_members, "action_name":req.session.action_name });
+				res.render('index',{ "login_user_id":req.session.user_id, "processes":req.session.processes, 
+					"current_process":req.session.user_current_process, "process_workflow":process_workflow, 
+					"process_members":process_members, "task_settings":task_settings, "action_name":req.session.action_name });
 			}
 		});
 	  }
