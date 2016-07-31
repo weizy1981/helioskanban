@@ -48,8 +48,10 @@
 	<script>
 	jQuery(document).ready(function($) {
 		$('#btn_add_task').click(function(){
+			clearInputTemp();
 			$('#add_edit_task_lable').html('Add task');
 			$('#btn_add').val('Add');
+			$('#btn_add').attr("ng-click","add()");
 
 			$('.theme-popover-mask').fadeIn(100);
 			$('.theme-popover').slideDown(200);
@@ -114,6 +116,8 @@
                 <ol>
                      <!--<li><h4>Enter task info.</h4></li>-->
 					 <li>
+						<input type="text" name="task_id" ng-model="task.task_id" required class="ipt" hidden>
+						<input type="text" name="task_rev" ng-model="task.task_rev" required class="ipt" hidden>
 						<strong class="control-label">Task Name<font color="red">(*)</font>:</strong>
 						<input type="text" name="taskName" ng-model="task.taskName" required class="ipt">
 						
@@ -279,13 +283,77 @@
 			$(currentObj).parent().parent().parent().remove();
 		}
 
+		function clearInputTemp(){
+			$("input[name='taskName']").val("");
+
+			//TODO
+		}
+
 		function editTask(currentObj){
+
+			clearInputTemp();
 			$('#add_edit_task_lable').html('Edit task');
 			$('#btn_add').val('Edit');
+			$('#btn_add').attr("ng-click","edit()");
 			$('.theme-popover-mask').fadeIn(100);
 			$('.theme-popover').slideDown(200);
 
 			//TODO: fetch detail from DB
+				
+			var toEditTaskObj = {};
+			toEditTaskObj.process_rev = $('#process').attr("rev");
+			toEditTaskObj.task_id = $(currentObj).parent().parent().parent().attr('id');
+			toEditTaskObj.task_rev = $(currentObj).parent().parent().parent().attr('rev');
+
+			$.getJSON(
+				"/tasks/edittask",
+				toEditTaskObj,
+				function(data,status){
+					if (data.status != '"NG"') {
+						$("input[name='task_id']").val(data.task_id);
+						$("input[name='task_rev']").val(data.task_rev);
+						//$('#err-message-content').text(data.err);
+						$("input[name='taskName']").val(data.task_name);
+						// $("input[name='taskTypeID']").attr('value', 'string:' + data.task_type);
+						// var count=$("input[name='taskTypeID']").length;
+						// for(var i=0;i<count;i++) 
+						// { if($("input[name='taskTypeID']").get(0).options[i].text === data.task_type) 
+						// { 
+						// $("input[name='taskTypeID']").get(0).options[i].selected = true; 
+						// break; 
+						// } 
+						// }
+						//alert(data.task_type);
+						//alert($("input[name='taskTypeID'] option[label='" + data.task_type + "']").find("option:selected").text());
+						//$("input[name='taskTypeID'] option[label='" + "Regular Operation" + "']").attr("selected", true);
+						
+						alert($("input[name='taskTypeID']").children("option"));
+						$("input[name='taskTypeID'] option").find(":selected").text(data.task_type);
+						// $("input[name='taskTypeID'] option").each(function(){
+						// 	alert("****");
+						// 	var temp_value = $(this).val();
+						// 	alert("****");
+						// 	alert(temp_value);
+						// 	alert(data.task_type);
+						// 	if(temp_value == data.task_type){
+						// 		alert(temp_value);
+						// 			$(this).attr("selected",true);
+						// 	}
+						// });
+
+
+						// $("input[name='taskTypeID'] option[text=" + data.task_type + "]").attr("selected",true);
+						$("input[name='startEst']").val(data.task_start_est);
+						$("input[name='finishEst']").val(data.task_end_est);
+						$("input[name='totalWork']").val(data.task_totaltime);
+						//$("input[name='taskType']").val(data.task_remaintime);
+						$("input[name='owner']").val(data.task_assignment);
+						
+					}
+
+					
+				}
+			)
 
 		}	
 
