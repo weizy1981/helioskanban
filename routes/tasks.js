@@ -212,9 +212,11 @@ router.post('/add',loginCheck, function(req, res) {
 		task_end_est : req.body.finishEst,
 		task_priority : "A",
 		task_type : req.body.taskTypeID,
+		task_systemname : req.body.systemName,
 		task_totaltime : req.body.totalWork,
 		task_remaintime : req.body.totalWork,
 		task_assignment : req.body.owner,
+		task_approver : req.body.approver,
 		complete_type : ""
 	}
 
@@ -279,7 +281,7 @@ router.get('/edittask',loginCheck, function(req,res){
 				data = {"status": "NG"};
 			} else {
 				console.log("success");
-				data = {"status": "OK", "task_name": data.task_name, "task_type": data.task_type, "task_start_est": data.task_start_est, "task_end_est": data.task_end_est, "task_totaltime": data.task_totaltime, "task_remaintime": data.task_remaintime, "task_assignment": data.task_assignment};				
+				data = {"status": "OK", "task_name": data.task_name, "task_type": data.task_type, "system_name": data.task_systemname, "task_start_est": data.task_start_est, "task_end_est": data.task_end_est, "task_totaltime": data.task_totaltime, "task_remaintime": data.task_remaintime, "task_assignment": data.task_assignment, "task_approver": data.task_approver, "task_detail": data.task_detail};				
 			}
 			res.end(JSON.stringify(data));
 		});
