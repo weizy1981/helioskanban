@@ -193,6 +193,37 @@
 		);
 	}
 
+	function saveTaskSetting() {
+		var task_setting_list = $("#task_setting_list");
+		task_setting_list.children().each(function(){
+			userItem  = $(this).children();
+			//alert("addd");
+		});
+		var task_settings = {};
+		$.each(task_setting_list.children(),function(colIndex,objProcess) {
+			var task_item = {};
+			var task_item_options = new Array();
+			task_item.item_name = $(objProcess).children(":first").children().eq(1).text();
+			task_item.item_type = $(objProcess).children().eq(1).children().eq(0).children().eq(0).val();
+			if (task_item.item_type === "Selectable") {
+				$.each($(objProcess).children().eq(2).children(),function(optionIndex,objOption) {
+					task_item_options.push($(objOption).children(":first").text());
+				});
+			}
+			task_item.item_options = task_item_options;
+			task_settings[$(objProcess).children(":first").children().eq(0).text()] = task_item;
+		});
+		//console.log(JSON.stringify(task_settings));
+		//alert(JSON.stringify(task_settings));
+		$.post(
+			"/savetasksetting",
+			{"task_settings":JSON.stringify(task_settings)},
+			function(data,result) {
+				window.location.reload();
+			}
+		);
+	}
+
 	function showEditMember(currentObj) {
 		$.post(
 			"selectprocess",
@@ -307,6 +338,17 @@
 		$( '#task-setting-container' ).hide();
 	}
 
+	function changItemType(currentObj) {
+		var task_type = $(currentObj).val();
+		if (task_type === "Selectable") {
+			$(currentObj).next().show();
+			$(currentObj).parent().parent().next().children().show();
+		} else {
+			$(currentObj).next().hide();
+			$(currentObj).parent().parent().next().children().hide();
+		}
+	}	
+
 	$(function() {
 		$( "#add-member" ).button().on( "click", function() {
 			$( "#user_list" ).append( '<tr>' +
@@ -319,7 +361,10 @@
 				'</tr>' );
 		});
 
+
+
 		hidecontainers();
+		$(".task_setting_id").hide();
 		
 		var action_name = JSON.parse('<%-JSON.stringify(action_name) %>');
 		if (action_name === "showEditMember") {
@@ -422,13 +467,6 @@
 		$( "#add-process" ).on( "click", function() {
 			var now = new Date();
 			var newProcessID = "process_" + now.getTime();
-
-			//strRows = "<tr class = 'new_process_item_row' id = ''>";
-			//strRows = strRows + "<td class = 'new_process_select' id = '" + newProcessID + "' contenteditable=true>New Process</td><td>";
-			//strRows = strRows + "&nbsp;<button type='button' class='btn btn-default process_operation' title = 'Save' onclick='showWorkflow(this)'>";
-			//strRows = strRows + " <span class='glyphicon glyphicon-ok'></span></button>";
-			//strRows = strRows + "</td></tr>";
-
 			strRows = "<tr class = 'process_item' id = 'new_process_item'>";
 			strRows = strRows + "<td class = 'new_process_select' id ='"+ newProcessID +"' contenteditable=true><div contenteditable=true>New Process</div></td><td>";
 			strRows = strRows + "&nbsp;<button type='button' class='btn btn-default process_operation' title = 'Save' onclick='saveNewProcess(this)'>";
@@ -442,27 +480,6 @@
 			$('#new_process_item').css("color","white");
 			$('.new_process_select').focus();
 			$(this).attr('disabled',true);
-			//$.post(
-			//	"/addprocess",
-			//	{"current_process":newProcessID},
-			//	function(data,result) {
-					//window.location.href = 'http://' + window.location.host  + '/tasks';
-			//	}
-			//);
-			//$(eval(newProcessIDString)).on('focus', function() {
-			//  before = $(this).html();
-			//}).on('blur', function() { 
-			//  if (before != $(this).html()) { $(this).trigger('change'); }
-			//});
-			//$(eval(newProcessIDString)).on('change', function() {
-			//	$.post(
-			//		"/changeprocessname",
-			//		{"new_process_name":$('.new_process_select').text()},
-			//		function(data,result) {
-						//window.location.href = 'http://' + window.location.host  + '/tasks';
-			//		}
-			//	);
-			//});
 		});
 		$( "#add-process" ).attr('disabled',false);
 		
@@ -495,8 +512,7 @@
 		});
 
 		$( ".add-task-option").click(function() {
-			$(this).parent().parent().next().append('<div class = "task_item_option"><div style="float:left" contenteditable=true></div><div style="float:right"><button type="button" class="btn btn-default remove-task-item-option" title = "Remove Item Option" onClick = "removeWorkTaskItem(this)"><span class="glyphicon glyphicon-remove"></span></button></div></div>');
-			
+			$(this).parent().parent().next().append('<div class = "task_item_option"><div style="float:left" contenteditable=true>New Option</div><div style="float:right"><button type="button" class="btn btn-default remove-task-item-option" title = "Remove Item Option" onClick = "removeWorkTaskItem(this)"><span class="glyphicon glyphicon-remove"></span></button></div></div>');	
 		});
 	});
 		
@@ -782,7 +798,7 @@
 	</div>
 
 	<div id = "task-setting-container">
-		<h1>Task Setting&nbsp;&nbsp;<button id = "add-member" type='button' class='btn btn-default' title = 'save'><span class='glyphicon glyphicon-ok'></span></button></h1>
+		<h1>Task Setting&nbsp;&nbsp;<button id = "save-task-setting" type='button' class='btn btn-default' title = 'save' onClick = "saveTaskSetting()"><span class='glyphicon glyphicon-ok'></span></button></h1>
 		<table id="task_setting" class="task_setting_table">
 		<thead>
 		  <tr class="task-setting-table-header" align = "center">
@@ -796,10 +812,10 @@
 		<% 
 			for(var task_setting_id in task_settings){ %>
 				 <tr>
-					<td><div name = "user_name"><%=task_settings[task_setting_id].item_name %></div></td>
+					<td><div class = "task_setting_id"><%=task_setting_id %></div><div name = "task_name" class = "task_item_option" contenteditable=true><%=task_settings[task_setting_id].item_name %></div></td>
 					<td>
-						<div name = "user_id">
-							<select name="item_type">
+						<div name = "task_type">
+							<select name="item_type" onChange = "changItemType(this)">
 								<option value="Editable" <% if(task_settings[task_setting_id].item_type === "Editable"){%> selected = "selected" <% } %>>Editable</option>
 								<% if(task_setting_id != "task_name") { %>
 									<option value="Selectable" <% if(task_settings[task_setting_id].item_type === "Selectable"){%> selected = "selected" <% } %>>Selectable</option>
@@ -808,6 +824,8 @@
 							</select>
 							<% if(task_settings[task_setting_id].item_type === "Selectable") { %>
 								<button type='button' class='btn btn-default add-task-option' title = 'Add Item Option'><span class='glyphicon glyphicon-plus'></span></button>
+							<% } else { %>
+								<button type='button' class='btn btn-default add-task-option' title = 'Add Item Option' style="display: none;"><span class='glyphicon glyphicon-plus'></span></button>
 							<% } %>
 						</div>
 					</td>
@@ -819,7 +837,6 @@
 									<div style="float:left" contenteditable=true><%=task_settings[task_setting_id].item_options[k] %></div>
 									<div style="float:right"><button type='button' class='btn btn-default remove-task-item-option' title = 'Remove Task Item Option' onClick = "removeWorkTaskItem(this)"><span class='glyphicon glyphicon-remove'></span></button></div>
 								</div>
-								<br />
 						<% } } else {%>
 						<div name = "authority">&nbsp;</div>
 						<% }%>

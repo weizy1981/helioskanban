@@ -39,30 +39,30 @@ var loginCheck = function(req, res, next) {
 router.get('/', loginCheck, function(req, res) {
 	db.find({selector:{process_id:req.session.user_current_process}}, function(er, result) {
 	  console.log('Found %d documents with name Alice', result.docs.length);
-	if (result == null || typeof(result) == "undefined") {
-		console.log("fail");
-		res.render('login');
-	} else {
-		console.log("success");
-			// get current progress
-			var current_progress = {};
-			var kanban_info = {};
-			db.get(req.session.user_current_process, function(err, data) {
-				console.log("Error:", err);
-				console.log("Data:", data);
-				if (data == null || typeof(data) == "undefined") {
-					console.log("fail");
-					res.render('login');
-				} else {
-					console.log("success");
-					current_progress = data.work_flow;
-					kanban_info = {"column_number":process.length}
-					res.render('kanban', { "tasks": result.docs, "process":current_progress,"current_progress_name":req.session.user_current_process_name, "rev": data._rev });
-				}
-			});
-		//}
-		
-	}
+		if (result == null || typeof(result) == "undefined") {
+			console.log("fail");
+			res.render('login');
+		} else {
+			console.log("success");
+				// get current progress
+				var current_progress = {};
+				var kanban_info = {};
+				db.get(req.session.user_current_process, function(err, data) {
+					console.log("Error:", err);
+					console.log("Data:", data);
+					if (data == null || typeof(data) == "undefined") {
+						console.log("fail");
+						res.render('login');
+					} else {
+						console.log("success");
+						current_progress = data.work_flow;
+						kanban_info = {"column_number":process.length}
+						res.render('kanban', { "tasks": result.docs, "process":current_progress,"current_progress_name":req.session.user_current_process_name, "rev": data._rev });
+					}
+				});
+			//}
+			
+		}
 	});
 });
 

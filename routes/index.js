@@ -111,7 +111,62 @@ router.post('/addprocess', loginCheck, function(req, res) {
 				  "update_time": "",
 				  "description": "Put tasks finished to this column."
 				}
-			]
+			],
+			"task_settings": {
+				"task_name": {
+				  "item_name": "Task Name",
+				  "item_type": "Editable",
+				  "item_options": []
+				},
+				"task_type1": {
+				  "item_name": "Task Type1",
+				  "item_type": "Selectable",
+				  "item_options": [
+					"Regular",
+					"Irregular",
+					"ID Application",
+					"Inquiry"
+				  ]
+				},
+				"task_type2": {
+				  "item_name": "Task Type2",
+				  "item_type": "Selectable",
+				  "item_options": [
+					"e-Quotation",
+					"e-HR",
+					"e-Market"
+				  ]
+				},
+				"task_size": {
+				  "item_name": "Task Size",
+				  "item_type": "Selectable",
+				  "item_options": [
+					"XL",
+					"L",
+					"M",
+					"S"
+				  ]
+				},
+				"task_emergency": {
+				  "item_name": "Emergency",
+				  "item_type": "Selectable",
+				  "item_options": [
+					"☆☆☆",
+					"☆☆",
+					"☆"
+				  ]
+				},
+				"task_start_estimate": {
+				  "item_name": "StartTime Estimate",
+				  "item_type": "Editable",
+				  "item_options": []
+				},
+				"task_end_estimate": {
+				  "item_name": "EndTime Estimate",
+				  "item_type": "Unused",
+				  "item_options": []
+				}
+			}
 			}, function(err, data) {
 				console.log("Error:", err);
 				console.log("Data:", data);
@@ -200,6 +255,53 @@ router.post('/saveworkflow', loginCheck, function(req, res) {
 		});
 		doc.work_flow = new_work_flow_obj;
 		console.log(doc.work_flow);
+		db.insert(doc, function(err, data) {
+			console.log("Error:", err);
+			console.log("Data:", data);
+			callback(err, data);
+		});
+	};
+
+	async.series([readProcess, updateProcess],function(err, results){
+		console.log("final err:" + err);
+		if (err === null) {
+			//err = "Task has been changed edited by other user, please try again.";
+			res.contentType('json');
+			res.send(JSON.stringify({ "status":"ok", "err":""}));  
+			res.end(); 
+		} else {
+			res.contentType('json');
+			res.send(JSON.stringify({ "status":"ok", "err":""}));  
+			res.end(); 
+		}
+	});
+});
+
+//***********************************************************************
+// Save Task Setting
+//***********************************************************************
+router.post('/savetasksetting', loginCheck, function(req, res) {
+
+	// read current process
+	var readProcess = function(callback) {
+	  console.log("Reading process");;
+	  db.get(req.session.user_current_process, function(err, data) {
+		console.log("Error:", err);
+		console.log("Data:", data);
+		// keep a copy of the doc so we know its revision token
+		doc = data;
+   	    callback(err, data);
+	  });
+	};
+
+	// update current process
+	var updateProcess = function(callback) {
+		console.log("Updating process");
+		console.log("&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&77");
+		console.log(req.body.task_settings);
+		console.log(JSON.parse(req.body.task_settings));
+		doc.task_settings = JSON.parse(req.body.task_settings);
+		console.log(doc.task_settings);
 		db.insert(doc, function(err, data) {
 			console.log("Error:", err);
 			console.log("Data:", data);
