@@ -290,19 +290,19 @@
 			//TODO: fetch detail from DB
 				
 			var toEditTaskObj = {};
-			toEditTaskObj.process_rev = $('#process').attr("rev");
 			toEditTaskObj.task_id = $(currentObj).parent().parent().parent().attr('id');
 			toEditTaskObj.task_rev = $(currentObj).parent().parent().parent().attr('rev');
-
+			//alert(JSON.stringify(toEditTaskObj));
 			$.getJSON(
 				"/tasks/edittask",
-				toEditTaskObj,
+				{"task_id":toEditTaskObj.task_id},
 				function(data,status){
 					if (data.status != '"NG"') {
-						$("input[name='task_id']").val(data.task_id);
-						$("input[name='task_rev']").val(data.task_rev);
+						//alert(JSON.stringify(data.taskObj));
+						$("input[name='task_id']").val(data.taskObj._id).trigger('change');
+						$("input[name='task_rev']").val(data.taskObj._rev).trigger('change');
 						//$('#err-message-content').text(data.err);
-						$("input[name='taskName']").val(data.task_name);
+						$("input[name='taskName']").val(data.taskObj.task_name).trigger('change');
 						$("select[name='taskTypeID'] option[label='" + data.task_type + "']").attr("selected", true);
 						$("select[name='systemName'] option[label='" + data.system_name + "']").attr("selected", true);
 						

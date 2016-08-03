@@ -79,11 +79,18 @@ angular.module('myApp',[]).controller('tasksCtrl', function($scope, $http){
     }
 
    $scope.edit = function(){
+		
+		var editTaskObj = {};
+		editTaskObj.task_id = $scope.task.task_id;
+		editTaskObj.task_rev = $scope.task.task_rev;
+		editTaskObj.task_name = $scope.task.taskName;
+		//console.log(JSON.stringify($scope.task));
+		alert(JSON.stringify(editTaskObj));
 
-        $http({
+		$http({
             method : 'POST',
             url : '/tasks/edittask',
-            data : $scope.task,
+            data : JSON.stringify(editTaskObj),
             headers : {'Content-Type': 'application/json'}
         })
             .success(function(data){
