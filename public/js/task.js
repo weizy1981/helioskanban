@@ -85,7 +85,7 @@ angular.module('myApp',[]).controller('tasksCtrl', function($scope, $http){
 		editTaskObj.task_rev = $scope.task.task_rev;
 		editTaskObj.task_name = $scope.task.taskName;
 		//console.log(JSON.stringify($scope.task));
-		alert(JSON.stringify(editTaskObj));
+		//alert(JSON.stringify(editTaskObj));
 
 		$http({
             method : 'POST',
