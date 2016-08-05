@@ -115,8 +115,24 @@
      <div class="theme-popbod dform" ng-app="myApp" ng-controller="tasksCtrl">
 		 
            <form class="theme-signin" action="" method="" novalidate name="taskForm">
+				<input type="text" name="task_id" id = "task_setting_task_id" ng-model="task.task_id" required class="ipt" hidden>
+				<input type="text" name="task_rev" id = "task_setting_task_rev" ng-model="task.task_rev" required class="ipt" hidden>
                 <ol>
-                     <!--<li><h4>Enter task info.</h4></li>-->
+
+                <% for(var task_setting_id in task_settings){ %>
+					<% if(task_settings[task_setting_id].item_type === "Unused") {
+					} else { %>
+						<li>
+							<strong class="control-label"><%=task_settings[task_setting_id].item_name %></strong>
+						<% if (task_settings[task_setting_id].item_type === "Selectable") { %>
+							<select name="<%=task_setting_id %>" id = "task_setting_<%=task_setting_id %>" ng-model="task.<%=task_setting_id %>" ng-options="x for x in <%=task_setting_id %>" required class="ipt"></select>
+						<% } else if (task_settings[task_setting_id].item_type === "Editable") { %>
+							<input type="text" name="<%=task_setting_id %>" id = "task_setting_<%=task_setting_id %>" ng-model="task.<%=task_setting_id %>" required class="ipt">
+						<% } %>
+						</li>
+					<% }%>				 
+				<% } %>		
+				<!--
 					 <li>
 						<input type="text" name="task_id" ng-model="task.task_id" required class="ipt" hidden>
 						<input type="text" name="task_rev" ng-model="task.task_rev" required class="ipt" hidden>
@@ -161,7 +177,7 @@
 					 	
 						 <select name="totalWork" ng-model="task.totalWork" ng-options="x for x in totalWorks" required class="ipt"></select>
 					 </li>
-					 <!--<li>
+					 <li>
 						<strong>Remaining Work:</strong>
 					 	<input type="text" name="remainingWork" ng-model="task.remainingWork" required class="ipt">
 						<span style="color:red" ng-show="taskForm.remainingWork.$dirty && taskForm.remainingWork.$invalid">
@@ -169,11 +185,12 @@
 								Task id is blank.
 							</span>
 						</span>
-					 </li>-->
+					 </li>
 					 <li>
 						<strong class="control-label">Detail:</strong>
 					 	<textarea name="detail" ng-model="task.detail" required rows="5" style="height:80px;" class="ipt"></textarea>
 					 </li>
+					 -->
                      <li>
 						<span style="color:red;">(*) is required.</span>
 						<input type="button" ng-click="reset()" class="btn btn-primary" style="margin-left: 30px;" value="Reset">
@@ -246,29 +263,42 @@
 		}
 
 		function clearInputTemp(){
+			
+			var task_settings_json = '<%-JSON.stringify(task_settings) %>';
+			var task_settings = JSON.parse(task_settings_json);
+			for(var task_setting_id in task_settings){
+				
+				var itemIdString = "'#task_setting_" + task_setting_id + "'";
+					
+				if ($(eval(itemIdString))[0]) {
+						$(eval(itemIdString)).val("").trigger('change');	
+					
+				}
+				
+			}
 
-			$("input[name='task_id']").val("");
-			$("input[name='task_rev']").val("");
+			//$("input[name='task_id']").val("");
+			//$("input[name='task_rev']").val("");
 			//$('#err-message-content').text(data.err);
-			$("input[name='taskName']").val("");
-			$("select[name='taskTypeID']").val("");
-			$("select[name='systemName']").val("");
+			//$("input[name='taskName']").val("");
+			//$("select[name='taskTypeID']").val("");
+			//$("select[name='systemName']").val("");
 			// $("select[name='taskTypeID'] option:first").attr("selected", true);
 			// $("select[name='systemName'] option:first").attr("selected", true);
 			
-			$("input[name='startEst']").val("");
-			$("input[name='finishEst']").val("");
+			//$("input[name='startEst']").val("");
+			//$("input[name='finishEst']").val("");
 		
-			$("select[name='totalWork']").val("");
-			$("select[name='owner']").val("");
-			$("select[name='approver']").val("");
+			//$("select[name='totalWork']").val("");
+			//$("select[name='owner']").val("");
+			//$("select[name='approver']").val("");
 
 			// $("select[name='totalWork'] option:first").attr("selected", true);
 			
 			// $("select[name='owner'] option:first").attr("selected", true);
 			// $("select[name='approver'] option:first").attr("selected", true);
 
-			$("textarea[name='detail']").val("");
+			//$("textarea[name='detail']").val("");
 
 			//TODO
 		}
@@ -292,13 +322,37 @@
 			var toEditTaskObj = {};
 			toEditTaskObj.task_id = $(currentObj).parent().parent().parent().attr('id');
 			toEditTaskObj.task_rev = $(currentObj).parent().parent().parent().attr('rev');
+			$('#task_setting_task_id').val(toEditTaskObj.task_id).trigger('change');
+			$('#task_setting_task_rev').val(toEditTaskObj.task_rev).trigger('change');
 			//alert(JSON.stringify(toEditTaskObj));
 			$.getJSON(
 				"/tasks/edittask",
 				{"task_id":toEditTaskObj.task_id},
 				function(data,status){
 					if (data.status != '"NG"') {
+						
+						for(var task_setting_id in data.taskObj){
+							
+							var itemIdString = "'#task_setting_" + task_setting_id + "'";
+								
+							if ($(eval(itemIdString))[0]) {
+								if ($(eval(itemIdString))[0].tagName === "INPUT") {
+									$(eval(itemIdString)).val(data.taskObj[task_setting_id]).trigger('change');	
+								} else if ($(eval(itemIdString))[0].tagName === "SELECT") {
+									itemIdString1 = "'#task_setting_" + task_setting_id + "'";
+									//$(eval(itemIdString1)).find("option").attr("selected", false).trigger('change');
+									itemIdString2 = "'#task_setting_" + task_setting_id + " option[label = "+ data.taskObj[task_setting_id]+ "]'";
+									//alert($(eval(itemIdString2)));
+									$(eval(itemIdString2)).attr("selected", true).trigger('change');
+									//alert($(eval(itemIdString)).val());
+									//$("select[name='approver'] option[label='" + data.task_approver + "']").attr("selected", true);
+								}
+								
+							}
+							
+						}
 						//alert(JSON.stringify(data.taskObj));
+						/**
 						$("input[name='task_id']").val(data.taskObj._id).trigger('change');
 						$("input[name='task_rev']").val(data.taskObj._rev).trigger('change');
 						//$('#err-message-content').text(data.err);
@@ -315,7 +369,7 @@
 						$("select[name='approver'] option[label='" + data.task_approver + "']").attr("selected", true);
 
 						$("textarea[name='detail']").val(data.task_detail);
-						
+						*/
 					}
 
 					

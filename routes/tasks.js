@@ -57,7 +57,7 @@ router.get('/', loginCheck, function(req, res) {
 						console.log("success");
 						current_progress = data.work_flow;
 						kanban_info = {"column_number":process.length}
-						res.render('kanban', { "tasks": result.docs, "process":current_progress,"current_progress_name":req.session.user_current_process_name, "rev": data._rev });
+						res.render('kanban', { "tasks": result.docs, "process":current_progress,"current_progress_name":req.session.user_current_process_name, "task_settings":data.task_settings, "rev": data._rev });
 					}
 				});
 			//}
@@ -181,8 +181,8 @@ router.get('/add',loginCheck, function(req,res){
 				data = {"status": "NG"};
 			} else {
 				console.log("success");
-				data = {"status": "OK", "system_names": data.system_names, "task_types": data.task_types, "members": data.members};		
-				//data = {"status": "OK", "task_settings": data.task_settings};
+				//data = {"status": "OK", "system_names": data.system_names, "task_types": data.task_types, "members": data.members};		
+				data = {"status": "OK", "task_settings": data.task_settings};
 			}
 			res.end(JSON.stringify(data));
 		});
@@ -192,43 +192,53 @@ router.get('/add',loginCheck, function(req,res){
 
 router.post('/add',loginCheck, function(req, res) {
 	
+	var err = "";
+
 	// update a task document
-	console.log("Updating task document");
+	console.log("Inserting task document");
 	// make a change to the document, using the copy we kept from reading it back
 	//console.log("before update:" + doc.task_status);
 	//doc.id = "task_20160706010101";
 	var now = new Date();
 	var strTaskID = "task_" + now.getTime();
 	//strTaskID = "task_20160707010101";
-    console.log(strTaskID);
-	doc = {
-		_id : strTaskID,
-		type : "task",
-		process_id : req.session.user_current_process,
-		task_name : req.body.taskName,
-		task_status : "1",
-		task_detail : req.body.detail,
-		task_start_est : req.body.startEst,
-		task_end_est : req.body.finishEst,
-		task_priority : "A",
-		task_type : req.body.taskTypeID,
-		task_systemname : req.body.systemName,
-		task_totaltime : req.body.totalWork,
-		task_remaintime : req.body.totalWork,
-		task_assignment : req.body.owner,
-		task_approver : req.body.approver,
-		complete_type : ""
-	}
-
-	db.insert(doc, function(err, data) {
-		console.log("Error:", err);
-		console.log("Data:", data);
-	});
-
-
-
-
-var err = "";
+	var insertTask = function(callback) {
+		var newTask = {};
+		newTask._id = strTaskID;
+		newTask.type = "task";
+		newTask.process_id = req.session.user_current_process;
+		for(var task_setting_id in doc_process.task_settings){
+			if(doc_process.task_settings[task_setting_id].item_type === "Unused") {
+			} else {
+				newTask[task_setting_id] = req.body[task_setting_id];
+			}
+		}
+		/**
+		doc = {
+			_id : strTaskID,
+			type : "task",
+			process_id : req.session.user_current_process,
+			task_name : req.body.task_name,
+			task_status : "1",
+			task_detail : req.body.detail,
+			task_start_est : req.body.startEst,
+			task_end_est : req.body.finishEst,
+			task_priority : "A",
+			task_type : req.body.taskTypeID,
+			task_systemname : req.body.systemName,
+			task_totaltime : req.body.totalWork,
+			task_remaintime : req.body.totalWork,
+			task_assignment : req.body.owner,
+			task_approver : req.body.approver,
+			complete_type : ""
+		}
+		*/
+		db.insert(newTask, function(err, data) {
+			console.log("Error:", err);
+			console.log("Data:", data);
+			callback(err, data);
+		});
+	};
 
 	// read current process
 	var readProcess = function(callback) {
@@ -255,7 +265,7 @@ var err = "";
 			});	  
 	};
 
-	async.series([readProcess, updateProcess],function(err, results){
+	async.series([readProcess, updateProcess,insertTask],function(err, results){
 		console.log("final err:" + err);
 		console.log("final results1:" + JSON.stringify(results[0]));
 		console.log("final results2:" + JSON.stringify(results[1]));
@@ -313,7 +323,16 @@ router.post('/edittask', function(req,res){
 			  err = "error";
 			  callback(err, "Task has been modified by other user, please try again.");
 		  } else {
+			console.log("&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&7");
+			console.log(doc.task_name);
 			doc.task_name = req.body.task_name;
+			doc.task_type1 = req.body.task_type1;
+			doc.task_type2 = req.body.task_type2;
+			doc.task_size = req.body.task_size;
+			doc.task_emergency = req.body.task_emergency;
+			doc.task_start_estimate = req.body.task_start_estimate;
+			doc.task_end_estimate = req.body.task_end_estimate;
+			
 			db.insert(doc, function(err, data) {
 				console.log("Error:", err);
 				console.log("Data:", data);
