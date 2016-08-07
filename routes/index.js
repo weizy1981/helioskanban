@@ -425,6 +425,7 @@ router.post('/addmember', loginCheck, function(req, res) {
 		var newUserObj = {};
 		newUserObj.user_id = req.body.user_id;
 		newUserObj.user_name = req.body.user_name;
+		newUserObj.user_nickname = req.body.user_nickname;
 		newUserObj.authority = req.body.authority;
 		doc.members.push(newUserObj);
 		db.insert(doc, function(err, data) {

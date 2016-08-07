@@ -24,13 +24,14 @@ angular.module('myApp',[]).controller('tasksCtrl', function($scope, $http){
 
     $http.get('/tasks/add').success(function(response) {
 		//alert(response.task_settings);
+		$scope.task = {};
 		for(var task_setting_id in response.task_settings){
 			if (response.task_settings[task_setting_id].item_type === "Selectable") {
-				$scope[task_setting_id] = response.task_settings[task_setting_id].item_options;
+				$scope.task[task_setting_id] = response.task_settings[task_setting_id].item_options;
 				//alert(JSON.stringify($scope[task_setting_id]));
 			}
 		}
-
+		console.log($scope);
         //$scope.systemNames = response.task_settings.system_names;
         //$scope.taskTypeIDs = response.task_types;
         //alert(response.members[0].user_name);
@@ -53,18 +54,41 @@ angular.module('myApp',[]).controller('tasksCtrl', function($scope, $http){
     })
 
     $scope.reset = function(){
-        $scope.task = null;
-        $scope.task ={
-            'totalWork': 'Normal'
-        }
+        //$scope.task = null;
+        //$scope.task ={
+        //    'totalWork': 'Normal'
+        //}
     }
     
     $scope.add = function(){
+		var editTaskObj = {};
+		editTaskObj.task_id = $scope.task.task_id;
+		editTaskObj.task_rev = $scope.task.task_rev;
+		editTaskObj.task_name = $scope.task.task_name;
+		editTaskObj.task_assignment = document.getElementById("task_setting_task_assignment").value;
+		if (document.getElementById("task_setting_task_type1")) {
+			editTaskObj.task_type1 = document.getElementById("task_setting_task_type1").value;
+		}
+		if (document.getElementById("task_setting_task_type2")) {
+			editTaskObj.task_type2 = document.getElementById("task_setting_task_type2").value;
+		}
+		if (document.getElementById("task_setting_task_size")) {
+			editTaskObj.task_size = document.getElementById("task_setting_task_size").value;
+		}
+		if (document.getElementById("task_setting_task_emergency")) {
+			editTaskObj.task_emergency = document.getElementById("task_setting_task_emergency").value;
+		}
+		if (document.getElementById("task_setting_task_start_estimate")) {
+			editTaskObj.task_start_estimate = document.getElementById("task_setting_task_start_estimate").value;
+		}
+		if (document.getElementById("task_setting_task_end_estimate")) {
+			editTaskObj.task_end_estimate = document.getElementById("task_setting_task_end_estimate").value;
+		}
 
         $http({
             method : 'POST',
             url : '/tasks/add',
-            data : $scope.task,
+            data : JSON.stringify(editTaskObj),
             headers : {'Content-Type': 'application/json'}
         })
             .success(function(data){
@@ -91,14 +115,32 @@ angular.module('myApp',[]).controller('tasksCtrl', function($scope, $http){
 		var editTaskObj = {};
 		editTaskObj.task_id = $scope.task.task_id;
 		editTaskObj.task_rev = $scope.task.task_rev;
-		editTaskObj.task_name = $scope.task.taskName;
-		//console.log(JSON.stringify($scope.task));
-		//alert(JSON.stringify($scope.task));
+		editTaskObj.task_name = $scope.task.task_name;
+		editTaskObj.task_assignment = document.getElementById("task_setting_task_assignment").value;
+		if (document.getElementById("task_setting_task_type1")) {
+			editTaskObj.task_type1 = document.getElementById("task_setting_task_type1").value;
+		}
+		if (document.getElementById("task_setting_task_type2")) {
+			editTaskObj.task_type2 = document.getElementById("task_setting_task_type2").value;
+		}
+		if (document.getElementById("task_setting_task_size")) {
+			editTaskObj.task_size = document.getElementById("task_setting_task_size").value;
+		}
+		if (document.getElementById("task_setting_task_emergency")) {
+			editTaskObj.task_emergency = document.getElementById("task_setting_task_emergency").value;
+		}
+		if (document.getElementById("task_setting_task_start_estimate")) {
+			editTaskObj.task_start_estimate = document.getElementById("task_setting_task_start_estimate").value;
+		}
+		if (document.getElementById("task_setting_task_end_estimate")) {
+			editTaskObj.task_end_estimate = document.getElementById("task_setting_task_end_estimate").value;
+		}
+		//alert(JSON.stringify(editTaskObj));
 
 		$http({
             method : 'POST',
             url : '/tasks/edittask',
-            data : JSON.stringify($scope.task),
+            data : JSON.stringify(editTaskObj),
             headers : {'Content-Type': 'application/json'}
         })
             .success(function(data){

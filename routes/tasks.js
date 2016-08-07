@@ -56,8 +56,11 @@ router.get('/', loginCheck, function(req, res) {
 					} else {
 						console.log("success");
 						current_progress = data.work_flow;
-						kanban_info = {"column_number":process.length}
-						res.render('kanban', { "tasks": result.docs, "process":current_progress,"current_progress_name":req.session.user_current_process_name, "task_settings":data.task_settings, "rev": data._rev });
+						kanban_info = {"column_number":process.length};
+						req.session.task_settings = data.task_settings;
+						res.render('kanban', { "tasks": result.docs, "process":current_progress,
+							"process_members":data.members,
+							"current_progress_name":req.session.user_current_process_name, "task_settings":data.task_settings, "rev": data._rev });
 					}
 				});
 			//}
@@ -206,6 +209,7 @@ router.post('/add',loginCheck, function(req, res) {
 		var newTask = {};
 		newTask._id = strTaskID;
 		newTask.type = "task";
+		newTask.task_assignment = req.body.task_assignment;
 		newTask.process_id = req.session.user_current_process;
 		for(var task_setting_id in doc_process.task_settings){
 			if(doc_process.task_settings[task_setting_id].item_type === "Unused") {
@@ -292,7 +296,7 @@ router.get('/edittask',loginCheck, function(req,res){
 			} else {
 				console.log("success");
 				//data = {"status": "OK", "task_name": data.task_name, "task_type": data.task_type, "system_name": data.task_systemname, "task_start_est": data.task_start_est, "task_end_est": data.task_end_est, "task_totaltime": data.task_totaltime, "task_remaintime": data.task_remaintime, "task_assignment": data.task_assignment, "task_approver": data.task_approver, "task_detail": data.task_detail};
-				data = {"status": "OK","taskObj":data};
+				data = {"status": "OK","taskObj":data,"task_settings": req.session.task_settings};
 			}
 			res.end(JSON.stringify(data));
 		});
@@ -323,7 +327,6 @@ router.post('/edittask', function(req,res){
 			  err = "error";
 			  callback(err, "Task has been modified by other user, please try again.");
 		  } else {
-			console.log("&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&7");
 			console.log(doc.task_name);
 			doc.task_name = req.body.task_name;
 			doc.task_type1 = req.body.task_type1;
@@ -332,7 +335,7 @@ router.post('/edittask', function(req,res){
 			doc.task_emergency = req.body.task_emergency;
 			doc.task_start_estimate = req.body.task_start_estimate;
 			doc.task_end_estimate = req.body.task_end_estimate;
-			
+			doc.task_assignment = req.body.task_assignment;
 			db.insert(doc, function(err, data) {
 				console.log("Error:", err);
 				console.log("Data:", data);

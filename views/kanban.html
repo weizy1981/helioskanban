@@ -125,13 +125,27 @@
 						<li>
 							<strong class="control-label"><%=task_settings[task_setting_id].item_name %></strong>
 						<% if (task_settings[task_setting_id].item_type === "Selectable") { %>
-							<select name="<%=task_setting_id %>" id = "task_setting_<%=task_setting_id %>" ng-model="task.<%=task_setting_id %>" ng-options="x for x in <%=task_setting_id %>" required class="ipt"></select>
+							<select name="<%=task_setting_id %>" id = "task_setting_<%=task_setting_id %>" required class="ipt">
+							<option value=''></option>
+							<% for(var task_item_option in task_settings[task_setting_id].item_options){ %>	
+								<option value='<%=task_settings[task_setting_id].item_options[task_item_option]%>'><%=task_settings[task_setting_id].item_options[task_item_option]%></option>
+							<% } %>
+							</select>
 						<% } else if (task_settings[task_setting_id].item_type === "Editable") { %>
 							<input type="text" name="<%=task_setting_id %>" id = "task_setting_<%=task_setting_id %>" ng-model="task.<%=task_setting_id %>" required class="ipt">
 						<% } %>
 						</li>
 					<% }%>				 
-				<% } %>		
+				<% } %>	
+				<li>
+					<strong class="control-label">Task Assignment</strong>
+					<select name="task_assignment" id = "task_setting_task_assignment" required class="ipt">
+						<option value=''></option>
+						<% for (var j = 0; j<process_members.length;  j++) { %>
+							<option value='<%=process_members[j].user_nickname%>'><%=process_members[j].user_nickname%></option>
+						<% } %>
+					</select>
+				</li>
 				<!--
 					 <li>
 						<input type="text" name="task_id" ng-model="task.task_id" required class="ipt" hidden>
@@ -330,7 +344,10 @@
 				{"task_id":toEditTaskObj.task_id},
 				function(data,status){
 					if (data.status != '"NG"') {
-						
+						var task_settings_json ='<%-JSON.stringify(task_settings) %>';
+						var task_settings = JSON.parse(task_settings_json);
+						//alert(JSON.stringify(task_settings));
+						$("#task_setting_task_assignment").val(data.taskObj.task_assignment);
 						for(var task_setting_id in data.taskObj){
 							
 							var itemIdString = "'#task_setting_" + task_setting_id + "'";
@@ -338,12 +355,32 @@
 							if ($(eval(itemIdString))[0]) {
 								if ($(eval(itemIdString))[0].tagName === "INPUT") {
 									$(eval(itemIdString)).val(data.taskObj[task_setting_id]).trigger('change');	
-								} else if ($(eval(itemIdString))[0].tagName === "SELECT") {
+								} else if ($(eval(itemIdString))[0].tagName === "SELECT" && task_setting_id != "task_assignment") {
+									
+									//var appElement = document.querySelector('[ng-controller=tasksCtrl]');
+									//var $scope = angular.element(appElement).scope(); 
+
+									//$scope.task[task_setting_id] = task_settings[task_setting_id].item_options;
+									
 									itemIdString1 = "'#task_setting_" + task_setting_id + "'";
+									//console.log($(eval(itemIdString1)));
+									$(eval(itemIdString1)).empty();
+									//alert(task_setting_id);
 									//$(eval(itemIdString1)).find("option").attr("selected", false).trigger('change');
-									itemIdString2 = "'#task_setting_" + task_setting_id + " option[label = "+ data.taskObj[task_setting_id]+ "]'";
+									$.each(task_settings[task_setting_id].item_options, function(index, content){
+										$(eval(itemIdString1)).append("<option value='" + content + "'>" + content + "</option>");
+									});
+									$(eval(itemIdString1)).val(data.taskObj[task_setting_id]);
+									//alert(data.taskObj[task_setting_id]);
+									//alert($(eval(itemIdString1)));
+									//$(eval(itemIdString1)).find("option").attr("selected", false).trigger('change');
+									//console.log($(eval(itemIdString1)));
+									
+									//itemIdString2 = "'#task_setting_" + task_setting_id + " option[label = "+ data.taskObj[task_setting_id]+ "]'";
 									//alert($(eval(itemIdString2)));
-									$(eval(itemIdString2)).attr("selected", true).trigger('change');
+									//console.log($(eval(itemIdString1)));
+									//$(eval(itemIdString2)).attr("selected", true).trigger('change');
+									//alert($scope.task.task_name);
 									//alert($(eval(itemIdString)).val());
 									//$("select[name='approver'] option[label='" + data.task_approver + "']").attr("selected", true);
 								}
@@ -386,7 +423,7 @@
 			var process = JSON.parse('<%-JSON.stringify(process) %>');
 			$.each(tasks, function(index, content){
 				var assignment = content.task_assignment;
-				var priority = content.task_priority;
+				var emergency = content.task_emergency;
 				var taskType = content.task_tasktype_id;
 				if (typeof(assignment) == "undefined") {
 					var assignment = "Unassigned";
@@ -394,11 +431,6 @@
 				var endtime_estimated = content.task_end_est;
 				if (typeof(endtime_estimated) === "undefined") {
 					var endtime_estimated = "";
-				}
-				if (priority === "A") {
-					priority = "⭐️⭐️⭐️";
-				} else {
-					priority = "";
 				}
 				$( '#' + content._id ).replaceWith(""
 					+"<div class='panel panel-primary' id = '" + content._id +"' rev = '" + content._rev +"'>"
@@ -412,7 +444,7 @@
 					+"</h6> </div>"
 					+"	<div class='panel-body'><h5>"+content.task_name+"</h5></div>"
 					+"	<div class='panel-footer'>"
-					+ priority + "【" +assignment+ "】</div>"
+					+ emergency + "【" +assignment+ "】</div>"
 					+"</div>");
 					$('.panel-footer').css({"height":'40',"font-size":'16px',"color":'blue',"text-align":'right',"background-color":"white"});
 					$('.panel-primary').css("width",'200');

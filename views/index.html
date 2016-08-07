@@ -274,6 +274,8 @@
 				newuserJsonObj.user_id = userItem.val();
 			} else if (userItem.attr("name") === "user_name") {
 				newuserJsonObj.user_name = userItem.val();
+			} else if (userItem.attr("name") === "user_nickname") {
+				newuserJsonObj.user_nickname = userItem.val();
 			} else if (userItem.attr("name") === "authority") {
 				newuserJsonObj.authority = userItem.val();
 			}
@@ -353,6 +355,7 @@
 		$( "#add-member" ).button().on( "click", function() {
 			$( "#user_list" ).append( '<tr>' +
 				  '<td><input type = "text" name="user_name"></td>' +
+				  '<td><input type = "text" name="user_nickname"></td>' +
 				  '<td><input type = "text" name="user_id"></td>' +
 				  '<td><select name="authority"><option value="Member">Member</option><option value="Admin">Admin</option><option value="Viewer">Viewer</option></select></td>' +
 				  '<td><button type="button" class="btn btn-default process_operation" title = "Save" onclick="addnewuser(this)"><span class="glyphicon glyphicon-ok"></span></button>' +
@@ -772,6 +775,7 @@
 		<thead>
 		  <tr class="user-setting-table-header">
 			<th height = "30px">Name</th>
+			<th>Nick Name</th>
 			<th>ID/Email</th>
 			<th>Authority</th>
 			<th>Operate</th>
@@ -782,6 +786,7 @@
 			for (var j = 0; j<process_members.length;  j++) { %>
 				 <tr>
 					<td><div name = "user_name"><%=process_members[j].user_name %></div></td>
+					<td><div name = "user_nickname"><%=process_members[j].user_nickname %></div></td>
 					<td><div name = "user_id"><%=process_members[j].user_id %></div></td>
 					<td><div name = "authority"><%=process_members[j].authority %></div></td>
 					<td>
