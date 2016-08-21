@@ -21,6 +21,7 @@ var register = require('./routes/register');
 var tasks = require('./routes/tasks');
 var logout = require('./routes/logout');
 var manageflow = require('./routes/manageflow');
+var watson = require('./routes/watson');
 
 //var manage = require('./routes/manage');
 var processcon = require('./routes/process');
@@ -110,6 +111,7 @@ app.use('/manageflow', manageflow);
 //app.use('/manage', manage);
 app.use('/logout', logout);
 app.use('/process', processcon);
+app.use('/watson', watson);
 
 // get the app environment from Cloud Foundry
 //var appEnv = cfenv.getAppEnv();

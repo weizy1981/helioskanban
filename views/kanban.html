@@ -503,7 +503,28 @@
 
 			});
 		   $( ".tdBorder" ).disableSelection();
+
+			$( "#task_setting_task_name").focusout(function(){
+				var watsonclassifierjson ='<%-JSON.stringify(watson_classifier) %>';
+				if (watsonclassifierjson===null || watsonclassifierjson===undefined) {
+				} else {
+					var watson_classifier = JSON.parse(watsonclassifierjson);
+					//alert(watson_classifier);
+					$.post(
+						"../watson/classify",
+						{"task_name":$(this).val()},
+						function(data,status) {
+							var classify_result = data.result.top_class;
+							//alert(classify_result);
+							$("#task_setting_task_size").val(classify_result);
+							//alert(data);
+						},
+						"json"
+					);
+				}
+			});
 		});
+
 	</script>
 
 </body>
