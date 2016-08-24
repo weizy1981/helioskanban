@@ -43,7 +43,7 @@ natural_language_classifier.create(params, function(err, response) {
 
 
 //***********************************************************************
-// Show tasks
+// Task classify
 //**********************************************************************
 router.post('/classify', loginCheck, function(req, res) {
 	// Using a classifier
@@ -60,6 +60,31 @@ router.post('/classify', loginCheck, function(req, res) {
 			data.result = response;
 			//data = {"status": "OK", "message":"task deleted."}
 			res.end(JSON.stringify(data))
+	});
+});
+
+
+router.get('/tradeoff', loginCheck, function(req, res) {
+	var TradeoffAnalyticsV1 = require('watson-developer-cloud/tradeoff-analytics/v1');
+
+	var tradeoff_analytics = new TradeoffAnalyticsV1({
+	  username: 'e5beb1bc-c48f-492b-8ac4-999d8cdb57db',
+	  password: 'M6tlJX5Typmg'
+	});
+
+	// From file
+	var params = require('../resources/todotasks.json');
+
+	tradeoff_analytics.dilemmas(params, function(err, response) {
+	  if (err)
+		console.log(err);
+	  else
+		console.log(JSON.stringify(response, null, 2));
+		var data = {};
+		data.status = "OK";
+		data.result = response;
+		//data = {"status": "OK", "message":"task deleted."}
+		res.end(JSON.stringify(data))
 	});
 });
 

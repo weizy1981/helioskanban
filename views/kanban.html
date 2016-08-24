@@ -88,6 +88,9 @@
 				<th>
 					<div class = "processtitle" title = "<%=process[i].description %>">
 						<%=process[i].status_name %>(<%=process[i].tasks.length%>)
+						<% if(i === 0) { %>
+							<a id = "watson_next_task" href = "#">Which task to do next?</a>
+						<% } %>
 						<% if(process[i].wip) { %>
 							WIP(<%=process[i].wip %>)
 						<% } %>
@@ -206,7 +209,7 @@
 					 </li>
 					 -->
                      <li>
-						<span style="color:red;">(*) is required.</span>
+						<!-- <span style="color:red;">(*) is required.</span> -->
 						<input type="button" ng-click="reset()" class="btn btn-primary" style="margin-left: 30px;" value="Reset">
 						<input id="btn_add" type="button" ng-click="add()" ng-disabled="taskForm.taskName.$invalid" class="btn btn-primary" value="Add">
 						<input id="btn_edit" type="button" ng-click="edit()" ng-disabled="taskForm.taskName.$invalid" class="btn btn-primary" value="Edit">
@@ -522,6 +525,23 @@
 						"json"
 					);
 				}
+			});
+
+			$( "#watson_next_task").click(function(){
+				alert("Watson suggests to do the following task firstly(Demo):\n1. Add function **** \n2. ID Application **** \nUnder development...");
+				
+				/*
+				$.get(
+					"../watson/tradeoff",
+					{"task_name":$(this).val()},
+					function(data,status) {
+						var tradeoff_result = data.result;
+						//alert(classify_result);
+						alert(JSON.stringify(tradeoff_result));
+					},
+					"json"
+				);
+				*/
 			});
 		});
 
