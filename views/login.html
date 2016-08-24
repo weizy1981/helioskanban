@@ -2,28 +2,140 @@
 <head>
     <meta charset="UTF-8">
 	<link href="/css/jquery-ui.min.css" rel="stylesheet">
+	<link href="/css/jquery-ui.css" rel="stylesheet">
+    <link rel="stylesheet" href="/css/login2.css" />
+
+    <!-- http://allinthehead.com/retro/319/how-to-set-an-apple-touch-icon-for-any-site 
+    <link rel="apple-touch-icon" href="images/apple-touch-icon.png">
+    <link rel="shortcut icon" href="/images/favicon (1).ico">
+	-->
+
     <script src="/js/jquery-2.1.4.min.js"></script>
     <script src="/js/jquery-ui.min.js"></script>
-	<link href=".css/jquery-ui.css" rel="stylesheet">
+	<!--  Modernizr which enables HTML5 elements & feature detects -->
+    <script src="/js/modernizr-1.7.min.js"></script>
+    <script src="/js/showpassword.js"></script>
+    <script src="/js/login.js"></script>  
+
     <title>Login</title>
 </head>
 
 <body>
+	<!--
     <h2>Login</h2>
-	<p>Demo ID: demo &nbsp;&nbsp;Password:demo </p>
+	
     <form action="/login" method="POST">
         <input type="text" name="email" placeholder="Email" />
         <input type="password" name="password" placeholder="Password" />
-		<button id="button">login</button>
+		
     </form>
 	<p id = "errorMessage"></p>
     <a href = "./register">Register</a>
+	-->
 	<script>
 		$(document).ready(function(){
-			$( "button" ).button();
+			$( "#login_button" ).button();
+			$( "#register_button" ).button();
+			$( "#send_button" ).button();
 			var errorMessage = JSON.parse('<%-JSON.stringify(error) %>');
-			$("#errorMessage").text(errorMessage);
+			if (errorMessage==null || errorMessage==undefined || errorMessage==="") {
+				$("#login_error").hide();
+			} else {
+				$("#errorMessage").text(errorMessage);
+				$("#login_error").show();
+			}
+			$("#register_msg").hide();
+			$("#sendmail_msg").hide();
 		});
 	</script>
+
+    <div id="container">
+		<div id="login-box" class="corners shadow tabs-ui">
+			<!-- tab ctrls -->
+			<div class="login-box-header corners">
+				<h2>Watson Kanban</h2>
+					<ul class="tabs">
+						<li><a href="#tabs-1">Login</a></li>
+						<li><a href="#tabs-2">Register</a></li>
+						<li><a href="#tabs-3">Forgot Password</a></li>
+					</ul>
+			</div>
+			<!-- tab 1 -->
+			<form action="/login" method="POST">
+                <div id="tabs-1" class="tabbox">
+					<div>Demo User ID: demo &nbsp;&nbsp;Password:demo </div>
+                    <div id = "login_error" class="login-box-error-small corners">
+                        <p>Wrong ID or Password</p>
+                    </div>
+                    <div class="login-box-row-wrap corners">
+                        <label for="username">User ID</label><input type="text" name="email" placeholder="Email" class="input-1" />
+                    </div>
+                    <div class="login-box-row-wrap corners">
+                        <label for="password">Password</label><input type="password" name="password" placeholder="Password" class="input-1 password"/>
+                    </div>
+                    <div class="login-box-row corners">
+                        <input type="checkbox" name="" id="field-remember"/> <label for="field-remember">Save Password</label>
+						<button id="login_button">login</button>
+                    </div>
+                </div>
+			</form>
+            <!-- tab 2 -->
+			<form action="/register" method="POST">
+                <div id="tabs-2" class="tabbox">
+                    <div id = "register_msg" class="login-box-succes-small corners">
+                        <p>Your Account registered successfully!</p>
+                    </div>
+                    <div class="infobox">
+                    <h3>Register</h3>
+                        <p>
+							Watson Kanban Agreement state here.
+                        </p>
+                    </div>
+                    <div class="login-box-row-wrap corners">
+                        <label for="field1">User Name</label><input type="text" name="user_name" placeholder="User Name" class="input-1"/>
+                    </div>
+                    <div class="login-box-row-wrap corners">
+                        <label for="field2">E-mail</label><input type="text" name="user_id" placeholder="Email"  class="input-1"/>   
+                    </div>
+                     <div class="login-box-row-wrap corners">
+                        <label for="field3">Password</label><input type="password" name="user_password" placeholder="Password" class="input-1"/>
+                    </div>             
+                    <div class="login-box-row corners">
+                    	<input type="checkbox" name="" id="field01"/> <label for="field01">I Agree.</label>
+                        <button id="register_button">Register</button>
+                    </div>                    
+                </div>
+			</form>
+                <!-- tab 3 -->
+                <div id="tabs-3" class="tabbox">
+                    <div  id = "sendmail_msg" class="login-box-warning-small corners">
+                        <p>Your passwor has been sent to your Email!</p>
+                    </div>
+                     <div class="login-box-row-wrap corners">
+                        <label for="field10">E-mail Address</label><input type="text" id="field10" value="" name="" class="input-1"/>
+                    </div>             
+                    <div class="login-box-row corners">
+                        <button id="send_button">Send</button>
+                    </div>                                     
+                </div>
+                
+         </div>
+    </div><!-- END "#container" -->
+           
+    <!-- asynchronous google analytics: mathiasbynens.be/notes/async-analytics-snippet
+         change the UA-XXXXX-X to be your site's ID -->
+    <script type="text/javascript">
+
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-21107157-1']);
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+
+</script>
 </body>
 </html>

@@ -412,7 +412,7 @@
 			//var rev = objProcess._rev;
 			var pname = objProcess.process_name;
 			strRows = "<tr class = 'process_item'>";
-			strRows = strRows + "<td class = 'process_select' id ='"+ objProcess.process_id +"' contenteditable=true>" + pname + "</td><td>";
+			strRows = strRows + "<td class = 'process_select' id ='"+ objProcess.process_id +"' contenteditable=true >" + pname + "</td><td>";
 	 		strRows = strRows + "&nbsp;<button type='button' class='btn btn-default process_operation' title = 'Edit Process Member' onclick='showEditMember(this)'>";
 			strRows = strRows + " <span class='glyphicon glyphicon-user'></span></button>";
 			strRows = strRows + "&nbsp;<button type='button' class='btn btn-default process_operation' title = 'Define WorkFlow' onclick='showWorkflow(this)'>";
@@ -462,8 +462,8 @@
 		});
 
 		$( "#add-workflow" ).on( "click", function() {
-			$( "#work-flow-items" ).append( '<div class = "work-flow-item-row"><div class="work-flow-item" contenteditable=true>New Stage</div>'
-			+ '<div class="work-flow-wip" contenteditable=true title= "Please input Work In Process Number if necessary.">WIP</div>'
+			$( "#work-flow-items" ).append( '<div class = "work-flow-item-row"><div class="work-flow-item" contenteditable=true onfocus=document.execCommand("selectAll",false,null)>New Stage</div>'
+			+ '<div class="work-flow-wip" contenteditable=true onfocus=document.execCommand("selectAll",false,null) title= "Please input Work In Process Number if necessary.">WIP</div>'
 			+ '<div class = "work-flow-item-operation"><button id = "remove-workflow" type="button" class="btn btn-default" onClick = "removeWorkflow(this)"><span class="glyphicon glyphicon-remove"></span></button></div></div>');
 		});
 
@@ -471,7 +471,7 @@
 			var now = new Date();
 			var newProcessID = "process_" + now.getTime();
 			strRows = "<tr class = 'process_item' id = 'new_process_item'>";
-			strRows = strRows + "<td class = 'new_process_select' id ='"+ newProcessID +"' contenteditable=true><div contenteditable=true>New Process</div></td><td>";
+			strRows = strRows + "<td class = 'new_process_select' id ='"+ newProcessID +"' contenteditable=true><div contenteditable=true onfocus=document.execCommand('selectAll',false,null)>New Process</div></td><td>";
 			strRows = strRows + "&nbsp;<button type='button' class='btn btn-default process_operation' title = 'Save' onclick='saveNewProcess(this)'>";
 			strRows = strRows + " <span class='glyphicon glyphicon-ok'></span></button>";
 			strRows = strRows + "</td></tr>";
@@ -732,7 +732,7 @@
 		<div>WorkFlow Setting&nbsp;&nbsp;<button id = "add-workflow" type='button' class='btn btn-default' title = 'Add Flow'><span class='glyphicon glyphicon-plus'></span></button>
 			&nbsp;&nbsp;<button id = "save-workflow" type='button' class='btn btn-default' title = 'Save'><span class='glyphicon glyphicon-ok'></span></button></div>
 		<div class = "work-flow-item-row">
-			<div class="work-flow-item-start" contenteditable=true>
+			<div class="work-flow-item-start" contenteditable=true onfocus="document.execCommand('selectAll',false,null)">
 				<% if(process_workflow) { %>
 					<%=process_workflow[0].status_name %>
 				<% } %>
@@ -746,8 +746,8 @@
 					} else {
 					%>		
 						<div class = "work-flow-item-row">
-							<div class="work-flow-item" contenteditable=true><%=process_workflow[i].status_name %></div>
-							<div class="work-flow-wip" contenteditable=true title= "Please input Work In Process Number if needed.">
+							<div class="work-flow-item" contenteditable=true onfocus="document.execCommand('selectAll',false,null)"><%=process_workflow[i].status_name %></div>
+							<div class="work-flow-wip" contenteditable=true onfocus="document.execCommand('selectAll',false,null)" title= "Please input Work In Process Number if needed.">
 								<% if(process_workflow[i].wip) {%>
 									<%=process_workflow[i].wip%>	
 								<%} else {%>
@@ -761,7 +761,7 @@
 			} %>
 		</div>
 		<div class = "work-flow-item-row">
-			<div class="work-flow-item-end" contenteditable=true>
+			<div class="work-flow-item-end" contenteditable=true onfocus="document.execCommand('selectAll',false,null)">
 				<% if(process_workflow) { %>
 					<%=process_workflow[process_workflow.length-1].status_name %>
 				<% } %>
@@ -817,7 +817,7 @@
 		<% 
 			for(var task_setting_id in task_settings){ %>
 				 <tr>
-					<td><div class = "task_setting_id"><%=task_setting_id %></div><div name = "task_name" class = "task_item_option" contenteditable=true><%=task_settings[task_setting_id].item_name %></div></td>
+					<td><div class = "task_setting_id"><%=task_setting_id %></div><div name = "task_name" class = "task_item_option" contenteditable=true onfocus=document.execCommand('selectAll',false,null)><%=task_settings[task_setting_id].item_name %></div></td>
 					<td>
 						<div name = "task_type">
 							<select name="item_type" onChange = "changItemType(this)">
@@ -839,7 +839,7 @@
 						if(task_settings[task_setting_id].item_type === "Selectable") { 
 							for (var k = 0; k<task_settings[task_setting_id].item_options.length;  k++) { %>
 								<div class = "task_item_option">
-									<div style="float:left" contenteditable=true><%=task_settings[task_setting_id].item_options[k] %></div>
+									<div style="float:left" contenteditable=true onfocus=document.execCommand('selectAll',false,null)><%=task_settings[task_setting_id].item_options[k] %></div>
 									<div style="float:right"><button type='button' class='btn btn-default remove-task-item-option' title = 'Remove Task Item Option' onClick = "removeWorkTaskItem(this)"><span class='glyphicon glyphicon-remove'></span></button></div>
 								</div>
 						<% } } else {%>
