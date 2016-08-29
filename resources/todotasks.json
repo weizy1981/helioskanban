@@ -1,0 +1,65 @@
+{
+  "subject": "task",
+  "columns": [{
+    "key": "importance",
+    "full_name": "Importance",
+    "type": "categorical",
+    "range": [
+          "L",
+          "M",
+          "H"
+        ],
+    "is_objective": true,
+    "goal": "max"
+  }, {
+    "key": "emergency",
+    "full_name": "Emergency",
+    "type": "categorical",
+    "range": [
+          "L",
+          "M",
+          "H"
+        ],
+    "is_objective": true,
+    "goal": "max"
+  }, {
+    "key": "deadline",
+    "full_name": "Deadline",
+    "type": "datetime",
+    "is_objective": true,
+    "goal": "min"
+  }],
+  "options": [{
+    "key": "task_1",
+    "name": "Task 001",
+    "values": {
+      "importance": "H",
+      "emergency": "M",
+      "deadline": "2016-08-26T00:00:00+09:00"
+    }
+  }, {
+    "key": "task_2",
+    "name": "Task 002",
+    "values": {
+      "importance": "M",
+      "emergency": "L",
+      "deadline": "2016-08-19T00:00:00+09:00"
+    }
+  }, {
+    "key": "task_3",
+    "name": "Task 003",
+    "values": {
+      "importance": "L",
+      "emergency": "H",
+      "deadline": "2016-08-18T00:00:00+09:00"
+    }
+  }, {
+    "key": "task_4",
+    "name": "Task 004",
+    "values": {
+      "importance": "M",
+      "emergency": "M",
+      "deadline": "2016-08-19T00:00:00+09:00"
+    }
+  }]
+}
