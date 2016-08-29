@@ -147,23 +147,32 @@ router.post('/addprocess', loginCheck, function(req, res) {
 					"S"
 				  ]
 				},
+				"task_importance": {
+				  "item_name": "Importance",
+				  "item_type": "Selectable",
+				  "item_options": [
+					"L",
+					"M",
+					"H"
+				  ]
+				},
 				"task_emergency": {
 				  "item_name": "Emergency",
 				  "item_type": "Selectable",
 				  "item_options": [
-					"☆☆☆",
+					"☆",
 					"☆☆",
-					"☆"
+					"☆☆☆"
 				  ]
 				},
 				"task_start_estimate": {
 				  "item_name": "StartTime Estimate",
-				  "item_type": "Editable",
+				  "item_type": "Unused",
 				  "item_options": []
 				},
 				"task_end_estimate": {
 				  "item_name": "EndTime Estimate",
-				  "item_type": "Unused",
+				  "item_type": "Editable",
 				  "item_options": []
 				}
 			}

@@ -75,6 +75,9 @@ angular.module('myApp',[]).controller('tasksCtrl', function($scope, $http){
 		if (document.getElementById("task_setting_task_size")) {
 			editTaskObj.task_size = document.getElementById("task_setting_task_size").value;
 		}
+		if (document.getElementById("task_setting_task_importance")) {
+			editTaskObj.task_importance = document.getElementById("task_setting_task_importance").value;
+		}
 		if (document.getElementById("task_setting_task_emergency")) {
 			editTaskObj.task_emergency = document.getElementById("task_setting_task_emergency").value;
 		}
@@ -125,6 +128,9 @@ angular.module('myApp',[]).controller('tasksCtrl', function($scope, $http){
 		}
 		if (document.getElementById("task_setting_task_size")) {
 			editTaskObj.task_size = document.getElementById("task_setting_task_size").value;
+		}
+		if (document.getElementById("task_setting_task_importance")) {
+			editTaskObj.task_importance = document.getElementById("task_setting_task_importance").value;
 		}
 		if (document.getElementById("task_setting_task_emergency")) {
 			editTaskObj.task_emergency = document.getElementById("task_setting_task_emergency").value;

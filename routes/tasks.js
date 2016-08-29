@@ -333,6 +333,7 @@ router.post('/edittask', function(req,res){
 			doc.task_type1 = req.body.task_type1;
 			doc.task_type2 = req.body.task_type2;
 			doc.task_size = req.body.task_size;
+			doc.task_importance = req.body.task_importance;
 			doc.task_emergency = req.body.task_emergency;
 			doc.task_start_estimate = req.body.task_start_estimate;
 			doc.task_end_estimate = req.body.task_end_estimate;

@@ -109,7 +109,7 @@
 			</tr>
 		</table>
 	</div>
-
+<div style="display: none;" id = "watson-tradeoff" value = ""></div>
 <div class="theme-popover" style="display: none;">
      <div class="theme-poptit">
           <a href="javascript:;" title="Close" class="close">×</a>
@@ -424,6 +424,7 @@
 			var tasksjson ='<%-JSON.stringify(tasks) %>';
 			var tasks = JSON.parse(tasksjson);
 			var process = JSON.parse('<%-JSON.stringify(process) %>');
+			var tradeoff_options = new Array();
 			$.each(tasks, function(index, content){
 				var assignment = content.task_assignment;
 				var emergency = content.task_emergency;
@@ -435,15 +436,28 @@
 				if (typeof(endtime_estimated) === "undefined") {
 					var endtime_estimated = "";
 				}
+				if($( '#' + content._id ).parent().attr("id") === "status_1") {
+					var now = new Date();
+					var option = {};
+					var newKey =  now.getTime();
+					option.key = newKey;
+					option.name = content.task_name;
+					option.values = {
+					  "importance": content.task_importance,
+					  "emergency": "M",
+					  "deadline": content.task_end_estimate+"T00:00:00+09:00"
+					}
+					tradeoff_options.push(option);
+				}
 				$( '#' + content._id ).replaceWith(""
 					+"<div class='panel panel-primary' id = '" + content._id +"' rev = '" + content._rev +"'>"
 					+"	<div class='panel-title'> <h6 >"
 					+ "&nbsp;&nbsp;<a href = '#' class = 'taskdetail' title = '"
-					+ "Task Type:" + content.task_type
+					+ "Task Type:" + content.task_type1
 					+ "&#13;Task Detail:" + content.task_detail
 					+"'>Detail</a>&nbsp;&nbsp;&nbsp;"
 					+"<a href = '#' onclick ='editTask(this)'>Edit</a>&nbsp;&nbsp;&nbsp;<a href = '#' onClick = 'deleteTask(this)'>Delete</a>"
-					+"&nbsp;&nbsp;&nbsp;<font color = red>"+endtime_estimated + "</font>&nbsp;"
+					+"&nbsp;&nbsp;<font color = red>"+endtime_estimated + "</font>&nbsp;"
 					+"</h6> </div>"
 					+"	<div class='panel-body'><h5>"+content.task_name+"</h5></div>"
 					+"	<div class='panel-footer'>"
@@ -462,7 +476,7 @@
 					$(".taskdetail").tooltip();
 					});
 			});
-			
+			$('#watson-tradeoff').text(JSON.stringify(tradeoff_options));
 			var statusString = "'#status_1";
 			 $.each(process, function(i,status){
 				 if (status.status_id > 1){
@@ -528,20 +542,25 @@
 			});
 
 			$( "#watson_next_task").click(function(){
-				alert("Watson suggests to do the following task firstly(Demo):\n1. Add function **** \n2. ID Application **** \nUnder development...");
-				
-				/*
-				$.get(
+				//alert("\n1. Add function **** \n2. ID Application **** \nUnder development...");
+				$.post(
 					"../watson/tradeoff",
-					{"task_name":$(this).val()},
+					{"tradeoffjson":$('#watson-tradeoff').text()},
 					function(data,status) {
+						var tradeoff_options = data.result.problem.options;
+						var tradeoff_solutions = data.result.resolution.solutions;
+						var suggestiionString = "Watson suggests to do the following task firstly:\n***This function need to set Importance, Emergency and EndTime Estimate to Tasks.***";
+						$.each(tradeoff_solutions, function(index, content){
+							if (content.status === "FRONT" ) {
+								suggestiionString = suggestiionString + "\n"+tradeoff_options[index].name;
+							}
+						});
 						var tradeoff_result = data.result;
-						//alert(classify_result);
-						alert(JSON.stringify(tradeoff_result));
+						alert(suggestiionString);
 					},
 					"json"
 				);
-				*/
+				
 			});
 		});
 
