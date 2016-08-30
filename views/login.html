@@ -44,8 +44,29 @@
 				$("#errorMessage").text(errorMessage);
 				$("#login_error").show();
 			}
-			$("#register_msg").hide();
+			$("#register_success").hide();
+			$("#register_fail").hide();
 			$("#sendmail_msg").hide();
+			$("#register_button").click(function(){
+				var registerData = {};
+				registerData.user_name = $("[name='user_name']").val();
+				registerData.user_id = $("[name='user_id']").val();
+				registerData.user_password = $("[name='user_password']").val();
+				$.post(
+					"/register",
+					{"user_name":$("[name='user_name']").val(),"user_id":$("[name='user_id']").val(),"user_password":$("[name='user_password']").val()},
+					function(data,status) {
+						if (data.status === "ok") {
+							$("#register_fail").hide();
+							$("#register_success").show();
+						} else {
+							$("#register_success").hide();
+							$("#register_fail").show();
+						}
+					},
+					"json"
+				);
+			});
 		});
 	</script>
 
@@ -80,10 +101,12 @@
                 </div>
 			</form>
             <!-- tab 2 -->
-			<form action="/register" method="POST">
                 <div id="tabs-2" class="tabbox">
-                    <div id = "register_msg" class="login-box-succes-small corners">
+                    <div id = "register_success" class="login-box-succes-small corners">
                         <p>Your Account registered successfully!</p>
+                    </div>
+					 <div id = "register_fail" class="login-box-succes-small corners">
+                        <p>Your Account registered failed!</p>
                     </div>
                     <div class="infobox">
                     <h3>Register</h3>
@@ -105,7 +128,7 @@
                         <button id="register_button">Register</button>
                     </div>                    
                 </div>
-			</form>
+
                 <!-- tab 3 -->
                 <div id="tabs-3" class="tabbox">
                     <div  id = "sendmail_msg" class="login-box-warning-small corners">

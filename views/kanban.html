@@ -549,13 +549,14 @@
 					function(data,status) {
 						var tradeoff_options = data.result.problem.options;
 						var tradeoff_solutions = data.result.resolution.solutions;
-						var suggestiionString = "Watson suggests to do the following task firstly:\n***This function need to set Importance, Emergency and EndTime Estimate to Tasks.***";
+						var suggestiionString = "Watson suggests to do the following task firstly:";
 						$.each(tradeoff_solutions, function(index, content){
 							if (content.status === "FRONT" ) {
-								suggestiionString = suggestiionString + "\n"+tradeoff_options[index].name;
+								suggestiionString = suggestiionString + "\n\n"+tradeoff_options[index].name;
 							}
 						});
 						var tradeoff_result = data.result;
+						suggestiionString = suggestiionString + '\n\n***This function need to set "Importance", "Emergency" and "EndTime Estimate" to Tasks.***';
 						alert(suggestiionString);
 					},
 					"json"

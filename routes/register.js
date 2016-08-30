@@ -21,15 +21,17 @@ router.post('/', function(req, res) {
 	var user_id = req.body.user_id;
     var user_password = req.body.user_password;
 	var user_name = req.body.user_name;
-	
+	console.log(user_id);
 	db.insert({ _id: "users_" + user_id, "user_name":user_name, "user_id":user_id, "user_password": user_password, "type":"user", processes: new Array()}, function(err, data) {
 		console.log("Error:", err);
 		console.log("Data:", data);
+		var resultdata = {};
 		if (err) {
-			res.render('register',{ "status": "ok", "message":"register failed." });
+			resultdata = { "status": "ng", "message":"register failed." };
 		} else {
-			res.render('register',{ "status": "ok", "message":"register success." });
+			resultdata = { "status": "ok", "message":"register success." };
 		}
+		res.end(JSON.stringify(resultdata))
 	});
 
 	// Insert User using MySQL getTime()
