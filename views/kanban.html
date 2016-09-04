@@ -357,7 +357,7 @@
 								
 							if ($(eval(itemIdString))[0]) {
 								if ($(eval(itemIdString))[0].tagName === "INPUT") {
-									$(eval(itemIdString)).val(data.taskObj[task_setting_id]).trigger('change');	
+									$(eval(itemIdString)).val(data.taskObj[task_setting_id].replace("<br/>","&#13;")).trigger('change');	
 								} else if ($(eval(itemIdString))[0].tagName === "SELECT" && task_setting_id != "task_assignment") {
 									
 									//var appElement = document.querySelector('[ng-controller=tasksCtrl]');
@@ -459,7 +459,7 @@
 					+"<a href = '#' onclick ='editTask(this)'>Edit</a>&nbsp;&nbsp;&nbsp;<a href = '#' onClick = 'deleteTask(this)'>Delete</a>"
 					+"&nbsp;&nbsp;<font color = red>"+endtime_estimated + "</font>&nbsp;"
 					+"</h6> </div>"
-					+"	<div class='panel-body'><h5>"+content.task_name+"</h5></div>"
+					+"	<div class='panel-body'><h5>"+content.task_name.replace("\s/g","&nbsp;")+"</h5></div>"
 					+"	<div class='panel-footer'>"
 					+ emergency + "【" +assignment+ "】</div>"
 					+"</div>");
