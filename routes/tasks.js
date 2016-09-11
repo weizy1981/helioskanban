@@ -61,7 +61,7 @@ router.get('/', loginCheck, function(req, res) {
 						res.render('kanban', { "tasks": result.docs, "process":current_progress,
 							"process_members":data.members,
 							"current_progress_name":req.session.user_current_process_name, "task_settings":data.task_settings, "rev": data._rev,
-							"watson_classifier":data.watson_classifier});
+							"watson_classifier":data.watson_classifier, "language_setting":data.language});
 					}
 				});
 			//}
@@ -69,6 +69,7 @@ router.get('/', loginCheck, function(req, res) {
 		}
 	});
 });
+
 
 router.post('/', loginCheck, function(req, res) {
 	var err = "";
@@ -121,7 +122,7 @@ router.post('/', loginCheck, function(req, res) {
 
 				if (isOverWip) {
 				  err = "error";
-				  callback(err, "Operation failed. WIP over.");
+				  callback(err, "wip_over");
 				} else {
 					db.insert(doc, function(err, data) {
 						console.log("Error:", err);
@@ -427,9 +428,35 @@ router.post('/deletetask', function(req,res){
 		console.log("Error:", err);
 		console.log("Data:", data);
 		data = {"status": "OK", "message":"task deleted."}
-		res.end(JSON.stringify(data))
+		res.end(JSON.stringify(data));
 	});
 
+});
+
+//***********************************************************************
+// Get Messages
+//***********************************************************************
+router.post('/getmessage', loginCheck, function(req, res) {
+	var language_setting = req.body.language_setting;
+	console.log("language:" + language_setting);
+	if (language_setting === "ch" || language_setting === "jp") {
+	} else {
+		language_setting = "en";
+	}
+	db.get("message_" + language_setting, function(err, data) {
+		console.log("message_" + language_setting);
+		console.log("Error:", err);
+		console.log("Data:", data);
+		if (data == null || typeof(data) == "undefined") {
+			console.log("fail");
+			res.render('login');
+		} else {
+			console.log("success");
+			res.contentType('json');
+			res.send(JSON.stringify(data));  
+			res.end(); 
+		}
+	});
 });
 
 module.exports = router;

@@ -86,6 +86,7 @@ router.post('/tradeoff', loginCheck, function(req, res) {
 	console.log(tradeoffjson);
 	// From file
 	var params = require('../resources/todotasks.json');
+/*
 	var option = {};
 	var now = new Date();
 	var newKey =  now.getTime();
@@ -97,7 +98,7 @@ router.post('/tradeoff', loginCheck, function(req, res) {
       "deadline": "2016-08-09T00:00:00+09:00"
     }
 
-/*
+
 	// read current process
 	  console.log("Reading process");;
 	  db.get(req.session.user_current_process, function(err, data) {
@@ -116,8 +117,9 @@ router.post('/tradeoff', loginCheck, function(req, res) {
 		log('1.3 err: ', err); // -> undefined 
 		log('1.3 results: ', results); // -> { b: Åec300Åå, a: Åea400Åå } 
 	});
-*/
+
 	params.options.push(option);
+*/
 	params.options=tradeoffjson;
 	console.log(params);
 	tradeoff_analytics.dilemmas(params, function(err, response) {

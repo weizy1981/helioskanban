@@ -83,6 +83,7 @@ router.post('/addprocess', loginCheck, function(req, res) {
 	// New Process
 	var insertProcess = function(callback) {
 		db.insert({ _id: process_id, "type":"process", "p_name":process_name,
+			"language":"en",
 			"members": [{
 			  "user_id": req.session.user_id,
 			  "user_name": req.session.user_name,

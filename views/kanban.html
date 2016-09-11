@@ -38,6 +38,8 @@
 		padding: 5;
 		width: auto;
 	}
+
+
 	</style>
 
 
@@ -47,11 +49,32 @@
 
 	<script>
 	jQuery(document).ready(function($) {
+
+		var language_setting = JSON.parse('<%-JSON.stringify(language_setting) %>');
+		//alert(language_setting);
+		$.post(
+			"/tasks/getmessage",
+			{"language_setting":language_setting},
+			function(data,result) {
+				if (typeof(Storage) !== "undefined") {
+					// Code for localStorage/sessionStorage.
+					//alert("ok");
+				} else {
+					// Sorry! No Web Storage support..
+					alert("Your browser does not support HTML5.");
+				}
+				//alert(JSON.stringify(data));
+				$.each(data,function(msgIndex,msgContent) {
+					localStorage.setItem(msgIndex, msgContent);
+				}); 
+				//localStorage.setItem("lastname", "Smith");
+				//window.location.reload();
+			}
+		);
+
 		$('#btn_add_task').click(function(){
 			clearInputTemp();
 			$('#add_edit_task_lable').html('Add task');
-			// $('#btn_add').val('Add');
-			// $('#btn_add').attr("ng-click","add()");
 			$('#btn_add').show();
 			$('#btn_edit').hide();
 
@@ -225,6 +248,30 @@
   <p>
 	<b><div id = "err-message-content">Error.</div></b>
   </p>
+</div>
+
+<!-- モーダルの配置 -->
+<div class="modal" id="modal-example" tabindex="-1">
+    <div class="modal-dialog">
+
+        <!-- モーダルのコンテンツ -->
+        <div class="modal-content">
+            <!-- モーダルのヘッダ -->
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+                <h4 class="modal-title" id="modal-header">ダイアログ</h4>
+            </div>
+            <!-- モーダルのボディ -->
+            <div class="modal-body">
+            </div>
+            <!-- モーダルのフッタ -->
+            <div class="modal-footer">
+				<h5 class="modal-footer" id="modal-footer">ダイアログ</h5>
+            </div>
+        </div>
+    </div>
 </div>
 
 <div class="theme-popover-mask" style="display: none;"></div>
@@ -452,11 +499,11 @@
 				$( '#' + content._id ).replaceWith(""
 					+"<div class='panel panel-primary' id = '" + content._id +"' rev = '" + content._rev +"'>"
 					+"	<div class='panel-title'> <h6 >"
-					+ "&nbsp;&nbsp;<a href = '#' class = 'taskdetail' title = '"
+					+ "&nbsp;<a href = '#' class = 'taskdetail' title = '"
 					+ "Task Type:" + content.task_type1
 					+ "&#13;Task Detail:" + content.task_detail
-					+"'>Detail</a>&nbsp;&nbsp;&nbsp;"
-					+"<a href = '#' onclick ='editTask(this)'>Edit</a>&nbsp;&nbsp;&nbsp;<a href = '#' onClick = 'deleteTask(this)'>Delete</a>"
+					+"'>Detail</a>&nbsp;&nbsp;"
+					+"<a href = '#' onclick ='editTask(this)'>Edit</a>&nbsp;&nbsp;<a href = '#' onClick = 'deleteTask(this)'>Delete</a>"
 					+"&nbsp;&nbsp;<font color = red>"+endtime_estimated + "</font>&nbsp;"
 					+"</h6> </div>"
 					+"	<div class='panel-body'><h5>"+content.task_name.replace("\s/g","&nbsp;")+"</h5></div>"
@@ -510,7 +557,18 @@
 						function(data,status) {
 							if (JSON.stringify(data.err) != '"null"') {
 								//$('#err-message-content').text(data.err);
-								alert(data.err);
+								$('#modal-header').text("操作失敗");
+								$('#modal-footer').remove();
+								$('.modal-body').empty();
+								$('.modal-body').append(data.err);
+								if (JSON.parse(data.err) === "wip_over"){
+									$('.modal-body').append(localStorage.getItem("wip_over"));
+								} else {
+									$('.modal-body').append(JSON.parse(data.err));
+								}
+								
+								$('#modal-example').modal();
+								//alert(data.err);
 							}
 							getSocket().emit('taskedit', {"_id":ui.item.attr("id"),"task_status":ui.item.parent().attr("id"),"rev":ui.item.attr("rev")});
 						},
@@ -532,7 +590,15 @@
 						{"task_name":$(this).val()},
 						function(data,status) {
 							var classify_result = data.result.top_class;
-							//alert(classify_result);
+							if (classify_result === "XL") {
+								classify_result = "XL(１日以上)";
+							} else if (classify_result === "L") {
+								classify_result = "L(３～８時間)";
+							} else if (classify_result === "M") {
+								classify_result = "M(１～３時間)";
+							} else if (classify_result === "S") {
+								classify_result = "S(１時間以内)";
+							}
 							$("#task_setting_task_size").val(classify_result);
 							//alert(data);
 						},
@@ -542,29 +608,35 @@
 			});
 
 			$( "#watson_next_task").click(function(){
-				//alert("\n1. Add function **** \n2. ID Application **** \nUnder development...");
+				$('#modal-header').text(localStorage.getItem("watson_trade_off_header"));
+				$('#modal-footer').text(localStorage.getItem("watson_trade_off_footer"));
 				$.post(
 					"../watson/tradeoff",
 					{"tradeoffjson":$('#watson-tradeoff').text()},
 					function(data,status) {
 						var tradeoff_options = data.result.problem.options;
 						var tradeoff_solutions = data.result.resolution.solutions;
-						var suggestiionString = "Watson suggests to do the following task firstly:";
+						//var suggestiionString = "Watson suggests to do the following task firstly:";
+						
+						var suggestiionString = "";
 						$.each(tradeoff_solutions, function(index, content){
 							if (content.status === "FRONT" ) {
-								suggestiionString = suggestiionString + "\n\n"+tradeoff_options[index].name;
+								suggestiionString = suggestiionString + tradeoff_options[index].name + "<br />" + "<br />";
 							}
 						});
 						var tradeoff_result = data.result;
-						suggestiionString = suggestiionString + '\n\n***This function need to set "Importance", "Emergency" and "EndTime Estimate" to Tasks.***';
-						alert(suggestiionString);
+						//suggestiionString = suggestiionString + '\n\n***This function need to set "Importance", "Emergency" and "EndTime Estimate" to Tasks.***';
+						//suggestiionString = suggestiionString + '\n\n※この機能を利用するために、「重要度」、「緊急度」、「予定完了日」の設定が必要です。';
+						//alert(suggestiionString);
+						$('.modal-body').empty();
+						$('.modal-body').append(suggestiionString);
+						$('#modal-example').modal();
 					},
 					"json"
 				);
 				
 			});
 		});
-
 	</script>
 
 </body>
