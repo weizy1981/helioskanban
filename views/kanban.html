@@ -63,18 +63,15 @@
 					// Sorry! No Web Storage support..
 					alert("Your browser does not support HTML5.");
 				}
-				//alert(JSON.stringify(data));
 				$.each(data,function(msgIndex,msgContent) {
 					localStorage.setItem(msgIndex, msgContent);
-				}); 
-				//localStorage.setItem("lastname", "Smith");
-				//window.location.reload();
+				});
 			}
 		);
 
 		$('#btn_add_task').click(function(){
 			clearInputTemp();
-			$('#add_edit_task_lable').html('Add task');
+			$('#add_edit_task_lable').html(localStorage.getItem("add_task"));
 			$('#btn_add').show();
 			$('#btn_edit').hide();
 

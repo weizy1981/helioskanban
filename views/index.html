@@ -648,8 +648,10 @@
 				height: 300,
 				width: 800
 			},
+			
 			data: {
 				x: 'x',
+								order: 'asc',
 				columns: [
 					['x', '2016-07-19', '2016-07-20', '2016-07-21', '2016-07-22', '2016-07-23'],
 					['ToDo', 4, 6, 8, 5, 7],
@@ -676,6 +678,7 @@
 					'Done'
 				]]
 			},
+			zerobased: false,
 			axis: {
 				x: {
 					type: 'timeseries',
