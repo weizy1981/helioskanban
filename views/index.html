@@ -471,7 +471,7 @@
 			var now = new Date();
 			var newProcessID = "process_" + now.getTime();
 			strRows = "<tr class = 'process_item' id = 'new_process_item'>";
-			strRows = strRows + "<td class = 'new_process_select' id ='"+ newProcessID +"' contenteditable=true><div contenteditable=true onfocus=document.execCommand('selectAll',false,null)>New Process</div></td><td>";
+			strRows = strRows + "<td class = 'new_process_select' id ='"+ newProcessID +"' contenteditable=true><div contenteditable=true onfocus=document.execCommand('selectAll',false,null)>" + localStorage.getItem($('#new_process_language').val() + '_new_process') + "</div></td><td>";
 			strRows = strRows + "&nbsp;<button type='button' class='btn btn-default process_operation' title = 'Save' onclick='saveNewProcess(this)'>";
 			strRows = strRows + " <span class='glyphicon glyphicon-ok'></span></button>";
 			strRows = strRows + "</td></tr>";
@@ -718,7 +718,13 @@
 							<table class="table-hover table-condensed">
 								<thead>
 									<tr>
-										<th>Process List&nbsp;&nbsp;<button id = "add-process" type='button' class='btn btn-default' title = 'Add Process'><span class='glyphicon glyphicon-plus'></span></button></th>
+										<th>Process List&nbsp;&nbsp;
+										<select name="new_process_language" id="new_process_language">
+										  <option selected="selected" value = "en">English</option>
+										  <option value = "ch">中文</option>
+										  <option value = "jp">日本語</option>
+										</select>
+										<button id = "add-process" type='button' class='btn btn-default' title = 'Add Process'><span class='glyphicon glyphicon-plus'></span></button></th>
 									</tr>
 								</thead>
 								<tbody id = "process_list"></tbody>

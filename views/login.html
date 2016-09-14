@@ -67,6 +67,56 @@
 					"json"
 				);
 			});
+
+			// Get Label and Message
+			$.post(
+				"/login/getmessage",
+				{"language_setting":"en"},
+				function(data,result) {
+					if (typeof(Storage) !== "undefined") {
+						// Code for localStorage/sessionStorage.
+						//alert("ok");
+					} else {
+						// Sorry! No Web Storage support..
+						alert("Your browser does not support HTML5.");
+					}
+					$.each(data,function(msgIndex,msgContent) {
+						localStorage.setItem(msgIndex, msgContent);
+					});
+				}
+			);
+			$.post(
+				"/login/getmessage",
+				{"language_setting":"ch"},
+				function(data,result) {
+					if (typeof(Storage) !== "undefined") {
+						// Code for localStorage/sessionStorage.
+						//alert("ok");
+					} else {
+						// Sorry! No Web Storage support..
+						alert("Your browser does not support HTML5.");
+					}
+					$.each(data,function(msgIndex,msgContent) {
+						localStorage.setItem(msgIndex, msgContent);
+					});
+				}
+			);
+			$.post(
+				"/login/getmessage",
+				{"language_setting":"jp"},
+				function(data,result) {
+					if (typeof(Storage) !== "undefined") {
+						// Code for localStorage/sessionStorage.
+						//alert("ok");
+					} else {
+						// Sorry! No Web Storage support..
+						alert("Your browser does not support HTML5.");
+					}
+					$.each(data,function(msgIndex,msgContent) {
+						localStorage.setItem(msgIndex, msgContent);
+					});
+				}
+			);
 		});
 	</script>
 

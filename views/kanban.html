@@ -52,26 +52,11 @@
 
 		var language_setting = JSON.parse('<%-JSON.stringify(language_setting) %>');
 		//alert(language_setting);
-		$.post(
-			"/tasks/getmessage",
-			{"language_setting":language_setting},
-			function(data,result) {
-				if (typeof(Storage) !== "undefined") {
-					// Code for localStorage/sessionStorage.
-					//alert("ok");
-				} else {
-					// Sorry! No Web Storage support..
-					alert("Your browser does not support HTML5.");
-				}
-				$.each(data,function(msgIndex,msgContent) {
-					localStorage.setItem(msgIndex, msgContent);
-				});
-			}
-		);
+
 
 		$('#btn_add_task').click(function(){
 			clearInputTemp();
-			$('#add_edit_task_lable').html(localStorage.getItem("add_task"));
+			$('#add_edit_task_lable').html(localStorage.getItem(language_setting + "_add_task"));
 			$('#btn_add').show();
 			$('#btn_edit').hide();
 
@@ -463,6 +448,7 @@
 		}	
 
 		$(document).ready(function(){
+			var language_setting = JSON.parse('<%-JSON.stringify(language_setting) %>');
 			$( "#nav" ).menu({position: {at: "left bottom"}});
 			$( 'th' ).tooltip();
 			var tasksjson ='<%-JSON.stringify(tasks) %>';
@@ -574,7 +560,7 @@
 								$('.modal-body').empty();
 								$('.modal-body').append(data.err);
 								if (JSON.parse(data.err) === "wip_over"){
-									$('.modal-body').append(localStorage.getItem("wip_over"));
+									$('.modal-body').append(localStorage.getItem(language_setting + "_wip_over"));
 								} else {
 									$('.modal-body').append(JSON.parse(data.err));
 								}
@@ -620,8 +606,8 @@
 			});
 
 			$( "#watson_next_task").click(function(){
-				$('#modal-header').text(localStorage.getItem("watson_trade_off_header"));
-				$('#modal-footer').text(localStorage.getItem("watson_trade_off_footer"));
+				$('#modal-header').text(localStorage.getItem(language_setting + "_watson_trade_off_header"));
+				$('#modal-footer').text(localStorage.getItem(language_setting + "_watson_trade_off_footer"));
 				$.post(
 					"../watson/tradeoff",
 					{"tradeoffjson":$('#watson-tradeoff').text()},
