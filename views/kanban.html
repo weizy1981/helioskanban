@@ -493,6 +493,21 @@
 					}
 					tradeoff_options.push(option);
 				}
+				console.log(""
+					+"<div class='panel panel-primary' id = '" + content._id +"' rev = '" + content._rev +"'>"
+					+"	<div class='panel-title'> <h6 >"
+					+ "&nbsp;<a href = '#' class = 'taskdetail' title = '"
+					+ "Task Type:" + content.task_type1
+					+ "&#13;Task Detail:" + content.task_detail
+					+"'>Detail</a>&nbsp;&nbsp;"
+					+"<a href = '#' onclick ='editTask(this)'>Edit</a>&nbsp;&nbsp;<a href = '#' onClick = 'deleteTask(this)'>Delete</a>"
+					+"&nbsp;&nbsp;<font color = red>"+endtime_estimated + "</font>&nbsp;"
+					+"</h6> </div>"
+					+"	<div class='panel-body'><h5>"+content.task_name.replace("\s/g","&nbsp;")+"</h5></div>"
+					+"	<div class='panel-footer'>"
+					+ emergency + "【" +assignment+ "】</div>"
+					+"</div>");
+
 				$( '#' + content._id ).replaceWith(""
 					+"<div class='panel panel-primary' id = '" + content._id +"' rev = '" + content._rev +"'>"
 					+"	<div class='panel-title'> <h6 >"

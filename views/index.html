@@ -29,10 +29,10 @@
 	.process_item {width: 345px; height: 70px; background-color: #f9f9f9; margin: 2px;float:left}
 	.process_item_selected {width: 345px; background-color: #F09B22; margin: 2px;float:left; color:white}
 	.process_name {padding: 25px; float:left}
-	.process_operation {margin: 1px;float:right}
+	.process_operation {margin: 1px;float:left; padding-top: 7px}
 	.process_status {margin-left: 1px;}
 
-	.process_select {width: 220px; height: 70px;}
+	.process_select {width: 240px; height: 70px;}
 	.new_process_select {width: 270px; height: 70px;}
 	
 	.new_process_item_row {width: 330px; height: 70px;}
@@ -413,14 +413,14 @@
 			var pname = objProcess.process_name;
 			strRows = "<tr class = 'process_item'>";
 			strRows = strRows + "<td class = 'process_select' id ='"+ objProcess.process_id +"' contenteditable=true >" + pname + "</td><td>";
-	 		strRows = strRows + "&nbsp;<button type='button' class='btn btn-default process_operation' title = 'Edit Process Member' onclick='showEditMember(this)'>";
-			strRows = strRows + " <span class='glyphicon glyphicon-user'></span></button>";
-			strRows = strRows + "&nbsp;<button type='button' class='btn btn-default process_operation' title = 'Define WorkFlow' onclick='showWorkflow(this)'>";
+			strRows = strRows + "<button type='button' class='btn btn-default process_operation' title = 'Define WorkFlow' onclick='showWorkflow(this)'>";
 			strRows = strRows + " <span class='glyphicon glyphicon-list'></span></button>";
-			strRows = strRows + "&nbsp;<button type='button' class='btn btn-default process_operation' title = 'Analyze Process' onclick='showAnalyzation(this)'>";
-			strRows = strRows + " <span class='glyphicon glyphicon-stats'></span></button>";
-			strRows = strRows + "&nbsp;<button type='button' class='btn btn-default process_operation' title = 'Edit Task Setting' onclick='showTaskSetting(this)'>";
+	 		strRows = strRows + "<button type='button' class='btn btn-default process_operation' title = 'Edit Process Member' onclick='showEditMember(this)'>";
+			strRows = strRows + " <span class='glyphicon glyphicon-user'></span></button>";
+			strRows = strRows + "<button type='button' class='btn btn-default process_operation' title = 'Edit Task Setting' onclick='showTaskSetting(this)'>";
 			strRows = strRows + " <span class='glyphicon glyphicon-pencil'></span></button>";
+			strRows = strRows + "<button type='button' class='btn btn-default process_operation' title = 'Analyze Process' onclick='showAnalyzation(this)'>";
+			strRows = strRows + " <span class='glyphicon glyphicon-stats'></span></button>";
 			strRows = strRows + "</td></tr>";
 			//strRows = strRows + "<tr><td>ccc</td></tr>";
 			$("#process_list").append(strRows);
@@ -651,7 +651,7 @@
 			
 			data: {
 				x: 'x',
-								order: 'asc',
+				order: 'asc',
 				columns: [
 					['x', '2016-07-19', '2016-07-20', '2016-07-21', '2016-07-22', '2016-07-23'],
 					['ToDo', 4, 6, 8, 5, 7],
