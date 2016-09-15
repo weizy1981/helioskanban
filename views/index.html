@@ -186,7 +186,8 @@
 	function saveNewProcess(currentObj) {
 		$.post(
 			"/addprocess",
-			{"current_process":$(currentObj).parent().prev().attr('id'),"process_name":$(currentObj).parent().prev().children(":first").text(),"action_name":"showWorkFlow"},
+			{"current_process":$(currentObj).parent().prev().attr('id'),"process_name":$(currentObj).parent().prev().children(":first").text(),"action_name":"showWorkFlow",
+			 "language_setting":$('#language_setting').val()},
 			function(data,result) {
 				window.location.reload();
 			}
@@ -352,6 +353,8 @@
 	}	
 
 	$(function() {
+		var language_setting = JSON.parse('<%-JSON.stringify(language_setting) %>');
+		$('#language_setting').val(language_setting);
 		$( "#add-member" ).button().on( "click", function() {
 			$( "#user_list" ).append( '<tr>' +
 				  '<td><input type = "text" name="user_name"></td>' +
@@ -468,10 +471,11 @@
 		});
 
 		$( "#add-process" ).on( "click", function() {
+			$('#language_setting').val($('#new_process_language').val());
 			var now = new Date();
 			var newProcessID = "process_" + now.getTime();
 			strRows = "<tr class = 'process_item' id = 'new_process_item'>";
-			strRows = strRows + "<td class = 'new_process_select' id ='"+ newProcessID +"' contenteditable=true><div contenteditable=true onfocus=document.execCommand('selectAll',false,null)>" + localStorage.getItem($('#new_process_language').val() + '_new_process') + "</div></td><td>";
+			strRows = strRows + "<td class = 'new_process_select' id ='"+ newProcessID +"' contenteditable=true><div contenteditable=true onfocus=document.execCommand('selectAll',false,null)>" + localStorage.getItem($('#language_setting').val() + '_new_process') + "</div></td><td>";
 			strRows = strRows + "&nbsp;<button type='button' class='btn btn-default process_operation' title = 'Save' onclick='saveNewProcess(this)'>";
 			strRows = strRows + " <span class='glyphicon glyphicon-ok'></span></button>";
 			strRows = strRows + "</td></tr>";
@@ -517,6 +521,7 @@
 		$( ".add-task-option").click(function() {
 			$(this).parent().parent().next().append('<div class = "task_item_option"><div style="float:left" contenteditable=true>New Option</div><div style="float:right"><button type="button" class="btn btn-default remove-task-item-option" title = "Remove Item Option" onClick = "removeWorkTaskItem(this)"><span class="glyphicon glyphicon-remove"></span></button></div></div>');	
 		});
+		$('#menu_logout').text(localStorage.getItem(localStorage.getItem("browser_language") + "_logout"));
 	});
 		
 </script>
@@ -699,7 +704,7 @@
 	</div>
 	<div id = "navigation">
 	<ul id="nav">
-		<div><a href="/logout">Logout</a></div>
+		<div><a href="/logout" id = "menu_logout">Logout</a></div>
 	</ul>
 	</div>
 <div id = "loading">
@@ -878,5 +883,6 @@
 		</table>
 	</div>
 
+	<div style="display: none;" id = "language_setting" value = ""></div>
 	</body>
 </html>

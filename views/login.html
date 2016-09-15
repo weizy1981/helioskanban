@@ -32,7 +32,7 @@
 	<p id = "errorMessage"></p>
     <a href = "./register">Register</a>
 	-->
-	<script>
+	<script> 
 		$(document).ready(function(){
 			$( "#login_button" ).button();
 			$( "#register_button" ).button();
@@ -67,6 +67,18 @@
 					"json"
 				);
 			});
+
+			// Browser Language Setting
+			var userLang = navigator.language || navigator.userLanguage;
+			if (userLang.startsWith("zh")) {
+				userLang = "ch"
+			} else if (userLang.startsWith("ja")) {
+				userLang = "jp"
+			} else {
+				userLang = "en"
+			}
+			localStorage.setItem("browser_language",userLang);
+			//alert(localStorage.getItem("browser_language"));
 
 			// Get Label and Message
 			$.post(

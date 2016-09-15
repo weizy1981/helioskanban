@@ -81,104 +81,307 @@ router.post('/addprocess', loginCheck, function(req, res) {
 	var process_id = req.body.current_process;
 	req.session.user_current_process = process_id;
 	var process_name = req.body.process_name;
+	var language_setting = req.body.language_setting;
+	console.log("language_setting:*********************");
+	console.log(language_setting);
+	var new_process = {};
 	// New Process
 	var insertProcess = function(callback) {
-		db.insert({ _id: process_id, "type":"process", "p_name":process_name,
-			"language":"en",
-			"members": [{
-			  "user_id": req.session.user_id,
-			  "user_name": req.session.user_name,
-			  "authority": "Admin"
-			}], 
-			"work_flow": [
-				{
-				  "status_id": "1",
-				  "status_name": "ToDo",
-				  "tasks": [],
-				  "update_time": "",
-				  "description": "Everyone shoud add task to this column firstly."
-				},
-				{
-				  "status_id": "2",
-				  "status_name": "In Process",
-				  "tasks": [],
-				  "update_time": "",
-				  "description": "Put tasks on going  to this column."
-				},
-				{
-				  "status_id": "999",
-				  "status_name": "Done",
-				  "tasks": [
-				  ],
-				  "update_time": "",
-				  "description": "Put tasks finished to this column."
-				}
-			],
-			"task_settings": {
-				"task_name": {
-				  "item_name": "Task Name",
-				  "item_type": "Editable",
-				  "item_options": []
-				},
-				"task_type1": {
-				  "item_name": "Task Type1",
-				  "item_type": "Selectable",
-				  "item_options": [
-					"Regular",
-					"Irregular",
-					"ID Application",
-					"Inquiry"
-				  ]
-				},
-				"task_type2": {
-				  "item_name": "Task Type2",
-				  "item_type": "Selectable",
-				  "item_options": [
-					"e-Quotation",
-					"e-HR",
-					"e-Market"
-				  ]
-				},
-				"task_size": {
-				  "item_name": "Task Size",
-				  "item_type": "Selectable",
-				  "item_options": [
-					"XL",
-					"L",
-					"M",
-					"S"
-				  ]
-				},
-				"task_importance": {
-				  "item_name": "Importance",
-				  "item_type": "Selectable",
-				  "item_options": [
-					"L",
-					"M",
-					"H"
-				  ]
-				},
-				"task_emergency": {
-				  "item_name": "Emergency",
-				  "item_type": "Selectable",
-				  "item_options": [
-					"☆",
-					"☆☆",
-					"☆☆☆"
-				  ]
-				},
-				"task_start_estimate": {
-				  "item_name": "StartTime Estimate",
-				  "item_type": "Unused",
-				  "item_options": []
-				},
-				"task_end_estimate": {
-				  "item_name": "EndTime Estimate",
-				  "item_type": "Editable",
-				  "item_options": []
-				}
-			}
-			}, function(err, data) {
+			console.log("language_setting:*********************");
+		if (language_setting === "ch") {
+			new_process = { _id: process_id, "type":"process", "p_name":process_name,
+							"language":"en",
+							"members": [{
+							  "user_id": req.session.user_id,
+							  "user_name": req.session.user_name,
+							  "authority": "Admin"
+							}], 
+							"work_flow": [
+								{
+								  "status_id": "1",
+								  "status_name": "未处理",
+								  "tasks": [],
+								  "update_time": "",
+								  "description": "Everyone shoud add task to this column firstly."
+								},
+								{
+								  "status_id": "2",
+								  "status_name": "进行中",
+								  "tasks": [],
+								  "update_time": "",
+								  "description": "Put tasks on going  to this column."
+								},
+								{
+								  "status_id": "999",
+								  "status_name": "完成",
+								  "tasks": [
+								  ],
+								  "update_time": "",
+								  "description": "Put tasks finished to this column."
+								}
+							],
+							"task_settings": {
+								"task_name": {
+								  "item_name": "任务名称",
+								  "item_type": "Editable",
+								  "item_options": []
+								},
+								"task_type1": {
+								  "item_name": "任务类型1",
+								  "item_type": "Selectable",
+								  "item_options": [
+									"Regular",
+									"Irregular",
+									"ID Application",
+									"Inquiry"
+								  ]
+								},
+								"task_type2": {
+								  "item_name": "任务类型2",
+								  "item_type": "Selectable",
+								  "item_options": [
+									"e-Quotation",
+									"e-HR",
+									"e-Market"
+								  ]
+								},
+								"task_size": {
+								  "item_name": "任务大小",
+								  "item_type": "Selectable",
+								  "item_options": [
+									"XL",
+									"L",
+									"M",
+									"S"
+								  ]
+								},
+								"task_importance": {
+								  "item_name": "重要度",
+								  "item_type": "Selectable",
+								  "item_options": [
+									"L",
+									"M",
+									"H"
+								  ]
+								},
+								"task_emergency": {
+								  "item_name": "紧急度",
+								  "item_type": "Selectable",
+								  "item_options": [
+									"☆",
+									"☆☆",
+									"☆☆☆"
+								  ]
+								},
+								"task_start_estimate": {
+								  "item_name": "预计开始时间",
+								  "item_type": "Unused",
+								  "item_options": []
+								},
+								"task_end_estimate": {
+								  "item_name": "预计完成时间",
+								  "item_type": "Editable",
+								  "item_options": []
+								}
+							}
+						};
+		} else if (language_setting === "jp") {
+			new_process = { _id: process_id, "type":"process", "p_name":process_name,
+							"language":"en",
+							"members": [{
+							  "user_id": req.session.user_id,
+							  "user_name": req.session.user_name,
+							  "authority": "Admin"
+							}], 
+							"work_flow": [
+								{
+								  "status_id": "1",
+								  "status_name": "未処理",
+								  "tasks": [],
+								  "update_time": "",
+								  "description": "Everyone shoud add task to this column firstly."
+								},
+								{
+								  "status_id": "2",
+								  "status_name": "対応中",
+								  "tasks": [],
+								  "update_time": "",
+								  "description": "Put tasks on going  to this column."
+								},
+								{
+								  "status_id": "999",
+								  "status_name": "完了",
+								  "tasks": [
+								  ],
+								  "update_time": "",
+								  "description": "Put tasks finished to this column."
+								}
+							],
+							"task_settings": {
+								"task_name": {
+								  "item_name": "タスク名",
+								  "item_type": "Editable",
+								  "item_options": []
+								},
+								"task_type1": {
+								  "item_name": "タスクタイプ１",
+								  "item_type": "Selectable",
+								  "item_options": [
+									"Regular",
+									"Irregular",
+									"ID Application",
+									"Inquiry"
+								  ]
+								},
+								"task_type2": {
+								  "item_name": "タスクタイプ２",
+								  "item_type": "Selectable",
+								  "item_options": [
+									"e-Quotation",
+									"e-HR",
+									"e-Market"
+								  ]
+								},
+								"task_size": {
+								  "item_name": "タスクサイズ",
+								  "item_type": "Selectable",
+								  "item_options": [
+									"XL",
+									"L",
+									"M",
+									"S"
+								  ]
+								},
+								"task_importance": {
+								  "item_name": "重要度",
+								  "item_type": "Selectable",
+								  "item_options": [
+									"L",
+									"M",
+									"H"
+								  ]
+								},
+								"task_emergency": {
+								  "item_name": "緊急度",
+								  "item_type": "Selectable",
+								  "item_options": [
+									"☆",
+									"☆☆",
+									"☆☆☆"
+								  ]
+								},
+								"task_start_estimate": {
+								  "item_name": "予定開始日",
+								  "item_type": "Unused",
+								  "item_options": []
+								},
+								"task_end_estimate": {
+								  "item_name": "予定完了日",
+								  "item_type": "Editable",
+								  "item_options": []
+								}
+							}
+						};	
+		} else {
+			new_process = { _id: process_id, "type":"process", "p_name":process_name,
+							"language":"en",
+							"members": [{
+							  "user_id": req.session.user_id,
+							  "user_name": req.session.user_name,
+							  "authority": "Admin"
+							}], 
+							"work_flow": [
+								{
+								  "status_id": "1",
+								  "status_name": "ToDo",
+								  "tasks": [],
+								  "update_time": "",
+								  "description": "Everyone shoud add task to this column firstly."
+								},
+								{
+								  "status_id": "2",
+								  "status_name": "In Process",
+								  "tasks": [],
+								  "update_time": "",
+								  "description": "Put tasks on going  to this column."
+								},
+								{
+								  "status_id": "999",
+								  "status_name": "Done",
+								  "tasks": [
+								  ],
+								  "update_time": "",
+								  "description": "Put tasks finished to this column."
+								}
+							],
+							"task_settings": {
+								"task_name": {
+								  "item_name": "Task Name",
+								  "item_type": "Editable",
+								  "item_options": []
+								},
+								"task_type1": {
+								  "item_name": "Task Type1",
+								  "item_type": "Selectable",
+								  "item_options": [
+									"Regular",
+									"Irregular",
+									"ID Application",
+									"Inquiry"
+								  ]
+								},
+								"task_type2": {
+								  "item_name": "Task Type2",
+								  "item_type": "Selectable",
+								  "item_options": [
+									"e-Quotation",
+									"e-HR",
+									"e-Market"
+								  ]
+								},
+								"task_size": {
+								  "item_name": "Task Size",
+								  "item_type": "Selectable",
+								  "item_options": [
+									"XL",
+									"L",
+									"M",
+									"S"
+								  ]
+								},
+								"task_importance": {
+								  "item_name": "Importance",
+								  "item_type": "Selectable",
+								  "item_options": [
+									"L",
+									"M",
+									"H"
+								  ]
+								},
+								"task_emergency": {
+								  "item_name": "Emergency",
+								  "item_type": "Selectable",
+								  "item_options": [
+									"☆",
+									"☆☆",
+									"☆☆☆"
+								  ]
+								},
+								"task_start_estimate": {
+								  "item_name": "StartTime Estimate",
+								  "item_type": "Unused",
+								  "item_options": []
+								},
+								"task_end_estimate": {
+								  "item_name": "EndTime Estimate",
+								  "item_type": "Editable",
+								  "item_options": []
+								}
+							}
+						};	
+		}
+
+		db.insert(new_process, function(err, data) {
 				console.log("Error:", err);
 				console.log("Data:", data);
 				callback(err, data);
@@ -617,29 +820,5 @@ router.post('/selectprocess', loginCheck, function(req, res) {
 	res.end(); 
 });
 
-//***********************************************************************
-// Get Messages
-//***********************************************************************
-router.post('/getmessage', loginCheck, function(req, res) {
-	var language_setting = req.body.language_setting;
-	console.log("language:" + language_setting);
-	if (language_setting === "ch" || language_setting === "jp") {
-	} else {
-		language_setting = "en";
-	}
-	db.get("message_" + language_setting, function(err, data) {
-		console.log("message_" + language_setting);
-		console.log("Error:", err);
-		console.log("Data:", data);
-		if (data == null || typeof(data) == "undefined") {
-			console.log("fail");
-			res.render('login');
-		} else {
-			console.log("success");
-			res.contentType('json');
-			res.send(JSON.stringify(data));  
-			res.end(); 
-		}
-	});
-});
+
 module.exports = router;
