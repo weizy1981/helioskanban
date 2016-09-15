@@ -522,6 +522,7 @@
 			$(this).parent().parent().next().append('<div class = "task_item_option"><div style="float:left" contenteditable=true>New Option</div><div style="float:right"><button type="button" class="btn btn-default remove-task-item-option" title = "Remove Item Option" onClick = "removeWorkTaskItem(this)"><span class="glyphicon glyphicon-remove"></span></button></div></div>');	
 		});
 		$('#menu_logout').text(localStorage.getItem(localStorage.getItem("browser_language") + "_logout"));
+		$('#label_process_list').text(localStorage.getItem(localStorage.getItem("browser_language") + "_process_list"));
 	});
 		
 </script>
@@ -723,7 +724,7 @@
 							<table class="table-hover table-condensed">
 								<thead>
 									<tr>
-										<th>Process List&nbsp;&nbsp;
+										<th><span id = "label_process_list">Process List</span>&nbsp;&nbsp;
 										<select name="new_process_language" id="new_process_language">
 										  <option selected="selected" value = "en">English</option>
 										  <option value = "ch">中文</option>

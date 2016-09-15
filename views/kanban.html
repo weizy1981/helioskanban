@@ -46,31 +46,6 @@
 
 	<script src="/js/angular.min.js"></script>
 	<link rel="stylesheet" href="/css/task_style.css" media="all">
-
-	<script>
-	jQuery(document).ready(function($) {
-
-		var language_setting = JSON.parse('<%-JSON.stringify(language_setting) %>');
-		//alert(language_setting);
-
-
-		$('#btn_add_task').click(function(){
-			clearInputTemp();
-			$('#add_edit_task_lable').html(localStorage.getItem(language_setting + "_add_task"));
-			$('#btn_add').show();
-			$('#btn_edit').hide();
-
-			$('.theme-popover-mask').fadeIn(100);
-			$('.theme-popover').slideDown(200);
-		})
-		$('.theme-poptit .close').click(function(){
-			$('.theme-popover-mask').fadeOut(100);
-			$('.theme-popover').slideUp(200);
-		})
-
-	})
-	</script>
-
     <title>Watson Kanban</title>
 </head>
 
@@ -83,9 +58,9 @@
 	<div id="process" class="panel panel-default" rev = "<%=rev %>">
 		<div>
 		<ul id="nav">
-			<li><a class="btn theme-login" href="/">Process Management</a></li>
+			<li><a class="btn theme-login" href="/" id = "btn_process_management">Process Management</a></li>
 			<li><a class="btn theme-login" id="btn_add_task" href="javascript:;" hidden>Add Task</a></li>
-			<li><a class="btn theme-login" href="/logout">Logout</a></li>
+			<li><a class="btn theme-login" href="/logout" id = "btn_logout">Logout</a></li>
 		</ul>
 		</div>
 		<table border = "0" align = "center" id = "kanbantable" width = "98%" height = "100%" class="table table-condensed table-responsive ">
@@ -146,7 +121,7 @@
 					<% }%>				 
 				<% } %>	
 				<li>
-					<strong class="control-label">Task Assignment</strong>
+					<strong class="control-label" id = "task_assignment">Task Assignment</strong>
 					<select name="task_assignment" id = "task_setting_task_assignment" required class="ipt">
 						<option value=''></option>
 						<% for (var j = 0; j<process_members.length;  j++) { %>
@@ -215,7 +190,7 @@
 					 -->
                      <li>
 						<!-- <span style="color:red;">(*) is required.</span> -->
-						<input type="button" ng-click="reset()" class="btn btn-primary" style="margin-left: 30px;" value="Reset">
+						<input type="button" ng-click="reset()" class="btn btn-primary" style="margin-left: 30px;" id = "btn_cancel"value="Reset">
 						<input id="btn_add" type="button" ng-click="add()" ng-disabled="taskForm.taskName.$invalid" class="btn btn-primary" value="Add">
 						<input id="btn_edit" type="button" ng-click="edit()" ng-disabled="taskForm.taskName.$invalid" class="btn btn-primary" value="Edit">
 					 </li>
@@ -281,7 +256,7 @@
 		}
 
 		$(".processtitle").tooltip();
-
+		var language_setting = JSON.parse('<%-JSON.stringify(language_setting) %>');
 		function deleteTask(currentObj) {
 			var toDeleteTaskObj = {};
 			var currentStatusTasks = new Array();
@@ -352,7 +327,7 @@
 		function editTask(currentObj){
 
 			clearInputTemp();
-			$('#add_edit_task_lable').html('Edit task');
+			$('#add_edit_task_lable').html(localStorage.getItem(language_setting + "_edit_task"));
 			$('#btn_add').hide();
 			$('#btn_edit').removeAttr("disabled");
 			$('#btn_edit').show();
@@ -448,7 +423,29 @@
 		}	
 
 		$(document).ready(function(){
-			var language_setting = JSON.parse('<%-JSON.stringify(language_setting) %>');
+			$('#btn_process_management').text(localStorage.getItem(language_setting + "_process_management"));
+			$('#btn_add_task').text(localStorage.getItem(language_setting + "_add_task"));
+			$('#btn_logout').text(localStorage.getItem(language_setting + "_logout"));
+			$('#btn_add').val(localStorage.getItem(language_setting + "_add"));
+			$('#btn_cancel').val(localStorage.getItem(language_setting + "_cancel"));
+			$('#btn_edit').val(localStorage.getItem(language_setting + "_edit"));
+			$('#task_assignment').text(localStorage.getItem(language_setting + "_task_assignment"));
+			$('#watson_next_task').text(localStorage.getItem(language_setting + "_watson_next_task"));
+
+			$('#btn_add_task').click(function(){
+				clearInputTemp();
+				$('#add_edit_task_lable').html(localStorage.getItem(language_setting + "_add_task"));
+				$('#btn_add').show();
+				$('#btn_edit').hide();
+
+				$('.theme-popover-mask').fadeIn(100);
+				$('.theme-popover').slideDown(200);
+			})
+			$('.theme-poptit .close').click(function(){
+				$('.theme-popover-mask').fadeOut(100);
+				$('.theme-popover').slideUp(200);
+			})
+
 			$( "#nav" ).menu({position: {at: "left bottom"}});
 			$( 'th' ).tooltip();
 			var tasksjson ='<%-JSON.stringify(tasks) %>';
@@ -479,20 +476,6 @@
 					}
 					tradeoff_options.push(option);
 				}
-				console.log(""
-					+"<div class='panel panel-primary' id = '" + content._id +"' rev = '" + content._rev +"'>"
-					+"	<div class='panel-title'> <h6 >"
-					+ "&nbsp;<a href = '#' class = 'taskdetail' title = '"
-					+ "Task Type:" + content.task_type1
-					+ "&#13;Task Detail:" + content.task_detail
-					+"'>Detail</a>&nbsp;&nbsp;"
-					+"<a href = '#' onclick ='editTask(this)'>Edit</a>&nbsp;&nbsp;<a href = '#' onClick = 'deleteTask(this)'>Delete</a>"
-					+"&nbsp;&nbsp;<font color = red>"+endtime_estimated + "</font>&nbsp;"
-					+"</h6> </div>"
-					+"	<div class='panel-body'><h5>"+content.task_name.replace("\s/g","&nbsp;")+"</h5></div>"
-					+"	<div class='panel-footer'>"
-					+ emergency + "【" +assignment+ "】</div>"
-					+"</div>");
 
 				$( '#' + content._id ).replaceWith(""
 					+"<div class='panel panel-primary' id = '" + content._id +"' rev = '" + content._rev +"'>"
@@ -500,8 +483,8 @@
 					+ "&nbsp;<a href = '#' class = 'taskdetail' title = '"
 					+ "Task Type:" + content.task_type1
 					+ "&#13;Task Detail:" + content.task_detail
-					+"'>Detail</a>&nbsp;&nbsp;"
-					+"<a href = '#' onclick ='editTask(this)'>Edit</a>&nbsp;&nbsp;<a href = '#' onClick = 'deleteTask(this)'>Delete</a>"
+					+"'>" + localStorage.getItem(language_setting + "_detail") + "</a>&nbsp;&nbsp;"
+					+"<a href = '#' onclick ='editTask(this)'>" + localStorage.getItem(language_setting + "_edit") + "</a>&nbsp;&nbsp;<a href = '#' onClick = 'deleteTask(this)'>" + localStorage.getItem(language_setting + "_delete") + "</a>"
 					+"&nbsp;&nbsp;<font color = red>"+endtime_estimated + "</font>&nbsp;"
 					+"</h6> </div>"
 					+"	<div class='panel-body'><h5>"+content.task_name.replace("\s/g","&nbsp;")+"</h5></div>"
@@ -555,10 +538,9 @@
 						function(data,status) {
 							if (JSON.stringify(data.err) != '"null"') {
 								//$('#err-message-content').text(data.err);
-								$('#modal-header').text("操作失敗");
+								$('#modal-header').text(localStorage.getItem(language_setting + "_operation_failed"));
 								$('#modal-footer').remove();
 								$('.modal-body').empty();
-								$('.modal-body').append(data.err);
 								if (JSON.parse(data.err) === "wip_over"){
 									$('.modal-body').append(localStorage.getItem(language_setting + "_wip_over"));
 								} else {
