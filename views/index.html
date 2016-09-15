@@ -523,6 +523,16 @@
 		});
 		$('#menu_logout').text(localStorage.getItem(localStorage.getItem("browser_language") + "_logout"));
 		$('#label_process_list').text(localStorage.getItem(localStorage.getItem("browser_language") + "_process_list"));
+		// Browser Language Setting
+		var userLang = navigator.language || navigator.userLanguage;
+		if (userLang.startsWith("zh")) {
+			userLang = "ch"
+		} else if (userLang.startsWith("ja")) {
+			userLang = "jp"
+		} else {
+			userLang = "en"
+		}
+		$('#new_process_language').val(userLang);
 	});
 		
 </script>
