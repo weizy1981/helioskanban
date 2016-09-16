@@ -178,6 +178,49 @@
 	padding-left: 50px;
 	color: #fff;
 }
+
+
+/*added by yuexu start
+div#navigation, #process {
+   background-color: #003764;
+   border-bottom-color: #002340;
+}
+
+div#logo-container h3{
+   color: #fff !important; 
+}
+
+#nav{
+	border-bottom: 1px solid #dcdcdc;
+    background: #F6F8FA;
+}
+#processes-container{
+	background:#F6F8FA;
+	border: 2px solid rgb(255, 255, 255);
+	padding-top:10px;
+} 
+.process_item{
+	background-color: inherit !important;
+	border: 1px solid rgb(255, 255, 255);
+	width:350px !important;
+	height:100% !important;
+} 
+
+.process_item.select{
+	color: rgb(0, 0, 0);
+	background:lightgray !important;
+	border: 1px solid gray;
+}
+#task-setting-container, #users-container, #analytics-container, language_setting{
+	background:#F6F8FA;
+	border: 2px solid rgb(255, 255, 255);
+	margin:20px !important;
+} 
+body, #kanbantable{
+	background: -moz-linear-gradient(top, #F6F8FA, #ffffff) !important;
+}
+added by yuexu end*/
+
   </style>
   <script>
 
@@ -795,7 +838,7 @@
 	</div>
 
 	<div id="users-container" class="users-container">
-		<h1>Process Members&nbsp;&nbsp;<button id = "add-member" type='button' class='btn btn-default'><span class='glyphicon glyphicon-plus'></span></button></h1>
+		<h1 id = "label_process_members">Process Members&nbsp;&nbsp;<button id = "add-member" type='button' class='btn btn-default'><span class='glyphicon glyphicon-plus'></span></button></h1>
 		<table id="users" class="ui-widget ui-widget-content">
 		<thead>
 		  <tr class="user-setting-table-header">

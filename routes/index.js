@@ -90,7 +90,7 @@ router.post('/addprocess', loginCheck, function(req, res) {
 			console.log("language_setting:*********************");
 		if (language_setting === "ch") {
 			new_process = { _id: process_id, "type":"process", "p_name":process_name,
-							"language":"en",
+							"language":"ch",
 							"members": [{
 							  "user_id": req.session.user_id,
 							  "user_name": req.session.user_name,
@@ -187,7 +187,7 @@ router.post('/addprocess', loginCheck, function(req, res) {
 						};
 		} else if (language_setting === "jp") {
 			new_process = { _id: process_id, "type":"process", "p_name":process_name,
-							"language":"en",
+							"language":"jp",
 							"members": [{
 							  "user_id": req.session.user_id,
 							  "user_name": req.session.user_name,
