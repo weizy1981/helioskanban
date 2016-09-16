@@ -453,11 +453,16 @@
 			var process = JSON.parse('<%-JSON.stringify(process) %>');
 			var tradeoff_options = new Array();
 			$.each(tasks, function(index, content){
-				var assignment = content.task_assignment;
+				
+				var assignment ="【" + content.task_assignment+ "】";
 				var emergency = content.task_emergency;
+				if (typeof(content.task_emergency) == "undefined") {
+					emergency = "";
+				}
+				
 				var taskType = content.task_tasktype_id;
-				if (typeof(assignment) == "undefined") {
-					var assignment = "Unassigned";
+				if (typeof(assignment) === "undefined" || assignment === "【】") {
+					assignment = "";
 				}
 				var endtime_estimated = content.task_end_estimate;
 				if (typeof(endtime_estimated) === "undefined") {
@@ -489,7 +494,7 @@
 					+"</h6> </div>"
 					+"	<div class='panel-body'><h5>"+content.task_name.replace("\s/g","&nbsp;")+"</h5></div>"
 					+"	<div class='panel-footer'>"
-					+ emergency + "【" +assignment+ "】</div>"
+					+ emergency  +assignment+ "</div>"
 					+"</div>");
 					$('.panel-footer').css({"height":'40',"font-size":'16px',"color":'blue',"text-align":'right',"background-color":"white"});
 					$('.panel-primary').css("width",'200');

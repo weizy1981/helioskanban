@@ -398,6 +398,7 @@ added by yuexu end*/
 	$(function() {
 		var language_setting = JSON.parse('<%-JSON.stringify(language_setting) %>');
 		$('#language_setting').val(language_setting);
+		
 		$( "#add-member" ).button().on( "click", function() {
 			$( "#user_list" ).append( '<tr>' +
 				  '<td><input type = "text" name="user_name"></td>' +
