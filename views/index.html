@@ -8,7 +8,8 @@
 	<link href="/css/c3.css" rel="stylesheet" type="text/css">
     <script src="/js/jquery-2.1.4.min.js"></script>
     <script src="/js/jquery-ui.min.js"></script>
-	<script src="/js/bootstrap.min.js"></script> 
+	<script src="/js/bootstrap.min.js"></script>
+	<script src="/js/authority.js"></script>
 	
   <style>
     label, input { display:block; }
@@ -269,6 +270,11 @@ added by yuexu end*/
 	}
 
 	function showEditMember(currentObj) {
+
+		// 权限检查
+		var ops = {"operation":_OP_EDIT_MEMBER, "operation_lv":2, "process_id":$(currentObj).parent().prev().attr('id'), "task_id":""};
+		if (!checkAuth(ops)) {alert("You are not authorized to do this operation as a Viewer.");return false;}
+
 		$.post(
 			"selectprocess",
 			{"current_process":$(currentObj).parent().prev().attr('id'),"current_process_name":$(currentObj).parent().prev().text(),"action_name":"showEditMember"},
@@ -279,6 +285,11 @@ added by yuexu end*/
 	}
 
 	function showWorkflow(currentObj) {
+
+		// 权限检查
+		var ops = {"operation":_OP_DEFINE_WORKFLOW, "operation_lv":2, "process_id":$(currentObj).parent().prev().attr('id'), "task_id":""};
+		if (!checkAuth(ops)) {alert("You are not authorized to do this operation as a Viewer.");return false;}
+
 		$.post(
 			"selectprocess",
 			{"current_process":$(currentObj).parent().prev().attr('id'),"current_process_name":$(currentObj).parent().prev().text(),"action_name":"showWorkFlow"},
@@ -289,6 +300,11 @@ added by yuexu end*/
 	}
 
 	function showTaskSetting(currentObj) {
+
+		// 权限检查
+		var ops = {"operation":_OP_EDIT_TASK_SETTING, "operation_lv":2, "process_id":$(currentObj).parent().prev().attr('id'), "task_id":""};
+		if (!checkAuth(ops)) {alert("You are not authorized to do this operation as a Viewer.");return false;}
+
 		$.post(
 			"selectprocess",
 			{"current_process":$(currentObj).parent().prev().attr('id'),"current_process_name":$(currentObj).parent().prev().text(),"action_name":"showTaskSetting"},
@@ -299,6 +315,11 @@ added by yuexu end*/
 	}
 
 	function showAnalyzation(currentObj) {
+
+		// 权限检查
+		var ops = {"operation":_OP_ANALYSIS, "operation_lv":2, "process_id":$(currentObj).parent().prev().attr('id'), "task_id":""};
+		if (!checkAuth(ops)) {alert("You are not authorized to do this operation as a Viewer.");return false;}
+
 		hidecontainers();
 		$( '#analytics-container' ).show();
 		drawThroughput();
@@ -453,6 +474,8 @@ added by yuexu end*/
 
 
 		var process = JSON.parse('<%-JSON.stringify(processes) %>');
+		// save process authority to sessionStorage
+		window.sessionStorage.setItem("processes", JSON.stringify(process));
 		var strRows="";
 		$.each(process,function(colIndex,objProcess) {
 			var id = objProcess.process_id;
@@ -516,6 +539,11 @@ added by yuexu end*/
 
 		$( "#add-process" ).on( "click", function() {
 			$('#language_setting').val($('#new_process_language').val());
+
+			// 权限检查
+			var ops = {"operation":_OP_ADD_PROCESS, "operation_lv":1, "process_id":"", "task_id":""};
+			if (!checkAuth(ops)) {alert("You are not authorized to do this operation as a Viewer.");return false;}
+
 			var now = new Date();
 			var newProcessID = "process_" + now.getTime();
 			strRows = "<tr class = 'process_item' id = 'new_process_item'>";

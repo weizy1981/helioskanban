@@ -11,6 +11,7 @@
     <script src="/js/jquery-ui.min.js"></script>
 	<script src="/js/bootstrap.min.js"></script>
 	<script src="/js/socket.io-1.3.6.js"></script>
+	<script src="/js/authority.js"></script>
 	<style type="text/css">
 		.tdBorder{border-left:WhiteSmoke 2px solid;width: 200px;height:570px;}
 		.tdBorderTitle{border-left:WhiteSmoke 2px solid;border-bottom:WhiteSmoke 2px solid;}
@@ -72,6 +73,7 @@
     <div id = "logo-container">
 		<div style="float:left; padding:2px;"><img src = "images/logo.jpg"></img></div>
 		<div style="float:left; padding-top:16px; padding-left: 10px"><h3><%=current_progress_name %></h3></div>
+		<input type="hidden" name="current_process_id" id = "current_process_id" value="<%=current_process%>" class="ipt">
 	</div>
 	<div id="process" class="panel panel-default" rev = "<%=rev %>">
 		<div>
@@ -276,6 +278,11 @@
 		$(".processtitle").tooltip();
 		var language_setting = JSON.parse('<%-JSON.stringify(language_setting) %>');
 		function deleteTask(currentObj) {
+
+			// 权限检查
+			var ops = {"operation":_OP_DELETE_TASK, "operation_lv":3, "process_id":$('#current_process_id').attr('value'), "task_id":$(currentObj).parent().parent().parent().attr('id')};
+			if (!checkAuth(ops)) {alert("You are not authorized to do this operation as a Viewer.");return false;}
+
 			var toDeleteTaskObj = {};
 			var currentStatusTasks = new Array();
 			var currentStatus;
@@ -343,6 +350,10 @@
 		}
 
 		function editTask(currentObj){
+
+			// 权限检查
+			var ops = {"operation":_OP_EDIT_TASK, "operation_lv":3, "process_id":$('#current_process_id').attr('value'), "task_id":$(currentObj).parent().parent().parent().attr('id')};
+			if (!checkAuth(ops)) {alert("You are not authorized to do this operation as a Viewer.");return false;}
 
 			clearInputTemp();
 			$('#add_edit_task_lable').html(localStorage.getItem(language_setting + "_edit_task"));
@@ -458,6 +469,11 @@
 			$('#watson_next_task').text(localStorage.getItem(language_setting + "_watson_next_task"));
 
 			$('#btn_add_task').click(function(){
+
+				// 权限检查
+				var ops = {"operation":_OP_ADD_TASK, "operation_lv":3, "process_id":$('#current_process_id').attr('value'), "task_id":""};
+				if (!checkAuth(ops)) {alert("You are not authorized to do this operation as a Viewer.");return false;}
+
 				clearInputTemp();
 				$('#add_edit_task_lable').html(localStorage.getItem(language_setting + "_add_task"));
 				$('#btn_add').show();
@@ -555,6 +571,9 @@
 			$( eval(statusString) ).sortable({
 				connectWith: ".tdBorder",
 				start: function( event, ui ) {
+					// 权限检查
+					var ops = {"operation":_OP_DRAG_TASK, "operation_lv":3, "process_id":$('#current_process_id').attr('value'), "task_id":ui.item.attr("id")};
+					if (!checkAuth(ops)) {return false;}
 					startstatus = ui.item.parent();
 				},
 				stop: function( event, ui ) {

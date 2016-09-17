@@ -60,7 +60,7 @@ router.get('/', loginCheck, function(req, res) {
 						req.session.task_settings = data.task_settings;
 						res.render('kanban', { "tasks": result.docs, "process":current_progress,
 							"process_members":data.members,
-							"current_progress_name":req.session.user_current_process_name, "task_settings":data.task_settings, "rev": data._rev,
+							"current_progress_name":req.session.user_current_process_name, "current_process":req.session.user_current_process, "task_settings":data.task_settings, "rev": data._rev,
 							"watson_classifier":data.watson_classifier, "language_setting":data.language});
 					}
 				});
