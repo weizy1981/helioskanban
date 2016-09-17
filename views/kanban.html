@@ -79,7 +79,7 @@
 		<div>
 		<ul id="nav">
 			<li><a class="btn theme-login" href="/" id = "btn_process_management">Process Management</a></li>
-			<li><a class="btn theme-login" id="btn_add_task" href="javascript:;" hidden>Add Task</a></li>
+			<li id="li_add_task"><a class="btn theme-login" id="btn_add_task" href="javascript:;" hidden>Add Task</a></li>
 			<li><a class="btn theme-login" href="/logout" id = "btn_logout">Logout</a></li>
 		</ul>
 		</div>
@@ -278,11 +278,6 @@
 		$(".processtitle").tooltip();
 		var language_setting = JSON.parse('<%-JSON.stringify(language_setting) %>');
 		function deleteTask(currentObj) {
-
-			// 权限检查
-			var ops = {"operation":_OP_DELETE_TASK, "operation_lv":3, "process_id":$('#current_process_id').attr('value'), "task_id":$(currentObj).parent().parent().parent().attr('id')};
-			if (!checkAuth(ops)) {alert("You are not authorized to do this operation as a Viewer.");return false;}
-
 			var toDeleteTaskObj = {};
 			var currentStatusTasks = new Array();
 			var currentStatus;
@@ -350,11 +345,6 @@
 		}
 
 		function editTask(currentObj){
-
-			// 权限检查
-			var ops = {"operation":_OP_EDIT_TASK, "operation_lv":3, "process_id":$('#current_process_id').attr('value'), "task_id":$(currentObj).parent().parent().parent().attr('id')};
-			if (!checkAuth(ops)) {alert("You are not authorized to do this operation as a Viewer.");return false;}
-
 			clearInputTemp();
 			$('#add_edit_task_lable').html(localStorage.getItem(language_setting + "_edit_task"));
 			$('#btn_add').hide();
@@ -459,8 +449,15 @@
 		};
 
 		$(document).ready(function(){
+			// 权限检查
+			var ops = {"operation":"ANY", "operation_lv":3, "process_id":$('#current_process_id').attr('value'), "task_id":""};
+			var authChkRst = checkAuth(ops);
+			if(authChkRst) {
+				$('#btn_add_task').text(localStorage.getItem(language_setting + "_add_task"));
+			} else {
+				$('#li_add_task').css("display",'none'); // 不具备对应权限时，不限时增加任务按钮
+			}
 			$('#btn_process_management').text(localStorage.getItem(language_setting + "_process_management"));
-			$('#btn_add_task').text(localStorage.getItem(language_setting + "_add_task"));
 			$('#btn_logout').text(localStorage.getItem(language_setting + "_logout"));
 			$('#btn_add').val(localStorage.getItem(language_setting + "_add"));
 			$('#btn_cancel').val(localStorage.getItem(language_setting + "_cancel"));
@@ -469,11 +466,6 @@
 			$('#watson_next_task').text(localStorage.getItem(language_setting + "_watson_next_task"));
 
 			$('#btn_add_task').click(function(){
-
-				// 权限检查
-				var ops = {"operation":_OP_ADD_TASK, "operation_lv":3, "process_id":$('#current_process_id').attr('value'), "task_id":""};
-				if (!checkAuth(ops)) {alert("You are not authorized to do this operation as a Viewer.");return false;}
-
 				clearInputTemp();
 				$('#add_edit_task_lable').html(localStorage.getItem(language_setting + "_add_task"));
 				$('#btn_add').show();
@@ -530,8 +522,13 @@
 					+ "&nbsp;<a href = '#' class = 'taskdetail' title = '"
 					+ "Task Type:" + content.task_type1
 					+ "&#13;Task Detail:" + content.task_detail
-					+"'>" + localStorage.getItem(language_setting + "_detail") + "</a>&nbsp;&nbsp;"
-					+"<a href = '#' onclick ='editTask(this)'>" + localStorage.getItem(language_setting + "_edit") + "</a>&nbsp;&nbsp;<a href = '#' onClick = 'deleteTask(this)'>" + localStorage.getItem(language_setting + "_delete") + "</a>";
+					+"'>" + localStorage.getItem(language_setting + "_detail") + "</a>&nbsp;&nbsp;";
+
+				// 权限检查
+				if (authChkRst) {
+					task_div_string = task_div_string + "<a href = '#' onclick ='editTask(this)'>" + localStorage.getItem(language_setting + "_edit") + "</a>&nbsp;&nbsp;<a href = '#' onClick = 'deleteTask(this)'>" + localStorage.getItem(language_setting + "_delete") + "</a>";
+				}
+
 				if (endtime_estimated >= date.yyyymmdd()) {
 					task_div_string = task_div_string + "<span>&nbsp;&nbsp;<font color = blue>"+endtime_estimated + "</font>&nbsp;</span>";
 				} else {
@@ -568,50 +565,49 @@
 			  var endstatus = null;
 			  var startTasksArray = new Array();
 			  var endTasksArray = new Array();
-			$( eval(statusString) ).sortable({
-				connectWith: ".tdBorder",
-				start: function( event, ui ) {
-					// 权限检查
-					var ops = {"operation":_OP_DRAG_TASK, "operation_lv":3, "process_id":$('#current_process_id').attr('value'), "task_id":ui.item.attr("id")};
-					if (!checkAuth(ops)) {return false;}
-					startstatus = ui.item.parent();
-				},
-				stop: function( event, ui ) {
-					startstatus.children().each(function(i,task) {
-						startTasksArray.push(task.id);
-					});
-					endstatus = ui.item.parent();
-					endstatus.children().each(function(i,task) {
-						endTasksArray.push(task.id);
-					});
-					$.post(
-						"./tasks",
-						{"_id":ui.item.attr("id"),"task_status":ui.item.parent().attr("id"),
-						 "start_status_id":startstatus.attr("id"),"end_status_id":endstatus.attr("id"),
-						 "start_tasks":startTasksArray.toString(),"end_tasks":endTasksArray.toString(),
-						 "rev":$('#process').attr("rev")},
-						function(data,status) {
-							if (JSON.stringify(data.err) != '"null"') {
-								//$('#err-message-content').text(data.err);
-								$('#modal-header').text(localStorage.getItem(language_setting + "_operation_failed"));
-								$('#modal-footer').remove();
-								$('.modal-body').empty();
-								if (JSON.parse(data.err) === "wip_over"){
-									$('.modal-body').append(localStorage.getItem(language_setting + "_wip_over"));
-								} else {
-									$('.modal-body').append(JSON.parse(data.err));
+			// 权限检查
+			if (authChkRst) {
+				$( eval(statusString) ).sortable({
+					connectWith: ".tdBorder",
+					start: function( event, ui ) {
+						startstatus = ui.item.parent();
+					},
+					stop: function( event, ui ) {
+						startstatus.children().each(function(i,task) {
+							startTasksArray.push(task.id);
+						});
+						endstatus = ui.item.parent();
+						endstatus.children().each(function(i,task) {
+							endTasksArray.push(task.id);
+						});
+						$.post(
+							"./tasks",
+							{"_id":ui.item.attr("id"),"task_status":ui.item.parent().attr("id"),
+							"start_status_id":startstatus.attr("id"),"end_status_id":endstatus.attr("id"),
+							"start_tasks":startTasksArray.toString(),"end_tasks":endTasksArray.toString(),
+							"rev":$('#process').attr("rev")},
+							function(data,status) {
+								if (JSON.stringify(data.err) != '"null"') {
+									//$('#err-message-content').text(data.err);
+									$('#modal-header').text(localStorage.getItem(language_setting + "_operation_failed"));
+									$('#modal-footer').remove();
+									$('.modal-body').empty();
+									if (JSON.parse(data.err) === "wip_over"){
+										$('.modal-body').append(localStorage.getItem(language_setting + "_wip_over"));
+									} else {
+										$('.modal-body').append(JSON.parse(data.err));
+									}
+									
+									$('#modal-example').modal();
+									//alert(data.err);
 								}
-								
-								$('#modal-example').modal();
-								//alert(data.err);
-							}
-							getSocket().emit('taskedit', {"_id":ui.item.attr("id"),"task_status":ui.item.parent().attr("id"),"rev":ui.item.attr("rev")});
-						},
-						"json"
-					);
-				},
-
-			});
+								getSocket().emit('taskedit', {"_id":ui.item.attr("id"),"task_status":ui.item.parent().attr("id"),"rev":ui.item.attr("rev")});
+							},
+							"json"
+						);
+					},
+				});
+			} // 权限检查完了
 		   $( ".tdBorder" ).disableSelection();
 
 			$( "#task_setting_task_name").focusout(function(){

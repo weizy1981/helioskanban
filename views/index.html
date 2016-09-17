@@ -270,11 +270,6 @@ added by yuexu end*/
 	}
 
 	function showEditMember(currentObj) {
-
-		// 权限检查
-		var ops = {"operation":_OP_EDIT_MEMBER, "operation_lv":2, "process_id":$(currentObj).parent().prev().attr('id'), "task_id":""};
-		if (!checkAuth(ops)) {alert("You are not authorized to do this operation as a Viewer.");return false;}
-
 		$.post(
 			"selectprocess",
 			{"current_process":$(currentObj).parent().prev().attr('id'),"current_process_name":$(currentObj).parent().prev().text(),"action_name":"showEditMember"},
@@ -285,11 +280,6 @@ added by yuexu end*/
 	}
 
 	function showWorkflow(currentObj) {
-
-		// 权限检查
-		var ops = {"operation":_OP_DEFINE_WORKFLOW, "operation_lv":2, "process_id":$(currentObj).parent().prev().attr('id'), "task_id":""};
-		if (!checkAuth(ops)) {alert("You are not authorized to do this operation as a Viewer.");return false;}
-
 		$.post(
 			"selectprocess",
 			{"current_process":$(currentObj).parent().prev().attr('id'),"current_process_name":$(currentObj).parent().prev().text(),"action_name":"showWorkFlow"},
@@ -300,11 +290,6 @@ added by yuexu end*/
 	}
 
 	function showTaskSetting(currentObj) {
-
-		// 权限检查
-		var ops = {"operation":_OP_EDIT_TASK_SETTING, "operation_lv":2, "process_id":$(currentObj).parent().prev().attr('id'), "task_id":""};
-		if (!checkAuth(ops)) {alert("You are not authorized to do this operation as a Viewer.");return false;}
-
 		$.post(
 			"selectprocess",
 			{"current_process":$(currentObj).parent().prev().attr('id'),"current_process_name":$(currentObj).parent().prev().text(),"action_name":"showTaskSetting"},
@@ -315,11 +300,6 @@ added by yuexu end*/
 	}
 
 	function showAnalyzation(currentObj) {
-
-		// 权限检查
-		var ops = {"operation":_OP_ANALYSIS, "operation_lv":2, "process_id":$(currentObj).parent().prev().attr('id'), "task_id":""};
-		if (!checkAuth(ops)) {alert("You are not authorized to do this operation as a Viewer.");return false;}
-
 		hidecontainers();
 		$( '#analytics-container' ).show();
 		drawThroughput();
@@ -481,16 +461,21 @@ added by yuexu end*/
 			var id = objProcess.process_id;
 			//var rev = objProcess._rev;
 			var pname = objProcess.process_name;
+			// 权限检查
+			var ops = {"operation":"ANY", "operation_lv":2, "process_id":id, "task_id":"ANY"};
+
 			strRows = "<tr class = 'process_item'>";
 			strRows = strRows + "<td class = 'process_select' id ='"+ objProcess.process_id +"' contenteditable=true >" + pname + "</td><td>";
-			strRows = strRows + "<button type='button' class='btn btn-default process_operation' title = 'Define WorkFlow' onclick='showWorkflow(this)'>";
-			strRows = strRows + " <span class='glyphicon glyphicon-list'></span></button>";
-	 		strRows = strRows + "<button type='button' class='btn btn-default process_operation' title = 'Edit Process Member' onclick='showEditMember(this)'>";
-			strRows = strRows + " <span class='glyphicon glyphicon-user'></span></button>";
-			strRows = strRows + "<button type='button' class='btn btn-default process_operation' title = 'Edit Task Setting' onclick='showTaskSetting(this)'>";
-			strRows = strRows + " <span class='glyphicon glyphicon-pencil'></span></button>";
-			strRows = strRows + "<button type='button' class='btn btn-default process_operation' title = 'Analyze Process' onclick='showAnalyzation(this)'>";
-			strRows = strRows + " <span class='glyphicon glyphicon-stats'></span></button>";
+			if (checkAuth(ops)) { // 权限满足时才可以显示操作button
+				strRows = strRows + "<button type='button' class='btn btn-default process_operation' title = 'Define WorkFlow' onclick='showWorkflow(this)'>";
+				strRows = strRows + " <span class='glyphicon glyphicon-list'></span></button>";
+				strRows = strRows + "<button type='button' class='btn btn-default process_operation' title = 'Edit Process Member' onclick='showEditMember(this)'>";
+				strRows = strRows + " <span class='glyphicon glyphicon-user'></span></button>";
+				strRows = strRows + "<button type='button' class='btn btn-default process_operation' title = 'Edit Task Setting' onclick='showTaskSetting(this)'>";
+				strRows = strRows + " <span class='glyphicon glyphicon-pencil'></span></button>";
+				strRows = strRows + "<button type='button' class='btn btn-default process_operation' title = 'Analyze Process' onclick='showAnalyzation(this)'>";
+				strRows = strRows + " <span class='glyphicon glyphicon-stats'></span></button>";
+			}
 			strRows = strRows + "</td></tr>";
 			//strRows = strRows + "<tr><td>ccc</td></tr>";
 			$("#process_list").append(strRows);
@@ -539,11 +524,6 @@ added by yuexu end*/
 
 		$( "#add-process" ).on( "click", function() {
 			$('#language_setting').val($('#new_process_language').val());
-
-			// 权限检查
-			var ops = {"operation":_OP_ADD_PROCESS, "operation_lv":1, "process_id":"", "task_id":""};
-			if (!checkAuth(ops)) {alert("You are not authorized to do this operation as a Viewer.");return false;}
-
 			var now = new Date();
 			var newProcessID = "process_" + now.getTime();
 			strRows = "<tr class = 'process_item' id = 'new_process_item'>";
@@ -560,8 +540,11 @@ added by yuexu end*/
 			$('.new_process_select').focus();
 			$(this).attr('disabled',true);
 		});
-		$( "#add-process" ).attr('disabled',false);
-		
+
+		// 权限检查
+		var ops = {"operation":_OP_ADD_PROCESS, "operation_lv":1, "process_id":"ANY", "task_id":"ANY"};
+		$( "#add-process" ).attr('disabled', !checkAuth(ops));
+
 		$( "#save-workflow").click(function() {
 			var newWorkFlow = new Array();
 			var newStage = {};
