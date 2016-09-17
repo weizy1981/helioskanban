@@ -567,16 +567,22 @@ added by yuexu end*/
 		});
 		$('#menu_logout').text(localStorage.getItem(localStorage.getItem("browser_language") + "_logout"));
 		$('#label_process_list').text(localStorage.getItem(localStorage.getItem("browser_language") + "_process_list"));
-		// Browser Language Setting
-		var userLang = navigator.language || navigator.userLanguage;
-		if (userLang.startsWith("zh")) {
-			userLang = "ch"
-		} else if (userLang.startsWith("ja")) {
-			userLang = "jp"
-		} else {
-			userLang = "en"
-		}
-		$('#new_process_language').val(userLang);
+		$('#label_workflow_setting').text(localStorage.getItem(localStorage.getItem("browser_language") + "_workflow_setting"));
+		$('#label_member_setting').text(localStorage.getItem(localStorage.getItem("browser_language") + "_member_setting"));
+		$('#label_task_setting').text(localStorage.getItem(localStorage.getItem("browser_language") + "_task_setting"));
+		$('#label_member_name').text(localStorage.getItem(localStorage.getItem("browser_language") + "_member_name"));
+		$('#label_member_nickname').text(localStorage.getItem(localStorage.getItem("browser_language") + "_member_nickname"));
+		$('#label_member_id_email').text(localStorage.getItem(localStorage.getItem("browser_language") + "_member_id_email"));
+		$('#label_member_authority').text(localStorage.getItem(localStorage.getItem("browser_language") + "_member_authority"));
+		$('#label_operate').text(localStorage.getItem(localStorage.getItem("browser_language") + "_operate"));
+		$('#label_item_option').text(localStorage.getItem(localStorage.getItem("browser_language") + "_item_option"));
+		$('#label_item_name').text(localStorage.getItem(localStorage.getItem("browser_language") + "_item_name"));
+		$('#label_item_type').text(localStorage.getItem(localStorage.getItem("browser_language") + "_item_type"));
+		$('#label_throughput_duedate').text(localStorage.getItem(localStorage.getItem("browser_language") + "_throughput_duedate"));
+		$('#label_cumulative_flow').text(localStorage.getItem(localStorage.getItem("browser_language") + "_cumulative_flow"));
+		$('#label_leadtime_cycle').text(localStorage.getItem(localStorage.getItem("browser_language") + "_leadtime_cycle"));
+		$('#new_process_language').val(localStorage.getItem("browser_language"));
+
 	});
 		
 </script>
@@ -798,7 +804,7 @@ added by yuexu end*/
 	</div>
 
 	<div id = "workflow-container" class="workflow-container">
-		<div>WorkFlow Setting&nbsp;&nbsp;<button id = "add-workflow" type='button' class='btn btn-default' title = 'Add Flow'><span class='glyphicon glyphicon-plus'></span></button>
+		<div><span id = "label_workflow_setting">WorkFlow Setting</span>&nbsp;&nbsp;<button id = "add-workflow" type='button' class='btn btn-default' title = 'Add Flow'><span class='glyphicon glyphicon-plus'></span></button>
 			&nbsp;&nbsp;<button id = "save-workflow" type='button' class='btn btn-default' title = 'Save'><span class='glyphicon glyphicon-ok'></span></button></div>
 		<div class = "work-flow-item-row">
 			<div class="work-flow-item-start" contenteditable=true onfocus="document.execCommand('selectAll',false,null)">
@@ -839,15 +845,15 @@ added by yuexu end*/
 	</div>
 
 	<div id="users-container" class="users-container">
-		<h1 id = "label_process_members">Process Members&nbsp;&nbsp;<button id = "add-member" type='button' class='btn btn-default'><span class='glyphicon glyphicon-plus'></span></button></h1>
+		<h1 id = "label_process_members"><span id = "label_member_setting">Process Members</span>&nbsp;&nbsp;<button id = "add-member" type='button' class='btn btn-default'><span class='glyphicon glyphicon-plus'></span></button></h1>
 		<table id="users" class="ui-widget ui-widget-content">
 		<thead>
 		  <tr class="user-setting-table-header">
-			<th height = "30px">Name</th>
-			<th>Nick Name</th>
-			<th>ID/Email</th>
-			<th>Authority</th>
-			<th>Operate</th>
+			<th height = "30px" id = "label_member_name">Name</th>
+			<th id = "label_member_nickname">Nick Name</th>
+			<th id = "label_member_id_email">ID/Email</th>
+			<th id = "label_member_authority">Authority</th>
+			<th id = "label_operate">Operate</th>
 		  </tr>
 		</thead>
 		<tbody id = "user_list">
@@ -872,13 +878,13 @@ added by yuexu end*/
 	</div>
 
 	<div id = "task-setting-container">
-		<h1>Task Setting&nbsp;&nbsp;<button id = "save-task-setting" type='button' class='btn btn-default' title = 'save' onClick = "saveTaskSetting()"><span class='glyphicon glyphicon-ok'></span></button></h1>
+		<h1><span id = "label_task_setting">Task Setting</span>&nbsp;&nbsp;<button id = "save-task-setting" type='button' class='btn btn-default' title = 'save' onClick = "saveTaskSetting()"><span class='glyphicon glyphicon-ok'></span></button></h1>
 		<table id="task_setting" class="task_setting_table">
 		<thead>
 		  <tr class="task-setting-table-header" align = "center">
-			<th width = "28%" height = "30px">Item Name</th>
-			<th width = "36%">Item Type</th>
-			<th width = "36%">Item Option</th>
+			<th width = "28%" height = "30px" id = "label_item_name">Item Name</th>
+			<th width = "36%" id = "label_item_type">Item Type</th>
+			<th width = "36%" id = "label_item_option">Item Option</th>
 		  </tr>
 		</thead>
 		<tbody id = "task_setting_list">
@@ -925,12 +931,12 @@ added by yuexu end*/
 		<table>
 			<tr>
 				<td>
-					<div algin = "center">Throughput & Due-date Performance</div>
+					<div algin = "center" id = "label_throughput_duedate">Throughput & Due-date Performance</div>
 					<div style="float:left" id="chart_throughput"></div>
 					<div style="float:right" id="chart_due_date"></div>
-					<div>Cumulative Flow Diagram</div>
+					<div id = "label_cumulative_flow">Cumulative Flow Diagram</div>
 					<div style="float:left" id="chart_cumulated_flow"></div>
-					<div>Lead Time & Cycle Time</div>
+					<div id = "label_leadtime_cycle">Lead Time & Cycle Time</div>
 					<div style="float:left" id="chart_lead_time"></div>
 					<div style="float:right" id="chart_cycle_time"></div>
 				</td>
