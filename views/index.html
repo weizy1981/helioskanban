@@ -181,7 +181,7 @@
 }
 
 
-/*added by yuexu start
+/*added by yuexu start*/
 div#navigation, #process {
    background-color: #003764;
    border-bottom-color: #002340;
@@ -196,31 +196,50 @@ div#logo-container h3{
     background: #F6F8FA;
 }
 #processes-container{
-	background:#F6F8FA;
-	border: 2px solid rgb(255, 255, 255);
+	border-right: 1px solid #dcdcdc;
 	padding-top:10px;
+	width : 30% !important;
 } 
+
+#workflow-container, #users-container, #analytics-container, #task-setting-container{
+	padding-top:10px;
+	margin:20px !important;
+}
+.ui-menu-item, #new_process_language, #add-process{
+	border: 1px solid #CCC;
+	border-radius: 4px;
+	font-weight: bold;
+}
 .process_item{
-	background-color: inherit !important;
 	border: 1px solid rgb(255, 255, 255);
 	width:350px !important;
 	height:100% !important;
 } 
-
-.process_item.select{
+.process_item:hover{
 	color: rgb(0, 0, 0);
 	background:lightgray !important;
-	border: 1px solid gray;
+	border: 1px solid white;
 }
-#task-setting-container, #users-container, #analytics-container, language_setting{
-	background:#F6F8FA;
-	border: 2px solid rgb(255, 255, 255);
-	margin:20px !important;
-} 
+.work-flow-item, .work-flow-wip, .task_item_option{
+	background:rgb(255, 255, 240) !important;
+}
+ #new_process_item {
+    background:lightgray !important;
+ }
+.work-flow-item-row{
+	background:inherit !important;
+	border: 1px solid rgb(255, 255, 255)!important;
+}
+.task-setting-table-header, .user-setting-table-header, .work-flow-item-start, .work-flow-item-end{
+	background:lightgray !important;
+}
+#users-container table td, #users-contain table th{
+	background:rgb(255, 255, 240) !important;
+}
 body, #kanbantable{
 	background: -moz-linear-gradient(top, #F6F8FA, #ffffff) !important;
 }
-added by yuexu end*/
+/* added by yuexu end*/
 
   </style>
   <script>
@@ -499,7 +518,7 @@ added by yuexu end*/
 
 			function(){
 				if ($(this).children(":first").attr('id') === current_process) {
-					$(this).css("background-color","#F09B22");
+					$(this).css("background-color","lightgray");
 					$(this).css("color","white");
 			    } else {
 					$(this).css("background-color","#f9f9f9");
@@ -509,7 +528,7 @@ added by yuexu end*/
 			});
 		});
 		var current_process_string = "#" + current_process;
-		$(current_process_string).parent().css("background-color","#F09B22");
+		$(current_process_string).parent().css("background-color","lightgray");
         $(current_process_string).parent().css("color","white");
 
 		$( ".editmember").click(function() {
