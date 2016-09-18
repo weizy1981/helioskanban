@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<head>
+    <meta charset="UTF-8">
+	<link href="/css/jquery-ui.min.css" rel="stylesheet">
+	<link href="/css/bootstrap.min.css" rel="stylesheet">
+    <script src="/js/jquery-2.1.4.min.js"></script>
+    <script src="/js/jquery-ui.min.js"></script>
+	<script src="/js/bootstrap.min.js"></script> 
+    <title>Feedback</title>
+    <style>
+        div#navigation {padding-top:60px}
+        .ui-menu:after {
+            content: ".";
+            display: block;
+            clear: both;
+            visibility: hidden;
+            line-height: 0;
+            height: 0;
+        }
+
+        .ui-menu .ui-menu-item {
+            display: inline-block;
+            float: left;
+            margin: 0;
+            padding: 10;
+            width: auto;
+        }
+
+        form {
+            padding:20px;
+        }
+
+        .btn {
+            margin-right:20px;
+        }
+    </style>
+</head>
+
+<body>
+	<div id = "logo-container">
+		<div style="float:left; padding:2px"><img src = "images/logo.jpg"></img></div>
+		<div style="float:left;"><h3>Welcome to Watson Kanban</h3></div>
+	</div>
+	<div id = "navigation">
+        <ul id="nav">
+            <div><a id="menu_logout" href="/logout">Logout</a></div>
+        </ul>
+	</div>
+    <form role="form" action="/feedback" method="POST">
+        <div class="form-group">
+            <label id="lab_feedback_name" for="feedback_name">Your name:</label>
+            <label for="feedback_impression" style="color:#FF0000;"></label>
+            <input type="text" class="form-control" id="feedback_name" name="name" placeholder="Enter name" >
+        </div>
+        <div class="form-group">
+            <label id="lab_feedback_email" for="feedback_email">E-mail address:</label>
+            <label for="feedback_impression" style="color:#FF0000;"></label>
+            <input type="email" class="form-control" id="feedback_email" name="email" placeholder="Enter email">
+        </div>
+        <div class="form-group">
+            <label id="lab_feedback_impression" for="feedback_impression">General impression:</label>
+            <label for="feedback_impression" style="color:#FF0000;">☆</label>
+            <select id="feedback_impression" class="form-control" name="impression">
+                <!--<option selected>Positive</option>
+                <option>Neutral</option>
+                <option>Negative</option>-->
+            </select>
+        </div>
+        <div class="form-group">
+            <label id="lab_feedback_proReport" for="feedback_proReport">Problem report:</label>
+            <label for="feedback_proReport" style="color:#FF0000;">☆</label>
+            <select id="feedback_proReport" class="form-control" name="report">
+                <!--<option selected>Broken Link</option>
+                <option>Design</option>
+                <option>Bug</option>
+                <option>Content</option>
+                <option>Suggestion</option>-->
+            </select>
+        </div>
+        <div class="form-group">
+            <label id="lab_feedback_comment" for="feedback_comment">Comment:</label>
+            <label for="feedback_comment" style="color:#FF0000;">☆</label>
+            <textarea id="feedback_comment" name="comment" class="form-control" rows="5" required="required"></textarea>
+        </div>
+        <button type="submit" id="btnSubmit" class="btn btn-success">Submit</button>
+        <a id="btnReset" class="btn btn-warning">Reset</a>
+        <a id="btnCancel" href="/" class="btn btn-danger">Cancel</a>
+    </form>
+
+<script type="text/javascript">
+
+    $(document).ready(function(){
+        $( "#nav" ).menu({position: {at: "left bottom"}});
+// {
+//   localStorage.setItem("ch_feedback", "反馈");
+//   localStorage.setItem("ch_feedback_name", "您的名字");
+//   localStorage.setItem("ch_feedback_email", "您的电子邮箱");
+//   localStorage.setItem("ch_feedback_impression", "总体印象");
+//   localStorage.setItem("ch_feedback_impression_positive", "积极");
+//   localStorage.setItem("ch_feedback_impression_neutral", "中立");
+//   localStorage.setItem("ch_feedback_impression_negative", "消极");
+//   localStorage.setItem("ch_feedback_report", "问题报告");
+//   localStorage.setItem("ch_feedback_report_brokenlink", "无效的链接");
+//   localStorage.setItem("ch_feedback_report_design", "设计");
+//   localStorage.setItem("ch_feedback_report_bug", "漏洞");
+//   localStorage.setItem("ch_feedback_report_content", "内容");
+//   localStorage.setItem("ch_feedback_report_suggestion", "建议");
+//   localStorage.setItem("ch_feedback_comment", "说明");
+//   localStorage.setItem("ch_feedback_submit", "提交");
+//   localStorage.setItem("ch_feedback_reset", "重置");
+//   localStorage.setItem("ch_feedback_cancel", "取消");
+
+//   localStorage.setItem("en_feedback", "Feedback");
+//   localStorage.setItem("en_feedback_name", "Your Name");
+//   localStorage.setItem("en_feedback_email", "E-mail address");
+//   localStorage.setItem("en_feedback_impression", ">General impression");
+//   localStorage.setItem("en_feedback_impression_positive", "Positive");
+//   localStorage.setItem("en_feedback_impression_neutral", "Neutral");
+//   localStorage.setItem("en_feedback_impression_negative", "Negative");
+//   localStorage.setItem("en_feedback_report", "Problem report");
+//   localStorage.setItem("en_feedback_report_brokenlink", "Broken Link");
+//   localStorage.setItem("en_feedback_report_design", "Design");
+//   localStorage.setItem("en_feedback_report_bug", "Bug");
+//   localStorage.setItem("en_feedback_report_content", "Content");
+//   localStorage.setItem("en_feedback_report_suggestion", "Suggestion");
+//   localStorage.setItem("en_feedback_comment", "Comment");
+//   localStorage.setItem("en_feedback_submit", "Submit");
+//   localStorage.setItem("en_feedback_reset", "Reset");
+//   localStorage.setItem("en_feedback_cancel", "Cancel");
+// }
+        //多语言设定
+        var lang = localStorage.getItem("browser_language");
+        console.log(lang);
+        // lang = 'ch';
+        if(lang){
+            $('#menu_logout').text(localStorage.getItem(lang + "_logout"));
+            //label
+            $('#lab_feedback_name').text(localStorage.getItem(lang + "_feedback_name"));
+            $('#lab_feedback_email').text(localStorage.getItem(lang + "_feedback_email"));
+            $('#lab_feedback_impression').text(localStorage.getItem(lang + "_feedback_impression"));
+            $('#lab_feedback_proReport').text(localStorage.getItem(lang + "_feedback_report"));
+            $('#lab_feedback_comment').text(localStorage.getItem(lang + "_feedback_comment"));
+            //button
+            $('#btnSubmit').text(localStorage.getItem(lang + "_feedback_submit"));
+            $('#btnReset').text(localStorage.getItem(lang + "_feedback_reset"));
+            $('#btnCancel').text(localStorage.getItem(lang + "_feedback_cancel"));
+            //select
+             $('#feedback_impression').append([
+                 '<option selected>' + localStorage.getItem(lang + "_feedback_impression_positive") + '</option>',
+                 '<option>' + localStorage.getItem(lang + "_feedback_impression_neutral") + '</option>',
+                 '<option>' + localStorage.getItem(lang + "_feedback_impression_negative") + '</option>'
+             ].join());
+
+             $('#feedback_proReport').append([
+                 '<option selected>' + localStorage.getItem(lang + "_feedback_report_brokenlink") + '</option>',
+                 '<option>' + localStorage.getItem(lang + "_feedback_report_design") + '</option>',
+                 '<option>' + localStorage.getItem(lang + "_feedback_report_bug") + '</option>',
+                 '<option>' + localStorage.getItem(lang + "_feedback_report_content") + '</option>',
+                 '<option>' + localStorage.getItem(lang + "_feedback_report_suggestion") + '</option>'
+             ].join());
+        }
+
+        $("#btnReset").click(function(){
+            $("input").val("");
+            $("textarea").val("");
+            $("#feedback_impression")[0].selectedIndex = 0;
+            $("#feedback_proReport")[0].selectedIndex = 0;
+        });
+    });
+</script>
+</body>
+</html>

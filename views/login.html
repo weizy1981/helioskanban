@@ -135,11 +135,14 @@
 					});
 				}
 			);
+			$('#label_top_page_message').text(localStorage.getItem(localStorage.getItem("browser_language") + "_top_page_message"));
+			$('#label_demo').text(localStorage.getItem(localStorage.getItem("browser_language") + "_demo"));
 		});
 	</script>
 
     <div id="container">
 		<div id="login-box" class="corners shadow tabs-ui">
+			<div id = "label_top_page_message">Welcome to Watson Kanban</div>
 			<!-- tab ctrls -->
 			<div class="login-box-header corners">
 				<h2>Watson Kanban</h2>
@@ -152,7 +155,7 @@
 			<!-- tab 1 -->
 			<form action="/login" method="POST">
                 <div id="tabs-1" class="tabbox">
-					<div>Demo User ID: demo &nbsp;&nbsp;Password:demo </div>
+					<div>Demo User ID: demo &nbsp;&nbsp;Password:demo &nbsp;&nbsp;<a href = "https://ibm.box.com/s/vp9twmyos20g4tknb6hbmedkjbxxeuyg" target = "_blank" id = "label_demo">Watson Kanban Demo</a> </div>
                     <div id = "login_error" class="login-box-error-small corners">
                         <p>Wrong ID or Password</p>
                     </div>

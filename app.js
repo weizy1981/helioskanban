@@ -25,6 +25,7 @@ var watson = require('./routes/watson');
 
 //var manage = require('./routes/manage');
 var processcon = require('./routes/process');
+var feedback = require('./routes/feedback');
 
 // create a new express server
 var app = express();
@@ -112,6 +113,7 @@ app.use('/manageflow', manageflow);
 app.use('/logout', logout);
 app.use('/process', processcon);
 app.use('/watson', watson);
+app.use('/feedback', feedback);
 
 // get the app environment from Cloud Foundry
 //var appEnv = cfenv.getAppEnv();
