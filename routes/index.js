@@ -130,29 +130,29 @@ router.post('/addprocess', loginCheck, function(req, res) {
 								  "item_name": "任务类型1",
 								  "item_type": "Selectable",
 								  "item_options": [
-									"Regular",
-									"Irregular",
-									"ID Application",
-									"Inquiry"
+									"产品 A",
+									"产品 B",
+									"产品 C",
+									"产品 D"
 								  ]
 								},
 								"task_type2": {
 								  "item_name": "任务类型2",
 								  "item_type": "Selectable",
 								  "item_options": [
-									"e-Quotation",
-									"e-HR",
-									"e-Market"
+									"服务 X",
+									"服务 Y",
+									"服务 Z"
 								  ]
 								},
 								"task_size": {
 								  "item_name": "任务大小",
 								  "item_type": "Selectable",
 								  "item_options": [
-									"XL",
-									"L",
-									"M",
-									"S"
+									"XL（1天以上）",
+									"L（4-8小时）",
+									"M（1-4小时）",
+									"S（1小时以内）"
 								  ]
 								},
 								"task_importance": {
@@ -183,7 +183,8 @@ router.post('/addprocess', loginCheck, function(req, res) {
 								  "item_type": "Editable",
 								  "item_options": []
 								}
-							}
+							},
+							"watson_classifier": "74df3fx91-nlc-1227"
 						};
 		} else if (language_setting === "jp") {
 			new_process = { _id: process_id, "type":"process", "p_name":process_name,
@@ -227,29 +228,29 @@ router.post('/addprocess', loginCheck, function(req, res) {
 								  "item_name": "タスクタイプ１",
 								  "item_type": "Selectable",
 								  "item_options": [
-									"Regular",
-									"Irregular",
-									"ID Application",
-									"Inquiry"
+									"製品　A",
+									"製品　B",
+									"製品　C",
+									"製品　D"
 								  ]
 								},
 								"task_type2": {
 								  "item_name": "タスクタイプ２",
 								  "item_type": "Selectable",
 								  "item_options": [
-									"e-Quotation",
-									"e-HR",
-									"e-Market"
+									"サービス　X",
+									"サービス　Y",
+									"サービス　Z"
 								  ]
 								},
 								"task_size": {
 								  "item_name": "タスクサイズ",
 								  "item_type": "Selectable",
 								  "item_options": [
-									"XL",
-									"L",
-									"M",
-									"S"
+									"XL（１日以上）",
+									"L（４～８時間）",
+									"M（１～４時間）",
+									"S（１時間以内）"
 								  ]
 								},
 								"task_importance": {
@@ -280,7 +281,8 @@ router.post('/addprocess', loginCheck, function(req, res) {
 								  "item_type": "Editable",
 								  "item_options": []
 								}
-							}
+							},
+							"watson_classifier": "74df3fx91-nlc-1227"
 						};	
 		} else {
 			new_process = { _id: process_id, "type":"process", "p_name":process_name,
@@ -324,29 +326,29 @@ router.post('/addprocess', loginCheck, function(req, res) {
 								  "item_name": "Task Type1",
 								  "item_type": "Selectable",
 								  "item_options": [
-									"Regular",
-									"Irregular",
-									"ID Application",
-									"Inquiry"
+									"Product A",
+									"Product B",
+									"Product C",
+									"Product D"
 								  ]
 								},
 								"task_type2": {
 								  "item_name": "Task Type2",
 								  "item_type": "Selectable",
 								  "item_options": [
-									"e-Quotation",
-									"e-HR",
-									"e-Market"
+									"Service X",
+									"Service Y",
+									"Service Z"
 								  ]
 								},
 								"task_size": {
 								  "item_name": "Task Size",
 								  "item_type": "Selectable",
 								  "item_options": [
-									"XL",
-									"L",
-									"M",
-									"S"
+									"XL(More than one day)",
+									"L(4-8 hours)",
+									"M(1-4 hours)",
+									"S(Less than one hour)"
 								  ]
 								},
 								"task_importance": {
@@ -377,7 +379,8 @@ router.post('/addprocess', loginCheck, function(req, res) {
 								  "item_type": "Editable",
 								  "item_options": []
 								}
-							}
+							},
+							"watson_classifier": "74df3fx91-nlc-1227"
 						};	
 		}
 

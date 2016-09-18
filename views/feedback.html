@@ -43,10 +43,10 @@
 	</div>
 	<div id = "navigation">
         <ul id="nav">
-            <div><a id="menu_logout" href="/logout">Logout</a></div>
+			<div><a href="/logout" id = "menu_logout">Logout</a></div>
         </ul>
 	</div>
-    <form role="form" action="/feedback" method="POST">
+    <form role="form" action="/feedback" method="POST" onSubmit = 'alert(localStorage.getItem(localStorage.getItem("browser_language") + "_feedback_thanks"));'>
         <div class="form-group">
             <label id="lab_feedback_name" for="feedback_name">Your name:</label>
             <label for="feedback_impression" style="color:#FF0000;"></label>
@@ -133,7 +133,7 @@
         console.log(lang);
         // lang = 'ch';
         if(lang){
-            $('#menu_logout').text(localStorage.getItem(lang + "_logout"));
+			$('#menu_logout').text(localStorage.getItem(localStorage.getItem("browser_language") + "_logout"));
             //label
             $('#lab_feedback_name').text(localStorage.getItem(lang + "_feedback_name"));
             $('#lab_feedback_email').text(localStorage.getItem(lang + "_feedback_email"));

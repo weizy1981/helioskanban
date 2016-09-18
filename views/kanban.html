@@ -622,16 +622,14 @@
 						function(data,status) {
 							var classify_result = data.result.top_class;
 							if (classify_result === "XL") {
-								classify_result = "XL(１日以上)";
+								$("#task_setting_task_size").get(0).selectedIndex=1;
 							} else if (classify_result === "L") {
-								classify_result = "L(３～８時間)";
+								$("#task_setting_task_size").get(0).selectedIndex=2;
 							} else if (classify_result === "M") {
-								classify_result = "M(１～３時間)";
+								$("#task_setting_task_size").get(0).selectedIndex=3;
 							} else if (classify_result === "S") {
-								classify_result = "S(１時間以内)";
+								$("#task_setting_task_size").get(0).selectedIndex=4;
 							}
-							$("#task_setting_task_size").val(classify_result);
-							//alert(data);
 						},
 						"json"
 					);

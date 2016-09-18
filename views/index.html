@@ -577,6 +577,7 @@ added by yuexu end*/
 			$(this).parent().parent().next().append('<div class = "task_item_option"><div style="float:left" contenteditable=true>New Option</div><div style="float:right"><button type="button" class="btn btn-default remove-task-item-option" title = "Remove Item Option" onClick = "removeWorkTaskItem(this)"><span class="glyphicon glyphicon-remove"></span></button></div></div>');	
 		});
 		$('#menu_logout').text(localStorage.getItem(localStorage.getItem("browser_language") + "_logout"));
+		$('#menu_feedback').text(localStorage.getItem(localStorage.getItem("browser_language") + "_feedback"));
 		$('#label_process_list').text(localStorage.getItem(localStorage.getItem("browser_language") + "_process_list"));
 		$('#label_workflow_setting').text(localStorage.getItem(localStorage.getItem("browser_language") + "_workflow_setting"));
 		$('#label_member_setting').text(localStorage.getItem(localStorage.getItem("browser_language") + "_member_setting"));
@@ -776,8 +777,8 @@ added by yuexu end*/
 	</div>
 	<div id = "navigation">
 	<ul id="nav">
+		<div><a href="/feedback" id = "menu_feedback">Feedback</a></div>
 		<div><a href="/logout" id = "menu_logout">Logout</a></div>
-		<div><a href="/feedback">Feedback</a></div>
 	</ul>
 	</div>
 <div id = "loading">
