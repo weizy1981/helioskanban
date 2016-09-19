@@ -17,7 +17,7 @@ div#logo-container h3{
 		display: inline-block;
 		float: left;
 		margin: 0;
-		padding: 10;
+		padding: 10px !important;
 		width: auto;
 }
 
@@ -29,13 +29,6 @@ div#logo-container h3{
 	border-right: 1px solid #dcdcdc;
 	padding-top:10px;
 } 
-	.ui-menu .ui-menu-item {
-		display: inline-block;
-		float: left;
-		margin: 0;
-		padding: 10;
-		width: auto;
-	}
 .ui-state-focus{
 	font-weight:bold !important;
 }
