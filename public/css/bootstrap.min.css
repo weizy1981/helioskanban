@@ -22,6 +22,9 @@ div#logo-container h3{
 	padding-top:10px;
 } 
 
+.ui-state-focus{
+	font-weight:bold !important;
+}
 #workflow-container, #users-container, #analytics-container, #task-setting-container{
 	padding-top:10px;
 	margin:20px !important;
@@ -29,7 +32,7 @@ div#logo-container h3{
 .ui-menu-item, #new_process_language, #add-process{
 	border: 1px solid #CCC;
 	border-radius: 4px;
-	font-weight: bold;
+	font-weight: normal;
 }
 .process_item{
 	border: 1px solid rgb(255, 255, 255);
@@ -40,6 +43,7 @@ div#logo-container h3{
 	color: #4d5aaf;
 	background:lightgray !important;
 	border: 1px solid white;
+	font-weight: bold !important;
 }
 .work-flow-item, .work-flow-wip, .task_item_option{
 	background:rgb(255, 255, 240) !important;

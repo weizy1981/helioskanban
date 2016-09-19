@@ -17,7 +17,7 @@
     fieldset { padding:0; border:0; margin-top:25px; }
     h1 { font-size: 1.2em; margin: .6em 0; }
 	div#logo { font-size: 24px; padding:10px}
-	div#processes-container { font-size: 12px; width: 350px; margin: 20px 0; float: left}
+	div#processes-container { font-size: 12px; width: 360px; margin: 20px 0; float: left}
 	div#workflow-container {  font-size: 12px; width: 350px; margin: 20px 0; float: left}
     div#users-container {  font-size: 12px; width: 500px; margin: 20px 0; float: left}
     div#users-container table { margin: 1em 0; border-collapse: collapse; width: 100%; }
@@ -458,7 +458,7 @@
 			function(){
 				if ($(this).children(":first").attr('id') === current_process) {
 					$(this).css("background-color","lightgray");
-					$(this).css("color","white");
+					$(this).css("color","#4d5aaf");
 			    } else {
 					$(this).css("background-color","#f9f9f9");
 					$(this).css("color","black");
@@ -468,7 +468,7 @@
 		});
 		var current_process_string = "#" + current_process;
 		$(current_process_string).parent().css("background-color","lightgray");
-        $(current_process_string).parent().css("color","white");
+        $(current_process_string).parent().css("color","#4d5aaf");
 
 		$( ".editmember").click(function() {
 			$( '#users-container' ).show();
@@ -764,7 +764,7 @@
 							<table class="table-hover table-condensed">
 								<thead>
 									<tr>
-										<th><span id = "label_process_list">Process List</span>&nbsp;&nbsp;
+										<th style="text-align: left ! important;"><span id = "label_process_list">Process List</span>&nbsp;&nbsp;
 										<select name="new_process_language" id="new_process_language">
 										  <option selected="selected" value = "en">English</option>
 										  <option value = "ch">中文</option>
