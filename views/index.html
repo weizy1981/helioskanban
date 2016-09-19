@@ -28,7 +28,7 @@
     .ui-dialog .ui-state-error { padding: .3em; }
     .validateTips { border: 1px solid transparent; padding: 0.3em; }
 	.process_item {width: 345px; height: 70px; background-color: #f9f9f9; margin: 2px;float:left}
-	.process_item_selected {width: 345px; background-color: #F09B22; margin: 2px;float:left; color:white}
+	.process_item_selected {width: 345px; background-color: lightgray; margin: 2px;float:left; color:white}
 	.process_name {padding: 25px; float:left}
 	.process_operation {margin: 1px;float:left; padding-top: 7px}
 	.process_status {margin-left: 1px;}
@@ -179,67 +179,6 @@
 	padding-left: 50px;
 	color: #fff;
 }
-
-
-/*added by yuexu start*/
-div#navigation, #process {
-   background-color: #003764;
-   border-bottom-color: #002340;
-}
-
-div#logo-container h3{
-   color: #fff !important; 
-}
-
-#nav{
-	border-bottom: 1px solid #dcdcdc;
-    background: #F6F8FA;
-}
-#processes-container{
-	border-right: 1px solid #dcdcdc;
-	padding-top:10px;
-	width : 30% !important;
-} 
-
-#workflow-container, #users-container, #analytics-container, #task-setting-container{
-	padding-top:10px;
-	margin:20px !important;
-}
-.ui-menu-item, #new_process_language, #add-process{
-	border: 1px solid #CCC;
-	border-radius: 4px;
-	font-weight: bold;
-}
-.process_item{
-	border: 1px solid rgb(255, 255, 255);
-	width:350px !important;
-	height:100% !important;
-} 
-.process_item:hover{
-	color: rgb(0, 0, 0);
-	background:lightgray !important;
-	border: 1px solid white;
-}
-.work-flow-item, .work-flow-wip, .task_item_option{
-	background:rgb(255, 255, 240) !important;
-}
- #new_process_item {
-    background:lightgray !important;
- }
-.work-flow-item-row{
-	background:inherit !important;
-	border: 1px solid rgb(255, 255, 255)!important;
-}
-.task-setting-table-header, .user-setting-table-header, .work-flow-item-start, .work-flow-item-end{
-	background:lightgray !important;
-}
-#users-container table td, #users-contain table th{
-	background:rgb(255, 255, 240) !important;
-}
-body, #kanbantable{
-	background: -moz-linear-gradient(top, #F6F8FA, #ffffff) !important;
-}
-/* added by yuexu end*/
 
   </style>
   <script>
@@ -510,7 +449,7 @@ body, #kanbantable{
 			$( ".process_operation").hide();
 			$( ".process_item" )
 			.hover(function(){
-				$(this).css("background-color","#F09B22"); 
+				$(this).css("background-color","lightgray"); 
 				$(this).css("color","white");
 				$(this).children().eq(1).children().show();
 				$(this).css("cursor","pointer");
@@ -554,7 +493,7 @@ body, #kanbantable{
 			$("#process_list").append(strRows);
 			var newProcessIDString = "'#" + newProcessID + "'";
 			$( "#new_process_item").focus();
-			$('#new_process_item').css("background-color","#F09B22");
+			$('#new_process_item').css("background-color","lightgray");
 			$('#new_process_item').css("color","white");
 			$('.new_process_select').focus();
 			$(this).attr('disabled',true);
