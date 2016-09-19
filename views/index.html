@@ -28,7 +28,7 @@
     .ui-dialog .ui-state-error { padding: .3em; }
     .validateTips { border: 1px solid transparent; padding: 0.3em; }
 	.process_item {width: 345px; height: 70px; background-color: #f9f9f9; margin: 2px;float:left}
-	.process_item_selected {width: 345px; background-color: lightgray; margin: 2px;float:left; color:white}
+	.process_item_selected {width: 345px; background-color: lightgray; margin: 2px;float:left; color:#4d5aaf}
 	.process_name {padding: 25px; float:left}
 	.process_operation {margin: 1px;float:left; padding-top: 7px}
 	.process_status {margin-left: 1px;}
@@ -450,7 +450,7 @@
 			$( ".process_item" )
 			.hover(function(){
 				$(this).css("background-color","lightgray"); 
-				$(this).css("color","white");
+				$(this).css("color","#4d5aaf");
 				$(this).children().eq(1).children().show();
 				$(this).css("cursor","pointer");
 			},
@@ -494,7 +494,7 @@
 			var newProcessIDString = "'#" + newProcessID + "'";
 			$( "#new_process_item").focus();
 			$('#new_process_item').css("background-color","lightgray");
-			$('#new_process_item').css("color","white");
+			$('#new_process_item').css("color","#4d5aaf");
 			$('.new_process_select').focus();
 			$(this).attr('disabled',true);
 		});
