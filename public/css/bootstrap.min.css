@@ -13,13 +13,6 @@ div#logo-container h3{
    color: #fff !important; 
 }
 
-.ui-menu .ui-menu-item {
-		display: inline-block;
-		float: left;
-		margin: 0;
-		padding: 10px !important;
-		width: auto;
-}
 
 #nav{
 	border-bottom: 1px solid #dcdcdc;
@@ -29,7 +22,7 @@ div#logo-container h3{
 	border-right: 1px solid #dcdcdc;
 	padding-top:10px;
 } 
-.ui-state-focus{
+.ui-state-focus a{
 	font-weight:bold !important;
 }
 #workflow-container, #users-container, #analytics-container, #task-setting-container{
