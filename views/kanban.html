@@ -110,7 +110,7 @@
 		</table>
 	</div>
 <div style="display: none;" id = "watson-tradeoff" value = ""></div>
-<div class="theme-popover" style="display: none;">
+<div class="theme-popover" style="display: none;" id = "task_add_edit">
      <div class="theme-poptit">
           <a href="javascript:;" title="Close" class="close">×</a>
           <h3 id="add_edit_task_lable">Add task</h3>
@@ -210,7 +210,7 @@
 					 -->
                      <li>
 						<!-- <span style="color:red;">(*) is required.</span> -->
-						<input type="button" ng-click="reset()" class="btn btn-primary" style="margin-left: 30px;" id = "btn_cancel"value="Reset">
+						<input type="button" ng-click="cancel()" class="btn btn-primary" style="margin-left: 30px;" id = "btn_cancel"value="Cancel">
 						<input id="btn_add" type="button" ng-click="add()" ng-disabled="taskForm.taskName.$invalid" class="btn btn-primary" value="Add">
 						<input id="btn_edit" type="button" ng-click="edit()" ng-disabled="taskForm.taskName.$invalid" class="btn btn-primary" value="Edit">
 					 </li>

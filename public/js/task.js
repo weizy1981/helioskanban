@@ -53,7 +53,9 @@ angular.module('myApp',[]).controller('tasksCtrl', function($scope, $http){
         //$('#btn_add').attr('disabled',"true");
     })
 
-    $scope.reset = function(){
+    $scope.cancel = function(){
+		$('.theme-popover-mask').fadeOut(100);
+		$('.theme-popover').slideUp(200);
         //$scope.task = null;
         //$scope.task ={
         //    'totalWork': 'Normal'
