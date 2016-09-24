@@ -66,6 +66,8 @@ th {
 }
 body, #kanbantable{
 	background: -moz-linear-gradient(top, #F6F8FA, #ffffff) !important;
+	background: -ms-linear-gradient(top, #F6F8FA 100%,#ffffff 100%) !important;
+	background: -webkit-linear-gradient(top, #F6F8FA 100%,#ffffff 100%) !important;
 }
 /* added by yuexu end*/
 /*# sourceMappingURL=bootstrap.min.css.map */
