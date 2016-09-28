@@ -268,13 +268,21 @@
 <script src="/js/task.js"></script>
 
 	<script type="text/javascript">
+		var current_process_json ='<%-JSON.stringify(current_process) %>';
+		var current_process = JSON.parse(current_process_json);
 		var socket = io();	
+		/*
 		socket.on('messages', function(msgObj){
 			if (msgObj._id==null || msgObj._id==undefined) {
 			} else {
-				refreshPage();
+				//alert(msgObj.current_process_id);
+				//alert(current_process === msgObj.current_process_id);
+				if (current_process === msgObj.current_process_id) {
+					//refreshPage();
+				}
 			}
 		});
+		*/
 		function getSocket(){
 			if(socket==null || socket==undefined){
 				socket = io();
@@ -614,7 +622,7 @@
 									$('#modal-example').modal();
 									//alert(data.err);
 								}
-								getSocket().emit('taskedit', {"_id":ui.item.attr("id"),"task_status":ui.item.parent().attr("id"),"rev":ui.item.attr("rev")});
+								getSocket().emit('taskedit', {"current_process_id":current_process, "_id":ui.item.attr("id"),"task_status":ui.item.parent().attr("id"),"rev":ui.item.attr("rev")});
 							},
 							"json"
 						);

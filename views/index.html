@@ -425,7 +425,7 @@
 			var checkAuthRst = checkAuth(ops);// 不满足权限要求的用户不能执行与process相关的操作（所有操作按钮disabled）
 
 			strRows = "<tr class = 'process_item'>";
-			strRows = strRows + "<td class = 'process_select' id ='"+ objProcess.process_id +"' contenteditable=true >" + pname + "</td><td>";
+			strRows = strRows + "<td class = 'process_select' id ='"+ objProcess.process_id +"' >" + pname + "</td><td>";
 			strRows = strRows + "<button type='button' class='btn btn-default process_operation' title = 'Define WorkFlow' onclick='showWorkflow(this)'" + (checkAuthRst?"":" disabled") + ">";
 			strRows = strRows + " <span class='glyphicon glyphicon-list'></span></button>";
 			strRows = strRows + "<button type='button' class='btn btn-default process_operation' title = 'Edit Process Member' onclick='showEditMember(this)'" + (checkAuthRst?"":" disabled") + ">";
