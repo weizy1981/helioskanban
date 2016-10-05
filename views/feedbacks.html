@@ -73,12 +73,19 @@
 			var feedbackJSON = feedbacks.rows[0];
 			for (var j = 0; j<feedbacks.rows.length;  j++) { %>
 				 <tr>
-					<td><div name = "user_name"><%=feedbacks.rows[j].value.user_name %></div></td>
-					<td><div name = "user_nickname"><%=feedbacks.rows[j].value.email %></div></td>
-					<td><div name = "user_id"><%=feedbacks.rows[j].value.impression %></div></td>
-					<td><%=feedbacks.rows[j].value.report %></td>
-					<% var comment = feedbacks.rows[j].value.comment.replace(/\r\n/g, "<br>"); %>
-					<td><%=comment %></td>
+					<td style="border: 1px solid rgb(238, 238, 238);padding-left: 4px;"><div name = "user_name"><%=feedbacks.rows[j].value.user_name %></div></td>
+					<td style="border: 1px solid rgb(238, 238, 238);padding-left: 4px;"><div name = "user_nickname"><%=feedbacks.rows[j].value.email %></div></td>
+					<td style="border: 1px solid rgb(238, 238, 238);padding-left: 4px;"><div name = "user_id"><%=feedbacks.rows[j].value.impression %></div></td>
+					<td style="border: 1px solid rgb(238, 238, 238);padding-left: 4px;"><%=feedbacks.rows[j].value.report %></td>
+					<td style="border: 1px solid rgb(238, 238, 238);padding-left: 4px;">
+					<table>
+					<% var comment = feedbacks.rows[j].value.comment; %>
+					<% var comm = comment.split("\r\n");
+					   for (var m = 0; m<comm.length;  m++) { %>
+					<tr><td><%=comm[m] %></td></tr>
+					<% } %>
+					</table>
+					</td>
 				  </tr>
 			<% } %>
 		</tbody>
