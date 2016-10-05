@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<head>
+    <meta charset="UTF-8">
+	<link href="/css/jquery-ui.min.css" rel="stylesheet">
+	<link href="/css/bootstrap.min.css" rel="stylesheet">
+    <script src="/js/jquery-2.1.4.min.js"></script>
+    <script src="/js/jquery-ui.min.js"></script>
+	<script src="/js/bootstrap.min.js"></script> 
+    <title>Feedback</title>
+    <style>
+        div#navigation {padding-top:60px}
+        .ui-menu:after {
+            content: ".";
+            display: block;
+            clear: both;
+            visibility: hidden;
+            line-height: 0;
+            height: 0;
+        }
+
+		.ui-menu .ui-menu-item {
+			display: inline-block;
+			float: left;
+			margin: 0;
+			padding: 10px !important;
+			width: auto;
+		}
+
+        form {
+            padding:20px;
+        }
+
+        .btn {
+            margin-right:20px;
+        }
+    </style>
+
+	<script>
+	var _hmt = _hmt || [];
+	(function() {
+	  var hm = document.createElement("script");
+	  hm.src = "//hm.baidu.com/hm.js?4c0c3083d4809ca4e468b30e68e191ba";
+	  var s = document.getElementsByTagName("script")[0]; 
+	  s.parentNode.insertBefore(hm, s);
+	})();
+	</script>
+</head>
+
+<body>
+	<div id = "logo-container">
+		<!--<div style="float:left; padding:2px"><img src = "images/logo.jpg"></img></div>-->
+		<div style="float:left;"><h3>Welcome to Watson Kanban</h3></div>
+	</div>
+	<div id = "navigation">
+        <ul id="nav">
+			<div><a href="/logout" id = "menu_logout">Logout</a></div>
+        </ul>
+	</div>
+	<div id="users-container" class="users-container">
+		<h1 id = "label_process_members"><span id = "label_member_setting">Feedback List</span></h1>
+		<table id="users" class="ui-widget ui-widget-content">
+		<thead>
+		  <tr class="user-setting-table-header">
+			<th height = "30px" id = "label_member_name">User Name</th>
+			<th >Email</th>
+			<th >Impression</th>
+			<th >Report</th>
+			<th >Comment</th>
+		  </tr>
+		</thead>
+		<tbody id = "user_list">
+		<% 
+			var feedbackJSON = feedbacks.rows[0];
+			for (var j = 0; j<feedbacks.rows.length;  j++) { %>
+				 <tr>
+					<td><div name = "user_name"><%=feedbacks.rows[j].value.user_name %></div></td>
+					<td><div name = "user_nickname"><%=feedbacks.rows[j].value.email %></div></td>
+					<td><div name = "user_id"><%=feedbacks.rows[j].value.impression %></div></td>
+					<td><%=feedbacks.rows[j].value.report %></td>
+					<% var comment = feedbacks.rows[j].value.comment.replace(/\r\n/g, "<br>"); %>
+					<td><%=comment %></td>
+				  </tr>
+			<% } %>
+		</tbody>
+		</table>
+	</div>
+
+
+<script type="text/javascript">
+
+    $(document).ready(function(){
+        $( "#nav" ).menu({position: {at: "left bottom"}});
+
+        //多语言设定
+        var lang = localStorage.getItem("browser_language");
+        console.log(lang);
+        // lang = 'ch';
+        if(lang){
+			$('#menu_logout').text(localStorage.getItem(localStorage.getItem("browser_language") + "_logout"));
+            //label
+            $('#lab_feedback_name').text(localStorage.getItem(lang + "_feedback_name"));
+            $('#lab_feedback_email').text(localStorage.getItem(lang + "_feedback_email"));
+            $('#lab_feedback_impression').text(localStorage.getItem(lang + "_feedback_impression"));
+            $('#lab_feedback_proReport').text(localStorage.getItem(lang + "_feedback_report"));
+            $('#lab_feedback_comment').text(localStorage.getItem(lang + "_feedback_comment"));
+            //button
+            $('#btnSubmit').text(localStorage.getItem(lang + "_feedback_submit"));
+            $('#btnReset').text(localStorage.getItem(lang + "_feedback_reset"));
+            $('#btnCancel').text(localStorage.getItem(lang + "_feedback_cancel"));
+            //select
+             $('#feedback_impression').append([
+                 '<option selected>' + localStorage.getItem(lang + "_feedback_impression_positive") + '</option>',
+                 '<option>' + localStorage.getItem(lang + "_feedback_impression_neutral") + '</option>',
+                 '<option>' + localStorage.getItem(lang + "_feedback_impression_negative") + '</option>'
+             ].join());
+
+             $('#feedback_proReport').append([
+                 '<option selected>' + localStorage.getItem(lang + "_feedback_report_brokenlink") + '</option>',
+                 '<option>' + localStorage.getItem(lang + "_feedback_report_design") + '</option>',
+                 '<option>' + localStorage.getItem(lang + "_feedback_report_bug") + '</option>',
+                 '<option>' + localStorage.getItem(lang + "_feedback_report_content") + '</option>',
+                 '<option>' + localStorage.getItem(lang + "_feedback_report_suggestion") + '</option>'
+             ].join());
+        }
+
+        $("#btnReset").click(function(){
+            $("input").val("");
+            $("textarea").val("");
+            $("#feedback_impression")[0].selectedIndex = 0;
+            $("#feedback_proReport")[0].selectedIndex = 0;
+        });
+    });
+</script>
+</body>
+</html>

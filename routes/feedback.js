@@ -40,4 +40,23 @@ router.post('/', loginCheck, function(req, res) {
 
     res.redirect('/');
 });
+
+//***********************************************************************
+// List Feedbacks
+//***********************************************************************
+router.get('/list', loginCheck, function(req, res) {
+	req.session.user_current_process = req.body.current_process;
+	db.view('kanbanviews', 'feedback', function(err, feedbacks) {
+	  if (!err) {
+
+			feedbacks.rows.forEach(function(doc) {
+				console.log(JSON.stringify(doc));
+				console.log(doc._id);
+			});
+			console.log("success");
+			res.render('feedbacks',{ "feedbacks":feedbacks});
+	  }
+	});
+});
+
 module.exports = router;
