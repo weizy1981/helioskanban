@@ -63,6 +63,7 @@
 		float:left;
 	}
 
+.form-control{display:block;width:280px;height:34px;padding:6px 12px;font-size:14px;line-height:1.42857143;color:#555;background-color:#fff;background-image:none;border:1px solid #ccc;border-radius:4px;-webkit-box-shadow:inset 0 1px 1px rgba(0,0,0,.075);box-shadow:inset 0 1px 1px rgba(0,0,0,.075);-webkit-transition:border-color ease-in-out .15s,-webkit-box-shadow ease-in-out .15s;-o-transition:border-color ease-in-out .15s,box-shadow ease-in-out .15s;transition:border-color ease-in-out .15s,box-shadow ease-in-out .15s}
 	</style>
 
 
@@ -141,21 +142,25 @@
 						<li>
 							<strong class="control-label"><%=task_settings[task_setting_id].item_name %></strong>
 						<% if (task_settings[task_setting_id].item_type === "Selectable") { %>
-							<select name="<%=task_setting_id %>" id = "task_setting_<%=task_setting_id %>" required class="ipt">
+							<select class="form-control" name="<%=task_setting_id %>" id = "task_setting_<%=task_setting_id %>" required class="ipt">
 							<option value=''></option>
 							<% for(var task_item_option in task_settings[task_setting_id].item_options){ %>	
 								<option value='<%=task_settings[task_setting_id].item_options[task_item_option]%>'><%=task_settings[task_setting_id].item_options[task_item_option]%></option>
 							<% } %>
 							</select>
 						<% } else if (task_settings[task_setting_id].item_type === "Editable") { %>
-							<input type="text" name="<%=task_setting_id %>" id = "task_setting_<%=task_setting_id %>" ng-model="task.<%=task_setting_id %>" required class="ipt">
+							<% if (task_setting_id === "task_name") { %>
+								<textarea rows="3" class="form-control" name="<%=task_setting_id %>" id = "task_setting_<%=task_setting_id %>" ng-model="task.<%=task_setting_id %>" required class="ipt"></textarea>
+							<% } else  { %>
+								<input type="text" class="form-control" name="<%=task_setting_id %>" id = "task_setting_<%=task_setting_id %>" ng-model="task.<%=task_setting_id %>" required class="ipt">
+							<% } %>
 						<% } %>
 						</li>
 					<% }%>				 
 				<% } %>	
 				<li>
 					<strong class="control-label" id = "task_assignment">Task Assignment</strong>
-					<select name="task_assignment" id = "task_setting_task_assignment" required class="ipt">
+					<select name="task_assignment" class="form-control" id = "task_setting_task_assignment" required class="ipt">
 						<option value=''></option>
 						<% for (var j = 0; j<process_members.length;  j++) { %>
 							<option value='<%=process_members[j].user_nickname%>'><%=process_members[j].user_nickname%></option>
@@ -400,8 +405,10 @@
 							var itemIdString = "'#task_setting_" + task_setting_id + "'";
 								
 							if ($(eval(itemIdString))[0]) {
-								if ($(eval(itemIdString))[0].tagName === "INPUT") {
-									$(eval(itemIdString)).val(data.taskObj[task_setting_id].replace("<br/>","&#13;")).trigger('change');	
+								//alert(eval(itemIdString));
+								//alert($(eval(itemIdString))[0].tagName);
+								if ($(eval(itemIdString))[0].tagName === "INPUT" || $(eval(itemIdString))[0].tagName === "TEXTAREA") {	
+									$(eval(itemIdString)).val(data.taskObj[task_setting_id].replace(/<br>/ig,"\n")).trigger('change');	
 								} else if ($(eval(itemIdString))[0].tagName === "SELECT" && task_setting_id != "task_assignment") {
 									
 									//var appElement = document.querySelector('[ng-controller=tasksCtrl]');
@@ -485,6 +492,9 @@
 			$('#btn_edit').val(localStorage.getItem(language_setting + "_edit"));
 			$('#task_assignment').text(localStorage.getItem(language_setting + "_task_assignment"));
 			$('#watson_next_task').text(localStorage.getItem(language_setting + "_watson_next_task"));
+			
+			$("#task_setting_task_start_estimate").datepicker({ dateFormat: 'yy-mm-dd'});
+			$("#task_setting_task_end_estimate").datepicker({ dateFormat: 'yy-mm-dd'});
 
 			$('#btn_add_task').click(function(){
 				clearInputTemp();
@@ -522,6 +532,7 @@
 				if (typeof(endtime_estimated) === "undefined") {
 					var endtime_estimated = "";
 				}
+
 				if($( '#' + content._id ).parent().attr("id") === "status_1") {
 					var now = new Date();
 					var option = {};
@@ -556,7 +567,7 @@
 					task_div_string = task_div_string + "<span class = 'blinking'>&nbsp;&nbsp;<font color = red>"+endtime_estimated + "</font>&nbsp;</span>"
 				}
 				task_div_string = task_div_string + "</h6> </div>"
-					+"	<div class='panel-body'><h5>"+content.task_name.replace("\s/g","&nbsp;")+"</h5></div>"
+					+"	<div class='panel-body'><h5>"+content.task_name+"</h5></div>"
 					+"	<div class='panel-footer'>"
 					+ emergency +assignment+ "</div>"
 					+"</div>"
@@ -573,6 +584,7 @@
 					$(".panel-primary").css("cursor","pointer");
 					$(".taskdetail").tooltip();
 					});
+
 			});
 			$('#watson-tradeoff').text(JSON.stringify(tradeoff_options));
 			var statusString = "'#status_1";

@@ -66,7 +66,7 @@ angular.module('myApp',[]).controller('tasksCtrl', function($scope, $http){
 		var editTaskObj = {};
 		editTaskObj.task_id = $scope.task.task_id;
 		editTaskObj.task_rev = $scope.task.task_rev;
-		editTaskObj.task_name = $scope.task.task_name;
+		editTaskObj.task_name = $scope.task.task_name.replace(/\n/ig,"<br>");
 		editTaskObj.task_assignment = document.getElementById("task_setting_task_assignment").value;
 		if (document.getElementById("task_setting_task_type1")) {
 			editTaskObj.task_type1 = document.getElementById("task_setting_task_type1").value;
@@ -90,6 +90,8 @@ angular.module('myApp',[]).controller('tasksCtrl', function($scope, $http){
 			editTaskObj.task_end_estimate = document.getElementById("task_setting_task_end_estimate").value;
 		}
 
+		//alert(JSON.stringify(editTaskObj));
+		
         $http({
             method : 'POST',
             url : '/tasks/add',
@@ -112,7 +114,7 @@ angular.module('myApp',[]).controller('tasksCtrl', function($scope, $http){
 			.error(function(data){
 				alert("error");
             })
-
+			
     }
 
    $scope.edit = function(){
@@ -120,7 +122,7 @@ angular.module('myApp',[]).controller('tasksCtrl', function($scope, $http){
 		var editTaskObj = {};
 		editTaskObj.task_id = $scope.task.task_id;
 		editTaskObj.task_rev = $scope.task.task_rev;
-		editTaskObj.task_name = $scope.task.task_name;
+		editTaskObj.task_name = $scope.task.task_name.replace(/\n/ig,"<br>");
 		editTaskObj.task_assignment = document.getElementById("task_setting_task_assignment").value;
 		if (document.getElementById("task_setting_task_type1")) {
 			editTaskObj.task_type1 = document.getElementById("task_setting_task_type1").value;

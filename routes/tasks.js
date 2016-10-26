@@ -58,6 +58,7 @@ router.get('/', loginCheck, function(req, res) {
 						current_progress = data.work_flow;
 						kanban_info = {"column_number":process.length};
 						req.session.task_settings = data.task_settings;
+						console.log(JSON.stringify(result.docs));
 						res.render('kanban', { "tasks": result.docs, "process":current_progress,
 							"process_members":data.members,
 							"current_progress_name":req.session.user_current_process_name, "current_process":req.session.user_current_process, "task_settings":data.task_settings, "rev": data._rev,
