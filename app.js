@@ -44,7 +44,7 @@ io.sockets.on('connection', function (socket) {
 	io.emit('messages', 'Welcome to join!');//to all including self
 	require('./web_socket')(io,socket);
 });
-/**
+
 var isBluemix = (process.env.ENV_BLUEMIX || false);
 
 if (!isBluemix) {
@@ -55,7 +55,7 @@ if (!isBluemix) {
 	  process.exit(1)
 	}
 }
-**/
+
 
 app.set('views', path.join(__dirname, 'views'));
 //app.set('view engine', 'ejs');

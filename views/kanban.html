@@ -276,7 +276,11 @@
 		var current_process_json ='<%-JSON.stringify(current_process) %>';
 		var current_process = JSON.parse(current_process_json);
 		var socket = io();	
-		/*
+		
+		socket.on('connect', function () {
+	        socket.emit('join', current_process);
+	    });
+		
 		socket.on('messages', function(msgObj){
 			if (msgObj._id==null || msgObj._id==undefined) {
 			} else {
@@ -287,20 +291,22 @@
 				}
 			}
 		});
-		*/
+		
 		function getSocket(){
 			if(socket==null || socket==undefined){
 				socket = io();
 			}
 			return socket;
 		}
-
+		
+		/*
 		function refreshPage() {
 			setTimeout(function(){
 				window.location.reload();
 			},10000);	
 		}
-
+		*/
+		
 		$(".processtitle").tooltip();
 		var language_setting = JSON.parse('<%-JSON.stringify(language_setting) %>');
 		function deleteTask(currentObj) {
