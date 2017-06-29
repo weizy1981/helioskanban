@@ -3,6 +3,6 @@ applications:
   memory: 512M
   instances: 1
   domain: mybluemix.net
-  name: mykanban
-  host: mykanban
+  name: helioskanban
+  host: helioskanban
   disk_quota: 1024M
